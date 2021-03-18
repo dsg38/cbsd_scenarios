@@ -4,7 +4,7 @@ python3.sh ../my_pmpem.py \
 --nsamplesperparamset 10 \
 --densityfile "../../../inputs/inputs_raw/params/2009_1_tol_0_65_mask_10_posterior.txt" \
 --opertype pd \
---scheduler l \
+--scheduler s \
 --slurmqueue "SL2" \
 --memoryrequest 5980 \
 --parametersfile "params.txt" \
