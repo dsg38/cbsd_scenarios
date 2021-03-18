@@ -9,4 +9,6 @@ python3.sh my_pmpem.py \
 --memoryrequest 5980 \
 --parametersfile "2021_03_17_uganda_params.txt" \
 --runtimerequest "12:00:00" \
---landscapefolder "/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/inputs/inputs_scenarios/2021_03_17_uganda/inputs"
+--landscapefolder "/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/inputs/inputs_scenarios/2021_03_17_uganda/inputs" \
+--launchscript "2021_03_17_uganda_launch.sh" \
+--dmtcp_restart_limit 10 
