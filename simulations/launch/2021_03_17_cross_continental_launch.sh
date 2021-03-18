@@ -1,4 +1,8 @@
 #!/bin/bash
+
+module load python3
+module load pmpem
+
 python3.sh my_pmpem.py \
 -o "../sim_output/2021_03_17_cross_continental/2021_03_18_batch_0/" \
 --nsamplesperparamset 1000 \
