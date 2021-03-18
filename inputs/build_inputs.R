@@ -1,8 +1,8 @@
 source("utils.R")
 args = commandArgs(trailingOnly = TRUE)
 
-configPath = "inputs_scenarios/2021_03_17_cross_continental/config.json"
-# configPath = args[[1]]
+# configPath = "inputs_scenarios/2021_03_18_nigeria_region/config.json"
+configPath = args[[1]]
 
 # Define keys
 processHost = "processHost"
@@ -71,8 +71,8 @@ if(cropBool){
     africaPolys = my::loadPolysAfrica()
     
     df = data.frame(
-        lat=c(extentVec$ymax, extentVec$ymax, extentVec$ymin, extentVec$ymin),
-        lng=c(extentVec$xmin, extentVec$xmax, extentVec$xmax, extentVec$xmin),
+        lat=c(extentVec[["ymax"]], extentVec[["ymax"]], extentVec[["ymin"]], extentVec[["ymin"]]),
+        lng=c(extentVec[["xmin"]], extentVec[["xmax"]], extentVec[["xmax"]], extentVec[["xmin"]]),
         id=c("A", "B", "C", "D"),
         row.names = NULL
     )

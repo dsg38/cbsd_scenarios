@@ -1,12 +1,12 @@
 {
-    "cropByCountryCode": [
-        "MOZ",
-        "KEN",
-        "SEN"
-    ],
+    "cropExtent": {
+        "xmin": -3.71,
+        "xmax": 18.6,
+        "ymin": 3.77,
+        "ymax": 15.3
+    },
     "processHost": "default",
-    "processInit": "uganda_2005",
-    "processSurvey": "real_world",
+    "processInit": "nigeria_direct_single_lagos",
     "processVector": "default",
     "copyGeneralFiles": {
         "P_WeatherSwitchTimes_IS.txt": "P_WeatherSwitchTimes.txt"
