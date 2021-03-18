@@ -1,0 +1,10 @@
+{
+    "cropBool": true,
+    "cropExtent": {
+        "xmin": 12.21091,
+        "xmax": 31.28045,
+        "ymin": -13.45835,
+        "ymax": 5.37528
+    }
+
+}

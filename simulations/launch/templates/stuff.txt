@@ -1,0 +1,19 @@
+	# --------------------------
+	
+	# YEAR e.g. 2004
+	# opts.changempemparams('SimulationStartTime', x['SimulationStartTime'])
+
+	# NUM YEARS
+	# opts.changempemparams('SimulationLength', x['SimulationLength'])
+
+	# SWITCH ON SIM SURVEILLANCE BASED ON SURVEY LOCATION RASTERS (SEE ManagementSurveillanceTimesAndFiles JSON)
+	# opts.changempemparams('ManagementEnable', 1)
+
+	# Switch on raster output
+	# opts.changempemparams('RasterEnable', writeRasters)
+
+	# How frequent?
+	# opts.changempemparams('RasterFrequency', 1)
+
+	# Do we want the R raster?
+	# opts.changempemparams('RasterEnable_0_REMOVED', 1)

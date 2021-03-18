@@ -1,0 +1,12 @@
+{
+    "infArray": [
+        {
+            "coords": {
+                "lat": 2,
+                "lng": 2
+            },
+            "radiusKm": 3,
+            "numFields": 25
+        }
+    ]
+}

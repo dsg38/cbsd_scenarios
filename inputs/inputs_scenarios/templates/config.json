@@ -1,0 +1,21 @@
+{
+    "_comment": "NB: CAN ONLY HAVE ONE OF THE TWO CROP OPTIONS",
+    "cropByCountryCode": [
+        "MOZ",
+        "KEN",
+        "SEN"
+    ],
+    "cropExtent": {
+        "xmin": 12.21091,
+        "xmax": 31.28045,
+        "ymin": -13.45835,
+        "ymax": 5.37528
+    },
+    "processHost": "default",
+    "processInit": "uganda_2005",
+    "processSurvey": "real_world",
+    "processVector": "default",
+    "copyGeneralFiles": {
+        "P_WeatherSwitchTimes_IS.txt": "P_WeatherSwitchTimes.txt"
+    }
+}
