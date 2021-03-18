@@ -3,8 +3,6 @@ args = commandArgs(trailingOnly = TRUE)
 
 configPath = args[[1]]
 
-configPath = "./inputs_scenarios/2021_03_17_uganda//config.json"
-
 # Define keys
 processHost = "processHost"
 processInit = "processInit"
