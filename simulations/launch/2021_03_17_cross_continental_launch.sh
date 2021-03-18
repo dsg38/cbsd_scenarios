@@ -6,9 +6,9 @@ python3.sh my_pmpem.py \
 --opertype pd \
 --scheduler s \
 --slurmqueue "SL2" \
---memoryrequest 5980 \
+--memoryrequest 17940 \
+--runtimerequest "36:00:00" \
 --parametersfile "2021_03_17_cross_continental_params.txt" \
---runtimerequest "12:00:00" \
 --landscapefolder "/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/inputs/inputs_scenarios/2021_03_17_cross_continental/inputs" \
 --launchscript "2021_03_17_cross_continental_launch.sh" \
 --dmtcp_restart_limit 10 
