@@ -1,43 +1,66 @@
 topDir = "./sim_output/2021_03_17_cross_continental/"
 
-# Get only last ones to avoid sims in prog
-txtRasterPaths = list.files(topDir, pattern="O_0_L_0_INFECTIOUS_.*.000000.txt", full.names = T, recursive = T)
-
-fixCount = 0
-while(length(txtRasterPaths) > 0){
+fixRasterPaths = function(txtRasterPaths){
     
-    # Pick one
-    thisRasterPath = sample(txtRasterPaths, 1)
+    # Randomise the order
+    txtRasterPaths = sample(txtRasterPaths)
     
-    # Check file old enough
-    rasterCreated = file.info(thisRasterPath)$ctime
-    timeDiff = Sys.time() - rasterCreated
-    numSecs = as.numeric(timeDiff, units = "secs")
-    
-    if(numSecs > 1000){
+    fixCount = 0
+    for(thisRasterPath in txtRasterPaths){
         
-        print(thisRasterPath)
+        rasterCreated = file.info(thisRasterPath)$ctime
         
-        # Read raster
-        thisRaster = raster::raster(thisRasterPath)
-        
-        outRasterPath = gsub(".txt", ".tif", thisRasterPath)
-        
-        # Write out as tif
-        raster::writeRaster(thisRaster, outRasterPath, overwrite=TRUE)
-        
-        # Delete old raster
-        file.remove(thisRasterPath)
-        
-        fixCount = fixCount + 1
-        print(fixCount)
+        # Check still exists
+        if(!is.na(rasterCreated)){
+            
+            timeDiff = Sys.time() - rasterCreated
+            numSecs = as.numeric(timeDiff, units = "secs")
+            
+            # Check file old enough
+            if(numSecs > 1000){
+                
+                print(thisRasterPath)
+                
+                # Read raster
+                thisRaster = raster::raster(thisRasterPath)
+                
+                outRasterPath = gsub(".txt", ".tif", thisRasterPath)
+                
+                # Write out as tif
+                raster::writeRaster(thisRaster, outRasterPath, overwrite=TRUE)
+                
+                # Delete old raster
+                file.remove(thisRasterPath)
+                
+                fixCount = fixCount + 1
+                print(fixCount)
+                
+            }
+            
+            print("NUM LEFT TO FIX:")
+            print(length(txtRasterPaths) - fixCount)
+            
+        }
         
     }
     
-    # Regen list of rasters
+}
+
+# Get all txt rasters
+txtRasterPaths = list.files(topDir, pattern="O_0_L_0_INFECTIOUS_.*.000000.txt", full.names = T, recursive = T)
+
+fixRound = 0
+while(length(txtRasterPaths) > 0){
+    
+    print("FIX ROUND:")
+    print(fixRound)
+    
+    fixRasterPaths(txtRasterPaths)
+    
+    # Regen list
     txtRasterPaths = list.files(topDir, pattern="O_0_L_0_INFECTIOUS_.*.000000.txt", full.names = T, recursive = T)
     
-    print("NUM LEFT TO FIX:")
-    print(length(txtRasterPaths))
+    fixRound = fixRound + 1
     
 }
+
