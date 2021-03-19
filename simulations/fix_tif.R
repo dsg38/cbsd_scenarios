@@ -23,7 +23,7 @@ for(thisLastRasterPath in lastRasterPaths){
         outRasterPath = gsub(".txt", ".tif", thisRasterPath)
         
         # Write out as tif
-        raster::writeRaster(thisRaster, outRasterPath)
+        raster::writeRaster(thisRaster, outRasterPath, overwrite=TRUE)
         
         # Delete old raster
         file.remove(thisRasterPath)
