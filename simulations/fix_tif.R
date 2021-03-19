@@ -6,9 +6,7 @@ lastRasterPaths = list.files(topDir, pattern=paste0("O_0_L_0_INFECTIOUS_", endYe
 
 fixCount = 0
 for(thisLastRasterPath in lastRasterPaths){
-    
-    thisLastRasterPath = lastRasterPaths[[1]]
-    
+        
     thisResultsDir = dirname(thisLastRasterPath)
     
     print(thisResultsDir)
