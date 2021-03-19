@@ -11,7 +11,7 @@ python3.sh my_pmpem.py \
 --scheduler s \
 --slurmqueue "SL2" \
 --memoryrequest 5980 \
---runtimerequest "12:00:00" \
+--runtimerequest "24:00:00" \
 --parametersfile "2021_03_18_nigeria_region_params.txt" \
 --landscapefolder "/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/inputs/inputs_scenarios/2021_03_18_nigeria_region/inputs" \
 --launchscript "/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/simulations/launch/2021_03_18_nigeria_region_launch.sh" \
