@@ -13,24 +13,29 @@ for(thisLastRasterPath in lastRasterPaths){
     
     allRasterPaths = list.files(thisResultsDir, pattern="O_0_L_0_INFECTIOUS_.*.000000.txt", full.names = T)
     
-    for(thisRasterPath in allRasterPaths){
+    # HACK SO I CAN SPAWN MULTIPLE
+    if("O_0_L_0_INFECTIOUS_2004.000000.txt" %in% allRasterPaths){
         
-        print(thisRasterPath)
-        
-        # Read raster
-        thisRaster = raster::raster(thisRasterPath)
-        
-        outRasterPath = gsub(".txt", ".tif", thisRasterPath)
-        
-        # Write out as tif
-        raster::writeRaster(thisRaster, outRasterPath, overwrite=TRUE)
-        
-        # Delete old raster
-        file.remove(thisRasterPath)
-        
-        fixCount = fixCount + 1
-        
-        print(fixCount)
+        for(thisRasterPath in allRasterPaths){
+            
+            print(thisRasterPath)
+            
+            # Read raster
+            thisRaster = raster::raster(thisRasterPath)
+            
+            outRasterPath = gsub(".txt", ".tif", thisRasterPath)
+            
+            # Write out as tif
+            raster::writeRaster(thisRaster, outRasterPath, overwrite=TRUE)
+            
+            # Delete old raster
+            file.remove(thisRasterPath)
+            
+            fixCount = fixCount + 1
+            
+            print(fixCount)
+            
+        }
         
     }
     
