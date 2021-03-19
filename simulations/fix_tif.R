@@ -14,7 +14,7 @@ for(thisLastRasterPath in lastRasterPaths){
     allRasterPaths = list.files(thisResultsDir, pattern="O_0_L_0_INFECTIOUS_.*.000000.txt", full.names = T)
     
     # HACK SO I CAN SPAWN MULTIPLE
-    if("O_0_L_0_INFECTIOUS_2004.000000.txt" %in% allRasterPaths){
+    if(file.path(thisResultsDir, "O_0_L_0_INFECTIOUS_2004.000000.txt") %in% allRasterPaths){
         
         for(thisRasterPath in allRasterPaths){
             
