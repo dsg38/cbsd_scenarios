@@ -15,7 +15,7 @@
 #! How many many cores will be allocated per task? 
 #SBATCH --cpus-per-task=1 
 #! Estimated runtime (job is force-stopped after if exceeded):
-#SBATCH --time=36:00:00
+#SBATCH --time=12:00:00
 #! Estimated memory needed (job is force-stopped if exceeded):
 #SBATCH --mem=5980mb
 #! Submit a job array with index values between 0 and n e.g. 0-100
