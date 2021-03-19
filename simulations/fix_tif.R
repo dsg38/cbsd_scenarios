@@ -4,6 +4,9 @@ endYear = 2050
 # Get only last ones to avoid sims in prog
 lastRasterPaths = list.files(topDir, pattern=paste0("O_0_L_0_INFECTIOUS_", endYear, ".000000.txt"), full.names = T, recursive = T)
 
+# HACK TO MINIMISE CHANCE OF CONFLICT
+lastRasterPaths = sample(lastRasterPaths)
+
 fixCount = 0
 for(thisLastRasterPath in lastRasterPaths){
         
