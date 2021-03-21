@@ -1,8 +1,10 @@
 source("utils.R")
+library(dplyr)
 args = commandArgs(trailingOnly = TRUE)
 
 # configPath = "inputs_scenarios/2021_03_18_nigeria_region/config.json"
-configPath = args[[1]]
+configPath = "inputs_scenarios/2021_03_17_cross_continental/config.json"
+# configPath = args[[1]]
 
 # Define keys
 processHost = "processHost"
@@ -61,6 +63,8 @@ processRaster = function(rasterPath, extentVec, cropBool, pathOut, renameBool = 
         pathOut = pathOut,
         renameBool = renameBool
     )
+
+    return(rasterOut)
 }
 
 if(cropBool){
@@ -150,6 +154,29 @@ if(processInit %in% configNames){
 }
 
 
+extractIndex = function(thisRaster){
+  
+  thisRaster = surveyRasterOut
+  
+  zeroExtent = raster::extent(0, raster::xmax(thisRaster)-raster::xmin(thisRaster), 0, raster::ymax(thisRaster)-raster::ymin(thisRaster))
+  
+  raster::extent(thisRaster) = zeroExtent
+  
+  rasterIndexes = which(thisRaster[]>0)
+  numRealSurveysInCell = thisRaster[rasterIndexes]
+  
+  indexDf = as.data.frame(raster::rowColFromCell(thisRaster, rasterIndexes))
+  indexDf = indexDf %>% dplyr::rename("X"="col", "Y"="row")
+  indexDf = cbind(indexDf, numRealSurveysInCell)
+  
+  # Correct offset
+  indexDf$X = indexDf$X - 1
+  indexDf$Y = indexDf$Y - 1
+  
+  return(indexDf)
+  
+}
+
 # Survey rasters
 if(processSurvey %in% configNames){
 
@@ -161,6 +188,12 @@ if(processSurvey %in% configNames){
 
     surveyRasterPaths = list.files(surveyDirPath, full.names = TRUE)
 
+    polygonPaths = list.files("../inputs/inputs_raw/masks/", full.names=T)
+
+    # Masks out path
+    outPathMasks = file.path(dirname(outDir), "masks")
+    dir.create(outPathMasks, showWarnings = FALSE)
+
     for(surveyRasterPath in surveyRasterPaths){
 
         print(surveyRasterPath)
@@ -170,12 +203,37 @@ if(processSurvey %in% configNames){
         surveyRasterPathOut = file.path(outDir, paste0(fileName, ".asc"))
 
         # Process
-        processRaster(
+        surveyRasterOut = processRaster(
             rasterPath = surveyRasterPath,
             extentVec = extentVec,
             cropBool = cropBool,
             pathOut = surveyRasterPathOut
         )
+
+        # Build survey index dfs
+        indexDf = extractIndex(surveyRasterOut)
+        outIndexPath = file.path(outPathMasks, gsub(".tif", ".csv", basename(surveyRasterPath)))
+        write.csv(indexDf, outIndexPath, row.names = F)
+
+        thisRasterYear = gsub("_raster_total.tif", "", basename(surveyRasterPath))
+
+        # Build indexes for poly mask
+        for(thisPolygonPath in polygonPaths){
+        
+            print(thisPolygonPath)
+        
+            thisPolygonName = basename(thisPolygonPath)
+            thisPolygonStr = gsub(".rds", "", thisPolygonName)
+        
+            thisPolygon = readRDS(thisPolygonPath)
+        
+            thisPolyRaster = raster::mask(surveyRasterOut, thisPolygon, updateValue=0)
+            thisPolyIndexDf = extractIndex(thisPolyRaster)
+        
+            outPolyIndexPath = file.path(outPathMasks, paste0(thisRasterYear, "_", thisPolygonStr, ".csv"))
+            write.csv(thisPolyIndexDf, outPolyIndexPath, row.names = F)
+            
+        }
         
     }
 

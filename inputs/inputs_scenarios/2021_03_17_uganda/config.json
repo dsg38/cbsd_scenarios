@@ -2,11 +2,5 @@
     "cropByCountryCode": [
         "UGA"
     ],
-    "processHost": "default",
-    "processInit": "uganda_2005",
-    "processSurvey": "real_world",
-    "processVector": "default",
-    "copyGeneralFiles": {
-        "P_WeatherSwitchTimes_IS.txt": "P_WeatherSwitchTimes.txt"
-    }
+    "processSurvey": "real_world"
 }
