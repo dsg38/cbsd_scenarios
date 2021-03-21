@@ -3,8 +3,8 @@ library(dplyr)
 args = commandArgs(trailingOnly = TRUE)
 
 # configPath = "inputs_scenarios/2021_03_18_nigeria_region/config.json"
-configPath = "inputs_scenarios/2021_03_17_cross_continental/config.json"
-# configPath = args[[1]]
+# configPath = "inputs_scenarios/2021_03_17_cross_continental/config.json"
+configPath = args[[1]]
 
 # Define keys
 processHost = "processHost"
