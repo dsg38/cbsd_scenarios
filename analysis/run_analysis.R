@@ -1,3 +1,4 @@
+options(stringsAsFactors = F)
 
 scenarioDir = "../inputs/inputs_scenarios/2021_03_17_cross_continental"
 simDir = "../simulations/sim_output/2021_03_17_cross_continental/2021_03_18_batch_0"

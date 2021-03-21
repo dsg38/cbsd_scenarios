@@ -2,13 +2,6 @@ options(stringsAsFactors = F)
 library(rjson)
 library(dplyr)
 
-
-
-
-# -------------------------------------------------------------------------------
-# -------------------------------------------------------------------------------
-# -------------------------------------------------------------------------------
-
 extractPolygonStats = function(stackedDfPath, surveyMappingPath, indexDir, summaryOutPath){
 
   dir.create(dirname(summaryOutPath), recursive=T, showWarnings=F)
