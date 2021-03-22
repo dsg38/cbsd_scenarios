@@ -64,3 +64,11 @@ appendTargetDataFunc(
     statisticDir=statisticDir, 
     outPath=targetOutPath
 )
+
+# ----------------------------------------------------------
+
+source("utils/FUNC_minimalDfs.R")
+
+minimalDfs(
+    targetDfPath=targetOutPath
+)
