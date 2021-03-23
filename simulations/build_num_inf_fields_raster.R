@@ -8,7 +8,7 @@ hostRasterPath = "../inputs/inputs_scenarios/2021_03_18_nigeria_region/inputs/L_
 
 # -------------------------------------------------------------------
 
-infRasterPaths = list.files(infRasterDir, pattern="O_0_L_0_INFECTIOUS_.*.000000.tif", full.names = T, recursive = T)
+infRasterPaths = list.files(infRasterDir, pattern="O_0_L_0_INFECTIOUS_.*.000000.txt", full.names = T, recursive = T)
 
 hostRaster = raster::raster(hostRasterPath)
 
