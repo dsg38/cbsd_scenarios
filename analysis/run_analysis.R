@@ -12,16 +12,17 @@ dir.create(resultDir, showWarnings = FALSE, recursive = TRUE)
 # Aggregate all simulated survey output files
 
 inputsDir = file.path(scenarioDir, "inputs")
-indexDir = file.path(scenarioDir, "masks")
+# indexDir = file.path(scenarioDir, "masks")
+indexDir = file.path(scenarioDir, "index")
 
-source("utils/FUNC_aggregate_management_results.R")
+# source("utils/FUNC_aggregate_management_results.R")
 
 stackedOutPath = file.path(resultDir, "management_stacked.rds")
 
-aggregateManagementResults(
-    simDir=simDir,
-    stackedOutPath=stackedOutPath
-)
+# aggregateManagementResults(
+#     simDir=simDir,
+#     stackedOutPath=stackedOutPath
+# )
 
 # ----------------------------------------------
 # For key regions of interest (e.g. Kampala), extract stats for this specific region
