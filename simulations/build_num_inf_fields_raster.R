@@ -2,7 +2,7 @@ options(stringsAsFactors = FALSE)
 # infRasterDir = "./sim_output/2021_03_17_cross_continental/2021_03_18_batch_0/job0/"
 # hostRasterPath = "../inputs/inputs_scenarios/2021_03_17_cross_continental/inputs/L_0_HOSTDENSITY.txt"
 
-infRasterDir = "/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/simulations/sim_output/2021_03_21_nigeria_resistant/2021_03_21_batch_1/job0/"
+infRasterDir = "/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/simulations/sim_output/2021_03_21_nigeria_resistant/2021_03_21_batch_1/job12/"
 hostRasterPath = "../inputs/inputs_scenarios/2021_03_18_nigeria_region/inputs/L_0_HOSTDENSITY.txt"
 
 
