@@ -29,7 +29,7 @@ for jobKey, yearSet in progressDict.items():
 
     maxDict[jobKey] = max(yearSet)
 
-df = pd.DataFrame.from_dict(maxDict, orient='index', columns=['year'])
+df = pd.DataFrame.from_dict(maxDict, orient='index')
 
 df.to_csv('progress.csv')
 
