@@ -10,20 +10,24 @@ for thisPathPath in infRasterPaths:
 
     thisJob = [x for x in thisPath.split('/') if 'job' in x][0]
     fileName = thisPath.split('/')[-1]
-    thisYear = int(fileName.split('_')[-1].replace('.000000.tif', ''))
 
-    if thisJob in progressDict:
-        progressDict[thisJob].add(thisYear)
-    else:
-        progressDict[thisJob] = set([thisYear])
+    try:
 
+        thisYear = int(fileName.split('_')[-1].replace('.000000.tif', ''))
+
+        if thisJob in progressDict:
+            progressDict[thisJob].add(thisYear)
+        else:
+            progressDict[thisJob] = set([thisYear])
+
+    except:
+
+        print(thisPath)
     
 maxDict = {}
 for jobKey, yearSet in progressDict.items():
 
     maxDict[jobKey] = max(yearSet)
-
-    # breakpoint()
 
 df = pd.DataFrame.from_dict(maxDict, orient='index', columns=['year'])
 
