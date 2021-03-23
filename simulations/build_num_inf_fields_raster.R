@@ -17,7 +17,7 @@ for(infRasterPath in infRasterPaths){
     print(infRasterPath)
     
     # Out path
-    outPathRaster = gsub('.tif', '_NUMFIELDS.tif', infRasterPath)
+    outPathRaster = gsub('.txt', '_NUMFIELDS.tif', infRasterPath)
 
     infRaster = raster::raster(infRasterPath)
 
