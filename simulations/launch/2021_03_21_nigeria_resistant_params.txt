@@ -1,0 +1,14 @@
+SimulationStartTime SimulationLength ManagementEnable RasterEnable RasterFrequency RasterEnable_0_REMOVED DetectionEnable DetectionFrequency DetectionFirst DetectionParameter DetectionUseNewSurvey DetectionMaxPopSize DetectionSampleProportion ControlCullEnable ControlCullFrequency ControlCullFirst ControlCullControlMethodSpecification ControlCullControlMethodBlanketName ControlCullControlIntensitySpecification ControlCullRadius ControlCullEffectiveness ControlCullForget Rate_0_RtoS
+0 12 0 1 1 1 1 1 2 0 1 1000 1 1 1 2.000001 BLANKET ROGUE BLANKET 0 1 1 0
+0 12 0 1 1 1 1 1 2 0.01 1 1000 1 1 1 2.000001 BLANKET ROGUE BLANKET 0 1 1 0
+0 12 0 1 1 1 1 1 2 0.02 1 1000 1 1 1 2.000001 BLANKET ROGUE BLANKET 0 1 1 0
+0 12 0 1 1 1 1 1 2 0.03 1 1000 1 1 1 2.000001 BLANKET ROGUE BLANKET 0 1 1 0
+0 12 0 1 1 1 1 1 2 0.04 1 1000 1 1 1 2.000001 BLANKET ROGUE BLANKET 0 1 1 0
+0 12 0 1 1 1 1 1 2 0.05 1 1000 1 1 1 2.000001 BLANKET ROGUE BLANKET 0 1 1 0
+0 12 0 1 1 1 1 1 2 0.1 1 1000 1 1 1 2.000001 BLANKET ROGUE BLANKET 0 1 1 0
+0 12 0 1 1 1 1 1 2 0.15 1 1000 1 1 1 2.000001 BLANKET ROGUE BLANKET 0 1 1 0
+0 12 0 1 1 1 1 1 2 0.2 1 1000 1 1 1 2.000001 BLANKET ROGUE BLANKET 0 1 1 0
+0 12 0 1 1 1 1 1 2 0.25 1 1000 1 1 1 2.000001 BLANKET ROGUE BLANKET 0 1 1 0
+0 12 0 1 1 1 1 1 2 0.3 1 1000 1 1 1 2.000001 BLANKET ROGUE BLANKET 0 1 1 0
+0 12 0 1 1 1 1 1 2 0.4 1 1000 1 1 1 2.000001 BLANKET ROGUE BLANKET 0 1 1 0
+0 12 0 1 1 1 1 1 2 0.5 1 1000 1 1 1 2.000001 BLANKET ROGUE BLANKET 0 1 1 0
