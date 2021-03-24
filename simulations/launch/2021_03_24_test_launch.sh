@@ -2,8 +2,7 @@
 
 module load python3
 module load pmpem
-module load /rds/project/cag1/rds-cag1-general/epidem-modules/epidem.modules
-module load epidem-standard-modules
+module load R-with-libraries
 
 python3.sh my_pmpem.py \
 -o "../sim_output/2021_03_24_test/2021_03_24_batch_2/" \
