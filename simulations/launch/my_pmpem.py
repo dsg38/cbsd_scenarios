@@ -2,6 +2,7 @@
 import time
 import pmpem.mngr, pmpem.utils, pmpem.landscape
 from pmpem.pmpemopts import PmpemOpts
+import subprocess
 
 ## Sets the parameters of the MPEM model.
 def setmodelparameters(x=None):
@@ -58,6 +59,12 @@ def setmodelparameters(x=None):
 
 def processonerun(folder):
 	results = pmpem.utils.getparamsandsummarystats(folder)
+
+	subprocess.call([
+		'/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/simulations/launch/my_pmpem_fix_tif.R',
+		folder
+	])
+
 	return 1
 
 def processallruns(outputpath, runfolders):
