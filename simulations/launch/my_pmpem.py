@@ -60,10 +60,10 @@ def setmodelparameters(x=None):
 def processonerun(folder):
 	results = pmpem.utils.getparamsandsummarystats(folder)
 
-	subprocess.call([
-		'/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/simulations/launch/my_pmpem_fix_tif.R',
-		folder
-	])
+	# subprocess.call([
+	# 	'/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/simulations/launch/my_pmpem_fix_tif.R',
+	# 	folder
+	# ])
 
 	return 1
 
