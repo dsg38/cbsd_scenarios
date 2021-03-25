@@ -58,13 +58,26 @@ def setmodelparameters(x=None):
 
 
 def processonerun(folder):
+
+	print("MADE IT TO processonerun")
+	print("folder:")
+	print(folder)
+
 	results = pmpem.utils.getparamsandsummarystats(folder)
 
-	subprocess.call([
+	print("SUBPROCESS CMD:")
+	
+	cmd = [
 		'Rscript',
 		'/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/simulations/launch/my_pmpem_fix_tif.R',
 		folder
-	])
+	]
+
+	print(cmd)
+
+	print("MADE IT PAST SUBPROCESS")
+
+	subprocess.call(cmd)
 
 	return 1
 

@@ -5,7 +5,7 @@ module load pmpem
 module load R-with-libraries
 
 python3.sh my_pmpem.py \
--o "../sim_output/2021_03_24_test/2021_03_24_batch_2/" \
+-o "../sim_output/2021_03_24_test/2021_03_24_batch_3/" \
 --nsamplesperparamset 10 \
 --densityfile "../../inputs/inputs_raw/params/2009_1_tol_0_65_mask_10_posterior.txt" \
 --opertype pd \
