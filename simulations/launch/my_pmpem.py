@@ -68,16 +68,15 @@ def processonerun(folder):
 	print("SUBPROCESS CMD:")
 	
 	cmd = [
-		'Rscript',
-		'/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/simulations/launch/my_pmpem_fix_tif.R',
+		'/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/simulations/launch/my_pmpem_fix_tif.sh',
 		folder
 	]
 
 	print(cmd)
 
-	print("MADE IT PAST SUBPROCESS")
-
 	subprocess.call(cmd)
+
+	print("MADE IT PAST SUBPROCESS")
 
 	return 1
 
