@@ -116,33 +116,33 @@ def parseCheckpointTime():
     # Get all cmd line args
     args = sys.argv
 
-    chksecs = None
+    # chksecs = None
 
-    # If specified in cmd args
-    if '--chksecs' in args:
+    # # If specified in cmd args
+    # if '--chksecs' in args:
 
-        print("chksecs from cmd args")
+    #     print("chksecs from cmd args")
 
-        for i in range(len(args)):
-            if args[i] == '--chksecs':
-                chksecs = int(args[i+1])
-    else:
+    #     for i in range(len(args)):
+    #         if args[i] == '--chksecs':
+    #             chksecs = int(args[i+1])
+    # else:
 
-        print("chksecs auto")
+    print("chksecs auto")
 
-        # Extract runtimerequest
-        runtimerequest = None
-        for i in range(len(args)):
-            if args[i] == '--runtimerequest':
-                runtimerequest = args[i+1]
+    # Extract runtimerequest
+    runtimerequest = None
+    for i in range(len(args)):
+        if args[i] == '--runtimerequest':
+            runtimerequest = args[i+1]
 
-        assert(runtimerequest != None)
+    assert(runtimerequest != None)
 
-        print("runtimerequest:")
-        print(runtimerequest)
+    print("runtimerequest:")
+    print(runtimerequest)
 
-        # Calc chksecs
-        chksecs = calcCheckpointTimeSecs(runtimerequest)
+    # Calc chksecs
+    chksecs = calcCheckpointTimeSecs(runtimerequest)
 
     assert(chksecs != None)
 
