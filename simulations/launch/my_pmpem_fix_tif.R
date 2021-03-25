@@ -7,7 +7,7 @@ jobDir = args[[1]]
 
 # ----------------------------------------------------------
 
-txtRasterPaths = normalizePath(list.files(jobDir, pattern="O_*_L_0_*_.*.txt", full.names = T, recursive = T))
+txtRasterPaths = normalizePath(list.files(jobDir, pattern="O_.*_L_0_.*_.*.txt", full.names = T, recursive = T))
 
 print("R: LIST OF FILES TO FIX:")
 print(txtRasterPaths)
