@@ -14,5 +14,5 @@ python3.sh my_pmpem.py \
 --parametersfile "2021_03_25_test_dmtcp_params.txt" \
 --runtimerequest "00:20:00" \
 --landscapefolder "/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/inputs/inputs_scenarios/2021_03_17_uganda/inputs" \
---launchscript "/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/simulations/launch/2021_03_25_test_dptcp_launch.sh" \
+--launchscript `readlink -f $0` \
 --dmtcp_restart_limit 10
