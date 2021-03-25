@@ -116,7 +116,7 @@ def parseCheckpointTime():
     # Get all cmd line args
     args = sys.argv
 
-    # chksecs = None
+    chksecs = None
 
     # # If specified in cmd args
     # if '--chksecs' in args:
@@ -130,24 +130,29 @@ def parseCheckpointTime():
 
     print("chksecs auto")
 
-    # Extract runtimerequest
-    runtimerequest = None
-    for i in range(len(args)):
-        if args[i] == '--runtimerequest':
-            runtimerequest = args[i+1]
+    try:
 
-    assert(runtimerequest != None)
+        # Extract runtimerequest
+        runtimerequest = None
+        for i in range(len(args)):
+            if args[i] == '--runtimerequest':
+                runtimerequest = args[i+1]
 
-    print("runtimerequest:")
-    print(runtimerequest)
+        assert(runtimerequest != None)
 
-    # Calc chksecs
-    chksecs = calcCheckpointTimeSecs(runtimerequest)
+        print("runtimerequest:")
+        print(runtimerequest)
 
-    assert(chksecs != None)
+        # Calc chksecs
+        chksecs = calcCheckpointTimeSecs(runtimerequest)
 
-    print("chksecs:")
-    print(chksecs)
+        assert(chksecs != None)
+
+        print("chksecs:")
+        print(chksecs)
+
+    except:
+        print("OH NO")
 
     return(chksecs)
 
@@ -155,7 +160,7 @@ def parseCheckpointTime():
 if __name__ ==  '__main__':
     start = time.time()
 
-    chksecs = parseCheckpointTime()
+    # chksecs = parseCheckpointTime()
 
     ###########################################################################
     # Initialise the object with reference to the functions that
@@ -168,7 +173,7 @@ if __name__ ==  '__main__':
 
     ############################################################################
     # Do the runs and process the results
-    mngr.runoperation(nbatchrunscatofftime=7200, chksecs=chksecs)
+    mngr.runoperation(nbatchrunscatofftime=7200, chksecs=900)
 
     end = time.time()
     print("Simulations execution time: ", end - start, " seconds.")
