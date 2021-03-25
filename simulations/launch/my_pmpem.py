@@ -3,6 +3,7 @@ import time
 import pmpem.mngr, pmpem.utils, pmpem.landscape
 from pmpem.pmpemopts import PmpemOpts
 import subprocess
+import pathlib
 
 ## Sets the parameters of the MPEM model.
 def setmodelparameters(x=None):
@@ -65,11 +66,21 @@ def processonerun(folder):
 
 	results = pmpem.utils.getparamsandsummarystats(folder)
 
+	# Build abs path
+	thisFileDir = pathlib.Path(__file__).parent.absolute()
+	folderPathAbsolute = str(thisFileDir / folder)
+
+	print("thisFileDir")
+	print(thisFileDir)
+
+	print("folderPathAbsolute")
+	print(folderPathAbsolute)
+
 	print("SUBPROCESS CMD:")
 	
 	cmd = [
 		'/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/simulations/launch/my_pmpem_fix_tif.sh',
-		folder
+		folderPathAbsolute
 	]
 
 	print(cmd)
