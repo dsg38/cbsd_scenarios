@@ -12,7 +12,7 @@ python3.sh my_pmpem.py \
 --slurmqueue "SL2" \
 --memoryrequest 5980 \
 --parametersfile "2021_03_25_test_dmtcp_params.txt" \
---runtimerequest "00:20:00" \
+--runtimerequest "00:10:00" \
 --landscapefolder "/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/inputs/inputs_scenarios/2021_03_17_uganda/inputs" \
 --launchscript `readlink -f $0` \
 --dmtcp_restart_limit 10
