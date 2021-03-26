@@ -173,7 +173,7 @@ if __name__ ==  '__main__':
 
     ############################################################################
     # Do the runs and process the results
-    mngr.runoperation(nbatchrunscatofftime=7200, chksecs=420)
+    mngr.runoperation(nbatchrunscatofftime=7200, chksecs=126000)
 
     end = time.time()
     print("Simulations execution time: ", end - start, " seconds.")
