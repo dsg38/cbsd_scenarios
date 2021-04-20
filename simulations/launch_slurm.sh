@@ -37,4 +37,4 @@ module load pmpem
 module load gcc
 module load R-with-libraries
 
-Rscript fix_tif.R
+Rscript UTIL_fix_tif.R

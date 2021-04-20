@@ -11,6 +11,18 @@ infRasterPaths = list.files(infRasterDir, pattern="O_0_L_0_INFECTIOUS_.*.000000.
 
 hostRaster = raster::raster(hostRasterPath)
 
+
+genNumFieldsRaster = function(
+    infRaster,
+    hostRaster
+){
+
+    outRaster = infRaster * hostRaster * 1000
+
+    return(outRaster)
+    
+}
+
 for(infRasterPath in infRasterPaths){
     
     print(infRasterPath)
@@ -20,8 +32,11 @@ for(infRasterPath in infRasterPaths){
 
     infRaster = raster::raster(infRasterPath)
 
-    outRaster = infRaster * hostRaster * 1000
-    
+    outRaster = genNumFieldsRaster(
+        infRaster, 
+        hostRaster
+    )
+
     outRaster[outRaster>0 & outRaster<1] = 1
 
     raster::writeRaster(outRaster, outPathRaster, overwrite=TRUE)

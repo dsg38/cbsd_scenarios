@@ -1,10 +1,9 @@
-source("utils.R")
-library(dplyr)
+box::use(./utils)
 args = commandArgs(trailingOnly = TRUE)
 
 # configPath = "inputs_scenarios/2021_03_18_nigeria_region/config.json"
-configPath = "inputs_scenarios/2021_03_17_cross_continental/config.json"
-# configPath = args[[1]]
+# configPath = "inputs_scenarios/2021_03_17_cross_continental_TEST/config.json"
+configPath = args[[1]]
 
 # Define keys
 processHost = "processHost"
@@ -21,51 +20,13 @@ outDir = file.path(dirname(configPath), "inputs")
 dir.create(outDir, showWarnings = FALSE)
 
 # Parse extent
-extentVec = getExtentVecFromConfig(config)
+extentVec = utils$getExtentVecFromConfig(config)
 
 # If extent specified, crop - else just copy
 cropBool = !is.null(extentVec)
 
 # Work out which to process
 configNames = names(config)
-
-writeRasterCustom = function(rasterOut, pathOut, renameBool = FALSE){
-    
-    if(renameBool){
-        pathOutTemp = gsub(".txt", ".asc", pathOut)
-        
-        raster::writeRaster(rasterOut, pathOutTemp, overwrite=TRUE)
-        renameSuccessBool = file.rename(pathOutTemp, pathOut)
-        
-        stopifnot(renameSuccessBool)
-        
-    }else{
-        
-        raster::writeRaster(rasterOut, pathOut, overwrite=TRUE)
-        
-    }
-    
-    
-}
-
-processRaster = function(rasterPath, extentVec, cropBool, pathOut, renameBool = FALSE){
-    
-    rasterIn = raster::raster(rasterPath)
-    
-    if(cropBool){
-        rasterOut = raster::crop(rasterIn, extentVec)
-    }else{
-        rasterOut = rasterIn
-    }
-    
-    writeRasterCustom(
-        rasterOut = rasterOut,
-        pathOut = pathOut,
-        renameBool = renameBool
-    )
-
-    return(rasterOut)
-}
 
 if(cropBool){
     
@@ -141,7 +102,7 @@ if(processInit %in% configNames){
         print(initRasterPath)
         
         # Process
-        processRaster(
+        utils$processRaster(
             rasterPath = initRasterPath,
             extentVec = extentVec,
             cropBool = cropBool,
@@ -153,89 +114,51 @@ if(processInit %in% configNames){
     
 }
 
-
-extractIndex = function(thisRaster){
-  
-  thisRaster = surveyRasterOut
-  
-  zeroExtent = raster::extent(0, raster::xmax(thisRaster)-raster::xmin(thisRaster), 0, raster::ymax(thisRaster)-raster::ymin(thisRaster))
-  
-  raster::extent(thisRaster) = zeroExtent
-  
-  rasterIndexes = which(thisRaster[]>0)
-  numRealSurveysInCell = thisRaster[rasterIndexes]
-  
-  indexDf = as.data.frame(raster::rowColFromCell(thisRaster, rasterIndexes))
-  indexDf = indexDf %>% dplyr::rename("X"="col", "Y"="row")
-  indexDf = cbind(indexDf, numRealSurveysInCell)
-  
-  # Correct offset
-  indexDf$X = indexDf$X - 1
-  indexDf$Y = indexDf$Y - 1
-  
-  return(indexDf)
-  
-}
-
 # Survey rasters
 if(processSurvey %in% configNames){
 
     print("SURVEY")
 
-    surveyDir = config[[processSurvey]]
+    surveyConfig = config[[processSurvey]]
+    surveyDir = surveyConfig[["surveyDir"]]
+    polyDfDir = surveyConfig[["polyDfDir"]]
 
     surveyDirPath = file.path("inputs_raw/survey_rasters/", surveyDir)
+    surveyPolysDfPath = file.path("inputs_raw/polygons/", polyDfDir, "custom_poly_df.gpkg")
 
     surveyRasterPaths = list.files(surveyDirPath, full.names = TRUE)
 
-    polygonPaths = list.files("../inputs/inputs_raw/masks/", full.names=T)
-
-    # Masks out path
-    outPathMasks = file.path(dirname(outDir), "masks")
-    dir.create(outPathMasks, showWarnings = FALSE)
-
+    # Crop survey rasters
     for(surveyRasterPath in surveyRasterPaths){
-
+        
         print(surveyRasterPath)
         
-        # Build out path
-        fileName = strsplit(basename(surveyRasterPath), "[.]")[[1]][[1]]
-        surveyRasterPathOut = file.path(outDir, paste0(fileName, ".asc"))
-
+        surveyRasterFileName = tools::file_path_sans_ext(basename(surveyRasterPath))
+        
+        surveyRasterPathOut = file.path(outDir, paste0(surveyRasterFileName, ".asc"))
+        
         # Process
-        surveyRasterOut = processRaster(
+        utils$processRaster(
             rasterPath = surveyRasterPath,
             extentVec = extentVec,
             cropBool = cropBool,
             pathOut = surveyRasterPathOut
         )
 
-        # Build survey index dfs
-        indexDf = extractIndex(surveyRasterOut)
-        outIndexPath = file.path(outPathMasks, gsub(".tif", ".csv", basename(surveyRasterPath)))
-        write.csv(indexDf, outIndexPath, row.names = F)
-
-        thisRasterYear = gsub("_raster_total.tif", "", basename(surveyRasterPath))
-
-        # Build indexes for poly mask
-        for(thisPolygonPath in polygonPaths){
-        
-            print(thisPolygonPath)
-        
-            thisPolygonName = basename(thisPolygonPath)
-            thisPolygonStr = gsub(".rds", "", thisPolygonName)
-        
-            thisPolygon = readRDS(thisPolygonPath)
-        
-            thisPolyRaster = raster::mask(surveyRasterOut, thisPolygon, updateValue=0)
-            thisPolyIndexDf = extractIndex(thisPolyRaster)
-        
-            outPolyIndexPath = file.path(outPathMasks, paste0(thisRasterYear, "_", thisPolygonStr, ".csv"))
-            write.csv(thisPolyIndexDf, outPolyIndexPath, row.names = F)
-            
-        }
-        
     }
+
+    # Build indexes for cropped survey rasters
+    surveyRasterDir = outDir
+    polyDfPath = surveyPolysDfPath
+    outIndexDir = file.path(dirname(configPath), "survey_poly_index")
+
+    dir.create(outIndexDir, showWarnings = FALSE, recursive = TRUE)
+
+    utils$genPolyIndex(
+        surveyRasterDir=surveyRasterDir,
+        polyDfPath=polyDfPath,
+        outIndexDir=outIndexDir
+    )
 
 }
 
