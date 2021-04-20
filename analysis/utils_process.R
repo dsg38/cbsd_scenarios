@@ -1,4 +1,3 @@
-
 extractManagementDf = function(thisManagementDf, thisManagementPath, thisBatch, thisJob){
 
     box::use(utils[...])
@@ -51,7 +50,7 @@ aggregateManagementResults = function(simDir, stackedOutPath){
         print(paste0("Progress: ", jobCount/numJobs * 100, "%"))
         
         thisJob = basename(thisJobDir)
-        print(thisJobDir)        
+        print(thisJobDir)
         managementPaths = list.files(thisJobDir, pattern="O_.*_Management_SurveyResults_Time_.*.000000.txt", full.names = T, recursive = T)
         
         for(thisManagementPath in managementPaths){
@@ -93,3 +92,184 @@ aggregateManagementResults = function(simDir, stackedOutPath){
 
 }
 
+#' @export
+extractPolygonStats = function(stackedDfPath, surveyMappingPath, indexDir, summaryOutPath){
+
+    box::use(utils[...])
+
+    dir.create(dirname(summaryOutPath), recursive=T, showWarnings=F)
+
+    stackedDfRaw = readRDS(stackedDfPath)
+    aggLocKey = paste0(stackedDfRaw$X, "_", stackedDfRaw$Y)
+    aggSimKey = paste0(stackedDfRaw$batch, "_", stackedDfRaw$job, "_", stackedDfRaw$jobSim)
+    stackedDf = cbind(stackedDfRaw, locKey=aggLocKey, simKey=aggSimKey)
+
+    surveyMapping = rjson::fromJSON(file=surveyMappingPath)
+
+    outCols = c(
+    "batch",
+    "job",
+    "jobSim",
+    "simYear",
+    "simKey",
+    "Kernel_0_Parameter",
+    "Kernel_0_WithinCellProportion",
+    "Rate_0_Sporulation"
+    )
+
+    simYears = unique(stackedDf$simYear)
+
+    maskList = list()
+    for(thisSimYear in simYears){
+
+    print(thisSimYear)
+    
+    thisRasterName = surveyMapping[[as.character(thisSimYear)]]
+    thisSurveyDataYear = gsub("_raster_total.asc", "", thisRasterName)
+    thisYearMaskDfPaths = list.files(indexDir, thisSurveyDataYear, full.names = T)
+    
+    for(thisYearMaskDfPath in thisYearMaskDfPaths){
+
+        polyName = gsub(".csv", "", basename(thisYearMaskDfPath))
+        polySuffix = gsub(paste0(thisSurveyDataYear, "_"), "", polyName)
+        
+        thisIndexDfRaw = read.csv(thisYearMaskDfPath)
+        
+        if(nrow(thisIndexDfRaw) > 0){
+
+        indexLocKey = paste0(thisIndexDfRaw$X, "_", thisIndexDfRaw$Y)
+        thisIndexDf = cbind(thisIndexDfRaw, locKey=indexLocKey)
+        
+        maskList[[thisYearMaskDfPath]] = list()
+        maskList[[thisYearMaskDfPath]][["df"]] = thisIndexDf
+        maskList[[thisYearMaskDfPath]][["polyName"]] = polyName
+        maskList[[thisYearMaskDfPath]][["polySuffix"]] = polySuffix
+        maskList[[thisYearMaskDfPath]][["thisSimYear"]] = thisSimYear
+        maskList[[thisYearMaskDfPath]][["thisSurveyDataYear"]] = thisSurveyDataYear
+
+        }
+    }
+    }
+
+    # --------------------
+
+    mergedDfList = list()
+
+    for(thisYearMaskDfPath in names(maskList)){
+    
+    print(thisYearMaskDfPath)
+    
+    thisYearMaskDf = maskList[[thisYearMaskDfPath]][["df"]]
+    polyName = maskList[[thisYearMaskDfPath]][["polyName"]]
+    polySuffix = maskList[[thisYearMaskDfPath]][["polySuffix"]]
+    thisSimYear = maskList[[thisYearMaskDfPath]][["thisSimYear"]]
+    thisSurveyDataYear = maskList[[thisYearMaskDfPath]][["thisSurveyDataYear"]]
+
+    matchYear = stackedDf$simYear==thisSimYear
+    matchMask = stackedDf$locKey%in%thisYearMaskDf$locKey
+    
+    thisAggSubsetDf = stackedDf[matchYear&matchMask,]
+    
+    nSurveyedAll = stats::aggregate(thisAggSubsetDf$NHostsSurveyed, by=list(simKey=thisAggSubsetDf$simKey), FUN=sum)
+    nPosAll = stats::aggregate(thisAggSubsetDf$NHostsSurveyDetections, by=list(simKey=thisAggSubsetDf$simKey), FUN=sum)
+    
+    thisMergedDf = dplyr::left_join(nSurveyedAll, nPosAll, by="simKey")
+    colnames(thisMergedDf) = c("simKey", "nSurveyed", "nPos")
+    
+    thisMergedDf = cbind(
+        thisMergedDf,
+        infProp = thisMergedDf$nPos / thisMergedDf$nSurveyed,
+        simYear=thisSimYear,
+        polyName=polyName,
+        polySuffix=polySuffix,
+        surveyDataYear=thisSurveyDataYear
+    )
+    
+    mergedDfList[[thisYearMaskDfPath]] = thisMergedDf
+
+    }
+
+    mergedDf = dplyr::bind_rows(mergedDfList)
+
+    # -----------------------------------
+
+    allAggKeepCols = stackedDf[,outCols]
+    uniqueAggDf = dplyr::distinct(allAggKeepCols)
+
+    outDf = dplyr::full_join(mergedDf, uniqueAggDf, by=c("simKey", "simYear"))
+
+    outDfDrop = outDf[!is.na(outDf$polyName),]
+
+    saveRDS(outDfDrop, summaryOutPath)
+
+}
+
+
+#' @export
+dropIncompleteSims = function(
+    resPath, 
+    outPath, 
+    indexDir
+    ){
+
+    box::use(utils[...])
+
+    # Parse expected survey years for each poly
+    indexPaths = list.files(indexDir, recursive = TRUE, full.names = TRUE)
+
+    polyYearList = list()
+    for(thisIndexPath in indexPaths){
+        
+        thisIndexDf = read.csv(thisIndexPath)    
+        
+        if(nrow(thisIndexDf) > 0){
+            splitName = strsplit(tools::file_path_sans_ext(basename(thisIndexPath)), "_")[[1]]
+            
+            surveyYear = as.numeric(splitName[[1]])
+            polySuffix = paste0(splitName[2:length(splitName)], collapse = "_")
+            
+            polyYearList[[polySuffix]] = c(polyYearList[[polySuffix]], surveyYear)
+            
+        }
+        
+    }
+
+    # --------------------------------------------------------------------------
+
+    resDf = readRDS(resPath)
+
+    brokenSimsVec = c()
+    fullSims = c()
+    for(thisSimKey in unique(resDf$simKey)){
+        
+        for(thisPolySuffix in names(polyYearList)){
+            
+            thisDf = resDf[resDf$simKey==thisSimKey&resDf$polySuffix==thisPolySuffix,]
+            
+            targetYears = polyYearList[[thisPolySuffix]]
+            
+            passAll = all(targetYears %in% unique(thisDf$surveyDataYear))
+            
+            if(passAll){
+                
+                fullSims = c(fullSims, thisSimKey)
+                
+            }else{
+                
+                brokenSimsVec = c(brokenSimsVec, thisSimKey)
+                
+            }
+            
+        }
+        
+    }
+
+    brokenSims = unique(brokenSimsVec)
+
+    print(paste0("Dropping: ", length(brokenSims)))
+
+    fixedDf = resDf[resDf$simKey%in%fullSims,]
+
+    saveRDS(fixedDf, outPath)
+
+}
