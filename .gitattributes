@@ -1,1 +1,4 @@
 inputs/inputs_scenarios/2021_03_17_cross_continental/inputs/L_0_HOSTDENSITY.txt filter=lfs diff=lfs merge=lfs -text
+inputs/process_polys/cassava_host_poly_stats/stats_custom_level2.gpkg filter=lfs diff=lfs merge=lfs -text
+inputs/process_polys/cassava_host_poly_stats/stats_level2.gpkg filter=lfs diff=lfs merge=lfs -text
+inputs/process_polys/gadm36_levels_gpkg/gadm36_level2_africa.gpkg filter=lfs diff=lfs merge=lfs -text

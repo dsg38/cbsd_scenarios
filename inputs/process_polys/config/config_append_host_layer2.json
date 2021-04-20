@@ -1,0 +1,8 @@
+{
+    "polyDfPathVec": [
+        "analysis/polygons/gadm36_levels_gpkg/gadm36_level2_africa.gpkg",
+        "analysis/polygons/custom_polys/custom_poly_df.gpkg"
+    ],
+    "hostRasterPath": "inputs/inputs_raw/host_landscape/default/host.tif",
+    "polyDfPathOut": "analysis/polygons/cassava_host_poly_stats/stats_custom_level2.gpkg"
+}
