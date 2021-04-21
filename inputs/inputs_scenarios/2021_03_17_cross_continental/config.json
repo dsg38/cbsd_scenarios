@@ -4,5 +4,15 @@
         "KEN",
         "SEN"
     ],
-    "processSurvey": "real_world"
+    "processHost": "default",
+    "processInit": "uganda_2005",
+    "processSurvey": {
+        "surveyDir": "real_world",
+        "polyDfDir": "polys_0"
+    },
+    "processVector": "default",
+    "copyGeneralFiles": {
+        "P_WeatherSwitchTimes_IS.txt": "P_WeatherSwitchTimes.txt",
+        "surveyTiming.json": "surveyTiming.json"
+    }
 }

@@ -107,14 +107,14 @@ extractPolygonStats = function(stackedDfPath, surveyMappingPath, indexDir, summa
     surveyMapping = rjson::fromJSON(file=surveyMappingPath)
 
     outCols = c(
-    "batch",
-    "job",
-    "jobSim",
-    "simYear",
-    "simKey",
-    "Kernel_0_Parameter",
-    "Kernel_0_WithinCellProportion",
-    "Rate_0_Sporulation"
+        "batch",
+        "job",
+        "jobSim",
+        "simYear",
+        "simKey",
+        "Kernel_0_Parameter",
+        "Kernel_0_WithinCellProportion",
+        "Rate_0_Sporulation"
     )
 
     simYears = unique(stackedDf$simYear)
@@ -122,33 +122,33 @@ extractPolygonStats = function(stackedDfPath, surveyMappingPath, indexDir, summa
     maskList = list()
     for(thisSimYear in simYears){
 
-    print(thisSimYear)
-    
-    thisRasterName = surveyMapping[[as.character(thisSimYear)]]
-    thisSurveyDataYear = gsub("_raster_total.asc", "", thisRasterName)
-    thisYearMaskDfPaths = list.files(indexDir, thisSurveyDataYear, full.names = T)
-    
-    for(thisYearMaskDfPath in thisYearMaskDfPaths){
-
-        polyName = gsub(".csv", "", basename(thisYearMaskDfPath))
-        polySuffix = gsub(paste0(thisSurveyDataYear, "_"), "", polyName)
+        print(thisSimYear)
         
-        thisIndexDfRaw = read.csv(thisYearMaskDfPath)
+        thisRasterName = surveyMapping[[as.character(thisSimYear)]]
+        thisSurveyDataYear = gsub("_raster_total.asc", "", thisRasterName)
+        thisYearMaskDfPaths = list.files(indexDir, thisSurveyDataYear, full.names = T)
         
-        if(nrow(thisIndexDfRaw) > 0){
+        for(thisYearMaskDfPath in thisYearMaskDfPaths){
 
-        indexLocKey = paste0(thisIndexDfRaw$X, "_", thisIndexDfRaw$Y)
-        thisIndexDf = cbind(thisIndexDfRaw, locKey=indexLocKey)
-        
-        maskList[[thisYearMaskDfPath]] = list()
-        maskList[[thisYearMaskDfPath]][["df"]] = thisIndexDf
-        maskList[[thisYearMaskDfPath]][["polyName"]] = polyName
-        maskList[[thisYearMaskDfPath]][["polySuffix"]] = polySuffix
-        maskList[[thisYearMaskDfPath]][["thisSimYear"]] = thisSimYear
-        maskList[[thisYearMaskDfPath]][["thisSurveyDataYear"]] = thisSurveyDataYear
+            polyName = gsub(".csv", "", basename(thisYearMaskDfPath))
+            polySuffix = gsub(paste0(thisSurveyDataYear, "_"), "", polyName)
+            
+            thisIndexDfRaw = read.csv(thisYearMaskDfPath)
+            
+            if(nrow(thisIndexDfRaw) > 0){
 
+                indexLocKey = paste0(thisIndexDfRaw$X, "_", thisIndexDfRaw$Y)
+                thisIndexDf = cbind(thisIndexDfRaw, locKey=indexLocKey)
+                
+                maskList[[thisYearMaskDfPath]] = list()
+                maskList[[thisYearMaskDfPath]][["df"]] = thisIndexDf
+                maskList[[thisYearMaskDfPath]][["polyName"]] = polyName
+                maskList[[thisYearMaskDfPath]][["polySuffix"]] = polySuffix
+                maskList[[thisYearMaskDfPath]][["thisSimYear"]] = thisSimYear
+                maskList[[thisYearMaskDfPath]][["thisSurveyDataYear"]] = thisSurveyDataYear
+
+            }
         }
-    }
     }
 
     # --------------------
@@ -156,36 +156,36 @@ extractPolygonStats = function(stackedDfPath, surveyMappingPath, indexDir, summa
     mergedDfList = list()
 
     for(thisYearMaskDfPath in names(maskList)){
-    
-    print(thisYearMaskDfPath)
-    
-    thisYearMaskDf = maskList[[thisYearMaskDfPath]][["df"]]
-    polyName = maskList[[thisYearMaskDfPath]][["polyName"]]
-    polySuffix = maskList[[thisYearMaskDfPath]][["polySuffix"]]
-    thisSimYear = maskList[[thisYearMaskDfPath]][["thisSimYear"]]
-    thisSurveyDataYear = maskList[[thisYearMaskDfPath]][["thisSurveyDataYear"]]
+        
+        print(thisYearMaskDfPath)
+        
+        thisYearMaskDf = maskList[[thisYearMaskDfPath]][["df"]]
+        polyName = maskList[[thisYearMaskDfPath]][["polyName"]]
+        polySuffix = maskList[[thisYearMaskDfPath]][["polySuffix"]]
+        thisSimYear = maskList[[thisYearMaskDfPath]][["thisSimYear"]]
+        thisSurveyDataYear = maskList[[thisYearMaskDfPath]][["thisSurveyDataYear"]]
 
-    matchYear = stackedDf$simYear==thisSimYear
-    matchMask = stackedDf$locKey%in%thisYearMaskDf$locKey
-    
-    thisAggSubsetDf = stackedDf[matchYear&matchMask,]
-    
-    nSurveyedAll = stats::aggregate(thisAggSubsetDf$NHostsSurveyed, by=list(simKey=thisAggSubsetDf$simKey), FUN=sum)
-    nPosAll = stats::aggregate(thisAggSubsetDf$NHostsSurveyDetections, by=list(simKey=thisAggSubsetDf$simKey), FUN=sum)
-    
-    thisMergedDf = dplyr::left_join(nSurveyedAll, nPosAll, by="simKey")
-    colnames(thisMergedDf) = c("simKey", "nSurveyed", "nPos")
-    
-    thisMergedDf = cbind(
-        thisMergedDf,
-        infProp = thisMergedDf$nPos / thisMergedDf$nSurveyed,
-        simYear=thisSimYear,
-        polyName=polyName,
-        polySuffix=polySuffix,
-        surveyDataYear=thisSurveyDataYear
-    )
-    
-    mergedDfList[[thisYearMaskDfPath]] = thisMergedDf
+        matchYear = stackedDf$simYear==thisSimYear
+        matchMask = stackedDf$locKey%in%thisYearMaskDf$locKey
+        
+        thisAggSubsetDf = stackedDf[matchYear&matchMask,]
+        
+        nSurveyedAll = stats::aggregate(thisAggSubsetDf$NHostsSurveyed, by=list(simKey=thisAggSubsetDf$simKey), FUN=sum)
+        nPosAll = stats::aggregate(thisAggSubsetDf$NHostsSurveyDetections, by=list(simKey=thisAggSubsetDf$simKey), FUN=sum)
+        
+        thisMergedDf = dplyr::left_join(nSurveyedAll, nPosAll, by="simKey")
+        colnames(thisMergedDf) = c("simKey", "nSurveyed", "nPos")
+        
+        thisMergedDf = cbind(
+            thisMergedDf,
+            infProp = thisMergedDf$nPos / thisMergedDf$nSurveyed,
+            simYear=thisSimYear,
+            polyName=polyName,
+            polySuffix=polySuffix,
+            surveyDataYear=thisSurveyDataYear
+        )
+        
+        mergedDfList[[thisYearMaskDfPath]] = thisMergedDf
 
     }
 
