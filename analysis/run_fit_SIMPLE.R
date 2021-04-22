@@ -3,8 +3,7 @@ library(ggfan)
 
 resultsDir = "./results/2021_03_26_cross_continental/2021_03_29_batch_0/"
 
-resultsDfRaw = readRDS(file.path(resultsDir, "results_summary_fixed_TARGET.rds"))
-resultsDf = resultsDfRaw[!(resultsDfRaw$surveyDataYear==2016 & resultsDfRaw$polySuffix=="mask_uga_hole"),]
+resultsDf = readRDS(file.path(resultsDir, "results_summary_fixed_TARGET.rds"))
 
 # --------------------------------------
 
@@ -122,7 +121,7 @@ progressDf = read.csv("../../stuff.csv")
 
 notDoneDf = progressDf[progressDf$dpcLastSimTime!=2050,]
 
-notDoneDf$jobName %in% passKeysAll
+notDoneDf$jobName[notDoneDf$jobName %in% passDfAll$job]
 
 
 
