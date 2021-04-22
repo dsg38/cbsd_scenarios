@@ -273,3 +273,143 @@ dropIncompleteSims = function(
     saveRDS(fixedDf, outPath)
 
 }
+
+
+#' @export
+appendSurveyDataTargetData = function(
+    surveyDfPath,
+    scenarioInputsDir,
+    surveyPolyStatsDir,
+    outPath
+){
+
+    box::use(utils[...])
+
+    surveyDf = readRDS(surveyDfPath)
+
+    statsPaths = list.files(surveyPolyStatsDir, "mask", full.names = T)
+
+    statsList = list()
+    for(thisStatsPath in statsPaths){
+
+        thisMask = gsub(".csv", "", basename(thisStatsPath))
+
+        statsList[[thisMask]] = list()
+
+        thisStatsDf = read.csv(thisStatsPath)
+        for(iRow in seq_len(nrow(thisStatsDf))){
+            
+            thisYear = thisStatsDf[iRow,"year"]  
+            thisInfProp = thisStatsDf[iRow,"propPos"]
+            
+            statsList[[thisMask]][[as.character(thisYear)]] = thisInfProp
+            
+        }
+
+    }
+
+    numSurveyRows = nrow(surveyDf)
+    targetVals = rep(NA, numSurveyRows)
+
+    for(iRow in seq_len(numSurveyRows)){
+        
+        if(iRow%%10000==0){
+            progressNum = round(iRow/numSurveyRows * 100, 2)
+            print(paste0("Progress: ", progressNum, "%"))
+        }
+        
+        surveyYear = as.character(surveyDf[iRow,"surveyDataYear"])
+        targetMask = surveyDf[iRow,"polySuffix"]
+        
+        targetVal = statsList[[targetMask]][[surveyYear]]
+        
+        if(!is.null(targetVal)){
+            targetVals[iRow] =  targetVal  
+        }
+
+    }
+
+    targetDiff = surveyDf$infProp - targetVals
+
+    outDf = cbind(
+        surveyDf, 
+        targetVal=targetVals, 
+        targetDiff=targetDiff
+    )
+
+    saveRDS(outDf, outPath)
+
+}
+
+#' @export
+parseLaunchScript = function(launchScriptPath){
+    
+    lines = readLines(launchScriptPath)
+    
+    for(line in lines){
+        if(grepl("-o ", line)){
+            outputDirLine = line
+        }
+        
+        if(grepl("--landscapefolder", line)){
+            inputsDirLine = line
+        }
+    }
+    
+    stopifnot(exists("outputDirLine"), exists("inputsDirLine"))
+    
+    outputDir = strsplit(outputDirLine, "\"")[[1]][[2]]
+    
+    outputDirParts = strsplit(outputDir, "/")[[1]]
+    
+    batch = dplyr::nth(outputDirParts, -1)
+    scenario = dplyr::nth(outputDirParts, -2)
+    
+    # -----------------------------------
+    
+    inputsDir = strsplit(inputsDirLine, "\"")[[1]][[2]]
+    inputsDirParts = strsplit(inputsDir, "/")[[1]]
+    
+    inputsDirPartsHere = c()
+    for(i in -4:-2){
+        inputsDirPartsHere = c(inputsDirPartsHere, dplyr::nth(inputsDirParts, i))
+    }
+    
+    inputsDirHere = here::here(paste0(inputsDirPartsHere, collapse = "/"))
+    
+    outList = list(
+        batch=batch,
+        scenario=scenario,
+        inputsDir=inputsDirHere
+    )
+    
+    return(outList)
+    
+}
+
+#' @export
+parseScenarioConfig = function(
+    inputsDir
+){
+    
+    # Parse config / work out polys
+    scenarioConfigPath = here::here(inputsDir, "config.json")
+    
+    scenarioConfig = rjson::fromJSON(file=scenarioConfigPath)
+    
+    surveyBool = "processSurvey" %in% names(scenarioConfig)
+    
+    surveyPolyStatsDir = NULL
+    if(surveyBool){
+        
+        surveyPolyStatsDir = here::here("inputs/inputs_raw/survey_rasters", scenarioConfig[["processSurvey"]][["surveyDir"]], "poly_stats", scenarioConfig[["processSurvey"]][["polyDfDir"]])
+        
+    }
+    
+    outList = list(
+        surveyBool=surveyBool,
+        surveyPolyStatsDir=surveyPolyStatsDir
+    )
+    
+    return(outList)
+}

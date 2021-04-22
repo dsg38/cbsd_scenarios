@@ -127,9 +127,9 @@ genPolyIndex = function(
 
             outPolyIndexPath = file.path(outIndexDir, paste0(year, "_", thisPolygonStr, ".csv"))
 
-            # Only write out if any survey points in poly
-            if(nrow(thisPolyIndexDf)>0){
-    
+            # NB: Only write out if GREATER THAN 1 survey points in poly
+            if(nrow(thisPolyIndexDf)>1){
+ 
                 write.csv(thisPolyIndexDf, outPolyIndexPath, row.names = F)
 
             }

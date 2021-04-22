@@ -1,11 +1,12 @@
 library(ggplot2)
 library(ggfan)
 
-resultsDir = "./results/2021_03_17_cross_continental/2021_03_18_batch_0/"
+resultsDir = "./results/2021_03_26_cross_continental/2021_03_29_batch_0/"
 
 resultsDfRaw = readRDS(file.path(resultsDir, "results_summary_fixed_TARGET.rds"))
-# DROP 2016
-resultsDf = resultsDfRaw[resultsDfRaw$surveyDataYear!=2016,]
+resultsDf = resultsDfRaw[!(resultsDfRaw$surveyDataYear==2016 & resultsDfRaw$polySuffix=="mask_uga_hole"),]
+
+# --------------------------------------
 
 drcNameOptions = c(
     "2017_mask_drc_central_small",
@@ -103,30 +104,40 @@ getUgaPassKeys = function(resultsDf, tolerance){
 }
 
 tolerance = 0.3
-passKeysUga = getUgaPassKeys(resultsDf, tolerance)
+passKeysAll = getUgaPassKeys(resultsDf, tolerance)
 
 # Which meet DRC and UGA requirements?
-passKeysAll = passKeysUga[passKeysUga %in% passDfDrc$simKey]
-
+# passKeysAll = passKeysUga[passKeysUga %in% passDfDrc$simKey]
+# 
 passDfAll = resultsDf[resultsDf$simKey%in%passKeysAll,]
 
-passDfAllDrc = passDfAll[passDfAll$polyName=="2017_mask_drc_central_small",]
+length(unique(passDfAll$simKey))
+# 
+# passDfAllDrc = passDfAll[passDfAll$polyName=="2017_mask_drc_central_small",]
+
+
 
 # Which have finished?
-progressDf = read.csv("../simulations/progress.csv")
+progressDf = read.csv("../../stuff.csv")
 
-yearVec = c()
-for(thisJob in passDfAllDrc$job){
+notDoneDf = progressDf[progressDf$dpcLastSimTime!=2050,]
 
-    thisYear = progressDf[progressDf$job==thisJob,"year"]
-    yearVec = c(yearVec, thisYear)
-}
+notDoneDf$jobName %in% passKeysAll
 
-finalDf = cbind(passDfAllDrc, simLastYear=yearVec)
 
-wankDf = finalDf[finalDf$simLastYear>2040,]
 
-wankDf$job
+# yearVec = c()
+# for(thisJob in passDfAllDrc$job){
+# 
+#     thisYear = progressDf[progressDf$job==thisJob,"year"]
+#     yearVec = c(yearVec, thisYear)
+# }
+# 
+# finalDf = cbind(passDfAllDrc, simLastYear=yearVec)
+# 
+# wankDf = finalDf[finalDf$simLastYear>2040,]
+# 
+# wankDf$job
 
 # finishedDf = progressDf[progressDf$year==2050,]
 # 
