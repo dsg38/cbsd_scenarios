@@ -19,4 +19,4 @@ for batchDfPath in batchPathList:
     restartDict = {**restartDict, **thisRestartDict}
 
 
-utils_parse.writeDictToJson(restartDict, "stuff.json")
+utils_parse.writeDictToJson(restartDict, './relaunch_specs/2021_03_26_cross_continental_0.json')

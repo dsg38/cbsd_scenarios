@@ -2,16 +2,16 @@ import utils_parse
 from pathlib import Path
 import pandas as pd
 
-restartJsonPathStr = './stuff.json'
+relaunchJsonPathStr = './relaunch_specs/2021_03_26_cross_continental_0.json'
 paramsTemplateDfPathStr = '../launch/2021_03_17_cross_continental_params.txt'
 
 paramsDfOutPath = Path('../launch/2021_04_26_cross_continental_restart_params.txt')
 
 # ----------------------------------------------------
-restartJsonPath = Path(restartJsonPathStr)
+relaunchJsonPath = Path(relaunchJsonPathStr)
 paramsTemplateDfPath = Path(paramsTemplateDfPathStr)
 
-restartDict = utils_parse.readJsonToDict(restartJsonPath)
+restartDict = utils_parse.readJsonToDict(relaunchJsonPath)
 paramsTemplateDf = pd.read_csv(paramsTemplateDfPath, delim_whitespace=True)
 
 if paramsTemplateDf.shape[0] != 1:
