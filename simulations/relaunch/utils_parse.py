@@ -81,3 +81,9 @@ def writeDictToJson(myDict, dictPath):
     dictJson = json.dumps(myDict, ensure_ascii=False, indent=4)
     with open(dictPath, 'w') as f:
         f.write(dictJson)
+
+def readJsonToDict(dictPath) -> dict:
+    with open(dictPath, 'r') as f:
+        myDict = json.load(f)
+    
+    return myDict

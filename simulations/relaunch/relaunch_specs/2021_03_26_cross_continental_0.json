@@ -1,0 +1,123 @@
+{
+    "2021_03_26_cross_continental/2021_03_26_batch_0/job9": {
+        "scenarioName": "2021_03_26_cross_continental",
+        "batchName": "2021_03_26_batch_0",
+        "jobName": "job9",
+        "params": {
+            "RNGSeed": "2403016377",
+            "Kernel_0_Parameter": 2.817390328059,
+            "Kernel_0_WithinCellProportion": 0.099383396171,
+            "Rate_0_Sporulation": 235.383762501939
+        }
+    },
+    "2021_03_26_cross_continental/2021_03_29_batch_0/job783": {
+        "scenarioName": "2021_03_26_cross_continental",
+        "batchName": "2021_03_29_batch_0",
+        "jobName": "job783",
+        "params": {
+            "RNGSeed": "822255968",
+            "Kernel_0_Parameter": 3.43951227481,
+            "Kernel_0_WithinCellProportion": 0.172531078872,
+            "Rate_0_Sporulation": 275.536725208368
+        }
+    },
+    "2021_03_26_cross_continental/2021_03_29_batch_0/job784": {
+        "scenarioName": "2021_03_26_cross_continental",
+        "batchName": "2021_03_29_batch_0",
+        "jobName": "job784",
+        "params": {
+            "RNGSeed": "448054092",
+            "Kernel_0_Parameter": 2.802240867913,
+            "Kernel_0_WithinCellProportion": 0.09529828832,
+            "Rate_0_Sporulation": 237.38503978229
+        }
+    },
+    "2021_03_26_cross_continental/2021_03_29_batch_0/job443": {
+        "scenarioName": "2021_03_26_cross_continental",
+        "batchName": "2021_03_29_batch_0",
+        "jobName": "job443",
+        "params": {
+            "RNGSeed": "4056955853",
+            "Kernel_0_Parameter": 2.800426138155,
+            "Kernel_0_WithinCellProportion": 0.094369454733,
+            "Rate_0_Sporulation": 227.097893718443
+        }
+    },
+    "2021_03_26_cross_continental/2021_03_29_batch_0/job785": {
+        "scenarioName": "2021_03_26_cross_continental",
+        "batchName": "2021_03_29_batch_0",
+        "jobName": "job785",
+        "params": {
+            "RNGSeed": "598105462",
+            "Kernel_0_Parameter": 3.689361930639,
+            "Kernel_0_WithinCellProportion": 0.045741696479,
+            "Rate_0_Sporulation": 473.759421695894
+        }
+    },
+    "2021_03_26_cross_continental/2021_03_29_batch_0/job815": {
+        "scenarioName": "2021_03_26_cross_continental",
+        "batchName": "2021_03_29_batch_0",
+        "jobName": "job815",
+        "params": {
+            "RNGSeed": "3136644005",
+            "Kernel_0_Parameter": 2.811720254822,
+            "Kernel_0_WithinCellProportion": 0.092019429542,
+            "Rate_0_Sporulation": 236.214744819667
+        }
+    },
+    "2021_03_26_cross_continental/2021_03_29_batch_0/job787": {
+        "scenarioName": "2021_03_26_cross_continental",
+        "batchName": "2021_03_29_batch_0",
+        "jobName": "job787",
+        "params": {
+            "RNGSeed": "2366783762",
+            "Kernel_0_Parameter": 3.684948099232,
+            "Kernel_0_WithinCellProportion": 0.054513825891,
+            "Rate_0_Sporulation": 473.76061959537
+        }
+    },
+    "2021_03_26_cross_continental/2021_03_29_batch_0/job680": {
+        "scenarioName": "2021_03_26_cross_continental",
+        "batchName": "2021_03_29_batch_0",
+        "jobName": "job680",
+        "params": {
+            "RNGSeed": "629788831",
+            "Kernel_0_Parameter": 2.814395827106,
+            "Kernel_0_WithinCellProportion": 0.098878737404,
+            "Rate_0_Sporulation": 235.367633274503
+        }
+    },
+    "2021_03_26_cross_continental/2021_03_29_batch_0/job896": {
+        "scenarioName": "2021_03_26_cross_continental",
+        "batchName": "2021_03_29_batch_0",
+        "jobName": "job896",
+        "params": {
+            "RNGSeed": "1758203859",
+            "Kernel_0_Parameter": 3.638221454765,
+            "Kernel_0_WithinCellProportion": 0.254210908036,
+            "Rate_0_Sporulation": 350.535631890465
+        }
+    },
+    "2021_03_26_cross_continental/2021_03_29_batch_0/job781": {
+        "scenarioName": "2021_03_26_cross_continental",
+        "batchName": "2021_03_29_batch_0",
+        "jobName": "job781",
+        "params": {
+            "RNGSeed": "4182979307",
+            "Kernel_0_Parameter": 3.154312829957,
+            "Kernel_0_WithinCellProportion": 0.194956635814,
+            "Rate_0_Sporulation": 250.190366506827
+        }
+    },
+    "2021_03_26_cross_continental/2021_03_29_batch_0/job782": {
+        "scenarioName": "2021_03_26_cross_continental",
+        "batchName": "2021_03_29_batch_0",
+        "jobName": "job782",
+        "params": {
+            "RNGSeed": "591331869",
+            "Kernel_0_Parameter": 3.382071488914,
+            "Kernel_0_WithinCellProportion": 0.094832087327,
+            "Rate_0_Sporulation": 324.254581718367
+        }
+    }
+}
