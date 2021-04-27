@@ -1,7 +1,5 @@
 from pathlib import Path
 import utils_parse
-import natsort
-import utils_parse
 import filecmp
 
 relaunchJsonPathStr = './relaunch_specs/2021_03_26_cross_continental_0.json'
@@ -20,26 +18,54 @@ relaunchDict = utils_parse.readJsonToDict(relaunchJsonPathStr)
 relaunchBatchPath = Path(relaunchBatchPathStr)
 
 # NB: These should be ordered same as dict
-jobDirsNew = natsort.natsorted(list(relaunchBatchPath.glob('job*')))
+jobDirsNew = list(relaunchBatchPath.glob('job*'))
 
-relaunchKeys = list(relaunchDict.keys())
+# Parse rand seed from old/new
+randSeedDictNew = {}
+for jobDirNew in jobDirsNew:
+
+    masterPath = jobDirNew / 'output/runfolder0/M_MASTER.txt'
+
+    masterDict = utils_parse.parseMaster(masterPath)
+
+    randSeedDictNew[masterDict['RNGSeed']] = jobDirNew
+
+
+randSeedDictOld = {}
+for k, v in relaunchDict.items():
+    
+    # jobDirOld = simOutputPath / k
+
+    randSeed = v['params']['RNGSeed']
+
+    randSeedDictOld[randSeed] = k
+
+# Find matches
+matchPathDict = {}
+for k, v in randSeedDictNew.items():
+
+    if k in randSeedDictOld:
+
+        matchPathDict[v] = randSeedDictOld[k]
+
+
+print("PROP MATCH OUT OF TOTAL:")
+print(str(len(matchPathDict) / len(randSeedDictOld)))
 
 diffDict = {}
-for i in range(len(relaunchKeys)):
+for jobDirNew, jobStrOld in matchPathDict.items():
 
-    relaunchKey = relaunchKeys[i]
-    diffDict[relaunchKey] = {}
+    diffDict[jobStrOld] = {}
 
-    print(relaunchKey)
+    jobDirOld = simOutputPath / jobStrOld
+    oldJobData = relaunchDict[jobStrOld]
 
-    oldJobData = relaunchDict[relaunchKey]
-    jobDirNew: Path = jobDirsNew[i] / 'output/runfolder0'
-
-    jobDirOld: Path = simOutputPath / relaunchKey / 'output/runfolder0'
+    jobDirOldFull = jobDirOld / 'output/runfolder0'
+    jobDirNewFull = jobDirNew / 'output/runfolder0'
 
     # List all files
-    filepathsOld = list(jobDirOld.iterdir())
-    filepathsNew = list(jobDirNew.iterdir())
+    filepathsOld = list(jobDirOldFull.iterdir())
+    filepathsNew = list(jobDirNewFull.iterdir())
 
     filenamesOld = set([x.name for x in filepathsOld])
     filenamesNew = set([x.name for x in filepathsNew])
@@ -56,10 +82,10 @@ for i in range(len(relaunchKeys)):
 
         print(thisFilename)
 
-        thisFilenameOld = jobDirOld / thisFilename
-        thisFilenameNew = jobDirNew / thisFilename
+        thisFilenameOld = jobDirOldFull / thisFilename
+        thisFilenameNew = jobDirNewFull / thisFilename
 
         matchBool = filecmp.cmp(thisFilenameOld, thisFilenameNew)
-        diffDict[relaunchKey][thisFilename] = matchBool
+        diffDict[jobStrOld][thisFilename] = matchBool
 
-utils_parse.writeDictToJson(diffDict, "check.py")
+utils_parse.writeDictToJson(diffDict, "check.json")
