@@ -62,8 +62,6 @@ resultsDfDropSurvey = utils_process$dropIncompleteSimsSimSurvey(
     indexDir=indexDir
 )
 
-saveRDS(resultsDfDropSurvey, file.path(resultsDir, "test.rds"))
-
 # ----------------------------------------------
 # Drop any sims that haven't finished (based on progress.csv per batch)
 resultsDfDropSim = utils_process$dropSimsNotFinished(
