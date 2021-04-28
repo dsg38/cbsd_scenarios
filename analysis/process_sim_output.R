@@ -30,10 +30,10 @@ surveyMappingPath = file.path(simInputsDir, "surveyTiming.json")
 
 # ----------------------------------------------
 
-summaryOutPath = file.path(resultsDir, "results_summary.rds")
-stackedOutPath = file.path(resultsDir, "management_stacked.rds")
-fixedOutPath = file.path(resultsDir, "results_summary_fixed.rds")
-targetOutPath = file.path(resultsDir, "results_summary_fixed_TARGET.rds")
+progressDfPath = file.path(simDir, "progress.csv")
+
+stackedPathOut = file.path(resultsDir, "management_stacked.rds")
+resultsPathOut = file.path(resultsDir, "management_results.rds")
 
 # ----------------------------------------------
 
@@ -43,35 +43,42 @@ dir.create(resultsDir, showWarnings = FALSE, recursive = TRUE)
 # Aggregate all simulated survey output files
 utils_process$aggregateManagementResults(
     simDir=simDir,
-    stackedOutPath=stackedOutPath
+    stackedPathOut=stackedPathOut
 )
 
 # ----------------------------------------------
 
 # For key regions of interest (e.g. Kampala), extract **SIM SURVEY** stats for this specific region
-utils_process$extractPolygonStats(
-    stackedDfPath=stackedOutPath,
+resultsDfSummary = utils_process$extractPolygonStats(
+    stackedDfPath=stackedPathOut,
     surveyMappingPath=surveyMappingPath,
-    indexDir=indexDir,
-    summaryOutPath=summaryOutPath
+    indexDir=indexDir
 )
 
 # ----------------------------------------------
 # If any sims missing full set of sim survey output, drop them 
-utils_process$dropIncompleteSims(
-    resPath=summaryOutPath,
-    outPath=fixedOutPath,
+resultsDfDropSurvey = utils_process$dropIncompleteSimsSimSurvey(
+    resDf=resultsDfSummary,
     indexDir=indexDir
+)
+
+saveRDS(resultsDfDropSurvey, file.path(resultsDir, "test.rds"))
+
+# ----------------------------------------------
+# Drop any sims that haven't finished (based on progress.csv per batch)
+resultsDfDropSim = utils_process$dropSimsNotFinished(
+    resultsDf=resultsDfDropSurvey,
+    paramsDf=launchScriptData$paramsDf,
+    progressDfPath=progressDfPath
 )
 
 # ----------------------------------------------------------
 # Append the target inf prop data for each polygon for surveys
-if(surveyBool){
+resultsDfTarget = utils_process$appendSurveyDataTargetData(
+    surveyDf=resultsDfDropSim,
+    surveyPolyStatsDir=surveyPolyStatsDir
+)
 
-    utils_process$appendSurveyDataTargetData(
-        surveyDfPath=fixedOutPath,
-        surveyPolyStatsDir=surveyPolyStatsDir,
-        outPath=targetOutPath
-    )
-
-}
+# ----------------------------------------------------------
+# Write out results
+saveRDS(resultsDfTarget, resultsPathOut)

@@ -31,11 +31,11 @@ extractManagementDf = function(thisManagementDf, thisManagementPath, thisBatch, 
 }
 
 #' @export
-aggregateManagementResults = function(simDir, stackedOutPath){
+aggregateManagementResults = function(simDir, stackedPathOut){
 
     box::use(utils[...])
     
-    dir.create(dirname(stackedOutPath), showWarnings = F, recursive = T)
+    dir.create(dirname(stackedPathOut), showWarnings = F, recursive = T)
 
     jobDirs = list.files(simDir, "job*", full.names = T)
 
@@ -86,18 +86,20 @@ aggregateManagementResults = function(simDir, stackedOutPath){
 
     stackedManagementDf = dplyr::bind_rows(stackedManagementList)
 
-    dir.create(dirname(stackedOutPath), showWarnings = FALSE, recursive = TRUE)
+    dir.create(dirname(stackedPathOut), showWarnings = FALSE, recursive = TRUE)
 
-    saveRDS(stackedManagementDf, stackedOutPath)
+    saveRDS(stackedManagementDf, stackedPathOut)
 
 }
 
 #' @export
-extractPolygonStats = function(stackedDfPath, surveyMappingPath, indexDir, summaryOutPath){
+extractPolygonStats = function(
+    stackedDfPath, 
+    surveyMappingPath, 
+    indexDir
+    ){
 
     box::use(utils[...])
-
-    dir.create(dirname(summaryOutPath), recursive=T, showWarnings=F)
 
     stackedDfRaw = readRDS(stackedDfPath)
     aggLocKey = paste0(stackedDfRaw$X, "_", stackedDfRaw$Y)
@@ -200,15 +202,14 @@ extractPolygonStats = function(stackedDfPath, surveyMappingPath, indexDir, summa
 
     outDfDrop = outDf[!is.na(outDf$polyName),]
 
-    saveRDS(outDfDrop, summaryOutPath)
+    return(outDfDrop)
 
 }
 
 
 #' @export
-dropIncompleteSims = function(
-    resPath, 
-    outPath, 
+dropIncompleteSimsSimSurvey = function(
+    resDf, 
     indexDir
     ){
 
@@ -235,8 +236,6 @@ dropIncompleteSims = function(
     }
 
     # --------------------------------------------------------------------------
-
-    resDf = readRDS(resPath)
 
     brokenSimsVec = c()
     fullSims = c()
@@ -270,21 +269,18 @@ dropIncompleteSims = function(
 
     fixedDf = resDf[resDf$simKey%in%fullSims,]
 
-    saveRDS(fixedDf, outPath)
+    return(fixedDf)
 
 }
 
 
 #' @export
 appendSurveyDataTargetData = function(
-    surveyDfPath,
-    surveyPolyStatsDir,
-    outPath
+    surveyDf,
+    surveyPolyStatsDir
 ){
 
     box::use(utils[...])
-
-    surveyDf = readRDS(surveyDfPath)
 
     statsPaths = list.files(surveyPolyStatsDir, "mask", full.names = T)
 
@@ -336,12 +332,14 @@ appendSurveyDataTargetData = function(
         targetDiff=targetDiff
     )
 
-    saveRDS(outDf, outPath)
+    return(outDf)
 
 }
 
 #' @export
 parseLaunchScript = function(launchScriptPath){
+
+    box::use(utils[...])
     
     lines = readLines(launchScriptPath)
     
@@ -353,9 +351,13 @@ parseLaunchScript = function(launchScriptPath){
         if(grepl("--landscapefolder", line)){
             inputsDirLine = line
         }
+        
+        if(grepl("--parametersfile", line)){
+            paramsFileLine = line
+        }
     }
     
-    stopifnot(exists("outputDirLine"), exists("inputsDirLine"))
+    stopifnot(exists("outputDirLine"), exists("inputsDirLine"), exists("paramsFileLine"))
     
     outputDir = strsplit(outputDirLine, "\"")[[1]][[2]]
     
@@ -376,10 +378,17 @@ parseLaunchScript = function(launchScriptPath){
     
     inputsDirHere = here::here(paste0(inputsDirPartsHere, collapse = "/"))
     
+    # -----------------------------------
+    paramsFilename = strsplit(paramsFileLine, "\"")[[1]][[2]]
+    paramsDfPath = file.path(dirname(launchScriptPath), paramsFilename)
+    paramsDf = read.table(paramsDfPath, header=TRUE)
+    
+    # -----------------------------------
     outList = list(
         batch=batch,
         scenario=scenario,
-        inputsDir=inputsDirHere
+        inputsDir=inputsDirHere,
+        paramsDf=paramsDf
     )
     
     return(outList)
@@ -411,4 +420,25 @@ parseScenarioConfig = function(
     )
     
     return(outList)
+}
+
+#' @export
+dropSimsNotFinished = function(
+    resultsDf,
+    paramsDf,
+    progressDfPath
+){
+
+    box::use(utils[...])
+
+    progressDf = read.csv(progressDfPath)
+    
+    endSimTime = paramsDf$SimulationStartTime + paramsDf$SimulationLength
+    
+    notDoneDf = progressDf[progressDf$dpcLastSimTime!=endSimTime,]
+    
+    resultsDfOut = resultsDf[!(resultsDf$job %in% notDoneDf$jobName),]
+    
+    return(resultsDfOut)
+    
 }
