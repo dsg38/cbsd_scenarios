@@ -3,6 +3,7 @@ simulations/sim_output/
 analysis/results
 analysis/junk
 inputs/inputs_raw/init_conditions/nigeria_direct_single_lagos/old
+simulations/relaunch/output_validation
 
 # History files
 .Rhistory

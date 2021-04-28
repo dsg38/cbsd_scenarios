@@ -1,1 +1,102 @@
-asdsa
+# Setting up new scenarios
+
+Depending on the scenario, will want to generate different kinds of outputs and carry out different kinds of analysis. The main kinds are:
+
+* Simulate surveillance by explicitly stating survey locations and timing (generally based on real-world survey data locations).
+* Analyse infection arrival times at different locations.
+* Analyse infection statistics in relation to host landscape e.g. proportion of fields infected in a given poly
+
+**All of these involve the generation of polygons, within which stats are calculated. Either stats on sim survey output or stats on the underlying inf rasters.**
+
+## Generating polygons 
+
+**Script: `inputs/process_polys`**
+
+TODO: Do I want to have a standalone polygon creation package, probz living in `inputs`?
+
+In `inputs` dir, the `process_polys` package enables the:
+
+* TODO: Create new polygons by specifying coords
+* Merging custom polygons into a single sf df
+* Append host statistics for each poly to sf df
+
+## Simulated surveillance
+
+### Generating XY indexes
+
+**Script: `inputs/build_inputs.R`**
+
+If the `config.json` contains `processSurvey` key and info specifying:
+
+* Survey rasters
+* Polygon sf df
+
+Then the script will
+
+* Crop the survey rasters to scenario extent
+* For each polygon in each survey raster (i.e. year), generate a csv that specifies the zero indexed XY raster cell indexes for the survey points that fall within that polygon. 
+  * The simulator outputs an equivalent XY index table for a given time point (survey raster), so this allows the corresponding sim survey output for a given mask/time to be easily extracted i.e. based on matching XY
+  * This XY index output is saved in the scenario dir in a folder called `survey_poly_index`. It has to be calculated on a scenario basis as the zero indexed XY raster cell positions depend on the extent of the scenario. So cannot be stored with the raw polygons / sim survey rasters.
+
+
+### Calculate target inf prop stats for each poly per survey time point
+
+**Script: `inputs/process_polys/gen_poly_stats.R`**
+
+**NB: This is a work in progress (limited as code migrated from context where only one set of survey data). Maybe merge into `build_inputs.R` script?**
+
+Inputs:
+
+* The poly sf df
+* The survey data **as a csv rather than based on the survey rasters themselves (bit hacky)**
+
+Outputs:
+
+* With the `inputs_raw/survey_rasters` data, for a given poly sf df (e.g. `polys_0`), saves csvs specifying the per poly yearly inf prop.
+
+
+### Agg sim survey output and append target data for easy comparison
+
+**Script: `analysis/process_sim_output.R`**
+
+**NB: This is also a work in progress and probably to specific in terms of previous use cases from ABC stuff**
+
+By pointing at the batch launch script, this script finds the inputs:
+
+`extractPolygonStats`:
+
+* This func uses the XY index data above to generate stats on the simulations for each mask
+
+`appendSurveyDataTargetData`
+
+* This func looks at the target data for each mask / time point and appends to the sim output stats. So the simulated poly stats can be easily compared to target data stats.
+
+
+### Analyse sim survey
+
+**Script: `analysis/analyse_sim_survey/analyse.R`**
+
+**NB: This is very hacky / work in progress**
+
+Currently, this script is heavily based on the goals of the fitting i.e. find which simulations have simulated surveys that, based on inf prop stats, match the target survey data.
+
+It has a hacked in feature to check for infection in different parts of DRC.
+
+But will likely be extensively modified / generalised soon.
+
+
+<!-- 
+## Polys for arrival time / host inf prop stats
+
+### Steps whilst generating scenario input
+
+In addition to the above poly creation functionality, the `process_polys` package also:
+
+* For a given batch of sim survey rasters, generate time course inf prop stats for each poly in the sf df
+  * TODO: This is currently based on the XY survey data rather than generating from the rasters. Might be worth refactoring in some way e.g. include in pipeline generating XY data, then rasters etc.
+
+The key output to feed into the analysis stage is the inf prop  
+
+### Steps post-simulation (`analysis` dir)
+ -->
+

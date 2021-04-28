@@ -3,7 +3,6 @@ library(raster)
 library(sf)
 library(exactextractr)
 library(rjson)
-box::use(./utils_analysis)
 args = commandArgs(trailingOnly=TRUE)
 
 configPath = args[[1]]
@@ -57,6 +56,11 @@ fixColNames = function(df){
     
 }
 
+numCellsPopulated = function(values, coverage_fractions){
+    return(sum(values>0, na.rm = TRUE))
+}
+
+
 # Sum within each polygon for each raster in the stack. Cols = rasters, rows = polys
 rasterPolySumDf = exact_extract(rasterStackNumFields, polyDf, 'sum', stack_apply=TRUE)
 
@@ -64,7 +68,7 @@ rasterPolySumDf = exact_extract(rasterStackNumFields, polyDf, 'sum', stack_apply
 colnames(rasterPolySumDf) = fixColNames(rasterPolySumDf)
 
 # Calc num cells with any infection
-rasterPolyNumPopulatedDf = exact_extract(rasterStackNumFields, polyDf, fun=utils_analysis$numCellsPopulated, stack_apply=TRUE)
+rasterPolyNumPopulatedDf = exact_extract(rasterStackNumFields, polyDf, fun=numCellsPopulated, stack_apply=TRUE)
 
 # Rename cols
 colnames(rasterPolyNumPopulatedDf) = fixColNames(rasterPolyNumPopulatedDf)

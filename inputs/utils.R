@@ -103,6 +103,8 @@ genPolyIndex = function(
 
     box::use(utils[...])
 
+    dir.create(outIndexDir, showWarnings = FALSE, recursive = TRUE)
+
     totalRasterPaths = list.files(surveyRasterDir, pattern="total", full.names=T)
     polyDf = sf::st_read(polyDfPath)
 
@@ -139,3 +141,17 @@ genPolyIndex = function(
     }
 
 }
+
+#' @export
+checkPolysInExtent = function(
+    surveyPolysDfPath,
+    extentPolygonDf
+){
+
+    polyDf = sf::st_read(surveyPolysDfPath)
+    polysInExtentBool = all(sf::st_covered_by(polyDf, extentPolygonDf, sparse=FALSE))
+
+    return(polysInExtentBool)
+
+}
+

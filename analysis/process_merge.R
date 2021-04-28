@@ -1,18 +1,10 @@
 args = commandArgs(trailingOnly=TRUE)
 
 topDir = args[[1]]
-mergedStr = args[[4]]
+mergedStr = args[[2]]
 
-topDir = "results/2021_03_26_cross_continental/"
-mergedStr = "2021_04_22_merged"
-
-# datasetSurveyLocs = "survey_data_C"
-# datasetTargetInf = "params_0_job4_artificial_survey"
-
-# topDir = "results_fitting/sim_output_agg/model_0/"
-# datasetSurveyLocs = "survey_data_C"
-# datasetTargetInf = "survey_data_C"
-# mergedStr = "2020_09_19_merged"
+# topDir = "results/2021_03_26_cross_continental/"
+# mergedStr = "2021_04_22_merged"
 
 # ------------------------
 

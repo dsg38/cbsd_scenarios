@@ -6,6 +6,7 @@ launchScriptPath = args[[1]]
 # launchScriptPath = "../simulations/launch/2021_03_29_cross_continental_launch.sh"
 
 # ----------------------------------------------------
+# Parse launch script and assign key variables
 launchScriptData = utils_process$parseLaunchScript(launchScriptPath)
 
 scenario = launchScriptData[["scenario"]]
@@ -47,7 +48,7 @@ utils_process$aggregateManagementResults(
 
 # ----------------------------------------------
 
-# For key regions of interest (e.g. Kampala), extract stats for this specific region
+# For key regions of interest (e.g. Kampala), extract **SIM SURVEY** stats for this specific region
 utils_process$extractPolygonStats(
     stackedDfPath=stackedOutPath,
     surveyMappingPath=surveyMappingPath,
@@ -69,7 +70,6 @@ if(surveyBool){
 
     utils_process$appendSurveyDataTargetData(
         surveyDfPath=fixedOutPath,
-        scenarioInputsDir=scenarioInputsDir,
         surveyPolyStatsDir=surveyPolyStatsDir,
         outPath=targetOutPath
     )

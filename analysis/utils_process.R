@@ -278,7 +278,6 @@ dropIncompleteSims = function(
 #' @export
 appendSurveyDataTargetData = function(
     surveyDfPath,
-    scenarioInputsDir,
     surveyPolyStatsDir,
     outPath
 ){

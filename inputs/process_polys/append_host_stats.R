@@ -1,4 +1,4 @@
-box::use(../utils_analysis)
+box::use(./utils)
 args = commandArgs(trailingOnly=TRUE)
 
 # Read in config
@@ -32,10 +32,10 @@ hostRaster = raster::raster(hostRasterPath)
 polyHostNumFields = exactextractr::exact_extract(hostRaster, polyDfIn, fun='sum') * 1000
 
 # Calc num cells populated
-polyNumCellsWithHost = exactextractr::exact_extract(hostRaster, polyDfIn, fun=utils_analysis$numCellsPopulated)
+polyNumCellsWithHost = exactextractr::exact_extract(hostRaster, polyDfIn, fun=utils$numCellsPopulated)
 
 # Calc num cells total
-polyNumCellsInPoly = exactextractr::exact_extract(hostRaster, polyDfIn, fun=utils_analysis$numCellsInPoly)
+polyNumCellsInPoly = exactextractr::exact_extract(hostRaster, polyDfIn, fun=utils$numCellsInPoly)
 
 # Build out df
 polySumDf = cbind(

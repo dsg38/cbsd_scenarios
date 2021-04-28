@@ -28,6 +28,18 @@ cropBool = !is.null(extentVec)
 # Work out which to process
 configNames = names(config)
 
+# Build extent poly
+extentPolygonDfSt = data.frame(
+    lat=c(extentVec[["ymax"]], extentVec[["ymax"]], extentVec[["ymin"]], extentVec[["ymin"]]),
+    lng=c(extentVec[["xmin"]], extentVec[["xmax"]], extentVec[["xmax"]], extentVec[["xmin"]]),
+    id=c("A", "B", "C", "D"),
+    row.names = NULL
+)
+
+extentPolygonDf = sfheaders::sf_polygon(extentPolygonDfSt, x = "lng", y = "lat", keep = TRUE)
+
+sf::st_crs(extentPolygonDf) = "WGS84"
+
 if(cropBool){
     
     print("PLOT EXTENT")
@@ -35,20 +47,9 @@ if(cropBool){
     
     africaPolys = my::loadPolysAfrica()
     
-    df = data.frame(
-        lat=c(extentVec[["ymax"]], extentVec[["ymax"]], extentVec[["ymin"]], extentVec[["ymin"]]),
-        lng=c(extentVec[["xmin"]], extentVec[["xmax"]], extentVec[["xmax"]], extentVec[["xmin"]]),
-        id=c("A", "B", "C", "D"),
-        row.names = NULL
-    )
-    
-    polygonDf = sfheaders::sf_polygon(df, x = "lng", y = "lat", keep = TRUE)
-    
-    sf::st_crs(polygonDf) = my::getWgsCode()
-    
     tm = tmap::tm_shape(africaPolys) +
         tmap::tm_polygons() +
-        tmap::tm_shape(polygonDf) +
+        tmap::tm_shape(extentPolygonDf) +
         tmap::tm_borders(col="red", lwd=5)
     
     tmap::tmap_save(
@@ -126,9 +127,17 @@ if(processSurvey %in% configNames){
     surveyDirPath = file.path("inputs_raw/survey_rasters/", surveyDir)
     surveyPolysDfPath = file.path("inputs_raw/polygons/", polyDfDir, "custom_poly_df.gpkg")
 
-    surveyRasterPaths = list.files(surveyDirPath, full.names = TRUE)
+    # Check that all mask polys inside scenario extent
+    polysInExtentBool = utils$checkPolysInExtent(
+        surveyPolysDfPath=surveyPolysDfPath,
+        extentPolygonDf=extentPolygonDf
+    )
+
+    stopifnot(polysInExtentBool)
 
     # Crop survey rasters
+    surveyRasterPaths = list.files(surveyDirPath, full.names = TRUE)
+
     for(surveyRasterPath in surveyRasterPaths){
         
         print(surveyRasterPath)
@@ -137,7 +146,6 @@ if(processSurvey %in% configNames){
         
         surveyRasterPathOut = file.path(outDir, paste0(surveyRasterFileName, ".asc"))
         
-        # Process
         utils$processRaster(
             rasterPath = surveyRasterPath,
             extentVec = extentVec,
@@ -147,16 +155,12 @@ if(processSurvey %in% configNames){
 
     }
 
-    # Build indexes for cropped survey rasters
-    surveyRasterDir = outDir
-    polyDfPath = surveyPolysDfPath
+    # Build indexes for cropped survey rasters (i.e. specify XY raster cell indexes for survey points in each poly)
     outIndexDir = file.path(dirname(configPath), "survey_poly_index")
 
-    dir.create(outIndexDir, showWarnings = FALSE, recursive = TRUE)
-
     utils$genPolyIndex(
-        surveyRasterDir=surveyRasterDir,
-        polyDfPath=polyDfPath,
+        surveyRasterDir=outDir,
+        polyDfPath=surveyPolysDfPath,
         outIndexDir=outIndexDir
     )
 
