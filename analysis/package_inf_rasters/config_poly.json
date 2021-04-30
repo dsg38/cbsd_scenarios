@@ -1,0 +1,5 @@
+{
+    "batchPath": "simulations/sim_output/2021_03_26_cross_continental/2021_03_29_batch_0/",
+    "polyDfPath": "inputs/inputs_raw/polygons/polys_0/custom_poly_df.gpkg",
+    "hostRasterPath": "inputs/inputs_scenarios/2021_03_17_cross_continental/inputs/L_0_HOSTDENSITY.txt"
+}
