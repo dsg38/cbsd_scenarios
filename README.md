@@ -6,6 +6,8 @@ Depending on the scenario, will want to generate different kinds of outputs and 
 * Analyse infection arrival times at different locations.
 * Analyse infection statistics in relation to host landscape e.g. proportion of fields infected in a given poly
 
+The only difference in the sim survey vs. inf raster analysis is looking at infection either directly (inf rasters), or through the lens of a surveillance scheme.
+
 **All of these involve the generation of polygons, within which stats are calculated. Either stats on sim survey output or stats on the underlying inf rasters.**
 
 ## Generating polygons 
@@ -74,9 +76,34 @@ By pointing at the batch launch script, this script finds the inputs:
 
 ### Analyse sim survey
 
-**Script: `analysis/package_sim_survey/analyse.R`**
+**Script: `analysis/package_sim_survey/utils.R`**
 
-**NB: This is very hacky / work in progress**
+This `utils.R` box module provides the functions to analyse different scenarios. 
+
+TODO: Will likely refactor so the actual analysis script that uses these functions lives together with all scenario analysis code in some version controlled bit of e.g. results.
+
+## Infection rasters (arrival times in different polys)
+
+### Generating polys
+
+
+
+
+### Extracting stats for each inf raster / year per poly
+
+
+
+### Analysing stats
+
+
+
+
+
+
+
+
+
+
 
 
 
