@@ -74,15 +74,18 @@ By pointing at the batch launch script, this script finds the inputs:
 
 ### Analyse sim survey
 
-**Script: `analysis/analyse_sim_survey/analyse.R`**
+**Script: `analysis/package_sim_survey/analyse.R`**
 
 **NB: This is very hacky / work in progress**
 
-Currently, this script is heavily based on the goals of the fitting i.e. find which simulations have simulated surveys that, based on inf prop stats, match the target survey data.
+
+
+
+<!-- Currently, this script is heavily based on the goals of the fitting i.e. find which simulations have simulated surveys that, based on inf prop stats, match the target survey data.
 
 It has a hacked in feature to check for infection in different parts of DRC.
 
-But will likely be extensively modified / generalised soon.
+But will likely be extensively modified / generalised soon. -->
 
 
 <!-- 

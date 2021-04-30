@@ -1,14 +1,14 @@
 args = commandArgs(trailingOnly=TRUE)
 
 topDir = args[[1]]
-mergedStr = args[[2]]
+mergedDir = args[[2]]
 
 # topDir = "results/2021_03_26_cross_continental/"
-# mergedStr = "2021_04_22_merged"
+# mergedDir = "2021_04_29_merged"
 
 # ------------------------
 
-outDir = file.path(topDir, mergedStr)
+outDir = file.path(topDir, mergedDir)
 dir.create(outDir, recursive = T, showWarnings = F)
 
 batchPaths = list.files(topDir, pattern="_batch_", full.names = T)
@@ -16,7 +16,7 @@ batchPaths = list.files(topDir, pattern="_batch_", full.names = T)
 # -----------------------
 
 dfNameVec = c(
-  "results_summary_fixed_TARGET.rds"
+  "management_results.rds"
 )
 
 for(thisDfName in dfNameVec){
