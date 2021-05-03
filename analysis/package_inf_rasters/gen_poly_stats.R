@@ -1,10 +1,10 @@
 args = commandArgs(trailingOnly=TRUE)
 
-# configPath = args[[1]]
-# jobIndex = args[[2]]
+configPath = args[[1]]
+jobIndex = args[[2]]
 
-configPath = "./config_poly.json"
-jobIndex = 0
+# configPath = "./config_poly.json"
+# jobIndex = 0
 
 # ---------------------------------
 config = rjson::fromJSON(file=configPath)
@@ -19,7 +19,7 @@ hostRasterPath = here::here(config[["hostRasterPath"]])
 jobDir = here::here(batchPath, paste0("job", jobIndex), "output/runfolder0")
 
 # Load polys
-polyDf = sf::st_read(polyDfPath)
+polyDf = sf::read_sf(polyDfPath)
 
 # Read in host raster
 hostRaster = raster::raster(hostRasterPath, crs="+proj=longlat +datum=WGS84")
