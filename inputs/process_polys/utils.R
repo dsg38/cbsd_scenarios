@@ -100,12 +100,70 @@ calcPolySurveyDataStats = function(
 
 }
 
-#' @export
 numCellsPopulated = function(values, coverage_fractions){
     return(sum(values>0, na.rm = TRUE))
 }
 
-#' @export
 numCellsInPoly = function(values, coverage_fractions){
     return(length(values))
+}
+
+#' @export
+appendHostStats = function(
+    polyDfIn,
+    hostRasterPath
+){
+
+    # Read in host raster
+    hostRaster = raster::raster(hostRasterPath)
+
+    # Calc num fields
+    polyHostNumFields = exactextractr::exact_extract(hostRaster, polyDfIn, fun='sum') * 1000
+
+    # Calc num cells populated
+    polyNumCellsWithHost = exactextractr::exact_extract(hostRaster, polyDfIn, fun=numCellsPopulated)
+
+    # Calc num cells total
+    polyNumCellsInPoly = exactextractr::exact_extract(hostRaster, polyDfIn, fun=numCellsInPoly)
+
+    # Build out df
+    polySumDf = cbind(
+        polyDfIn, 
+        cassava_host_num_fields=polyHostNumFields,
+        cassava_host_num_cells_with_host=polyNumCellsWithHost,
+        cassava_host_num_cells_in_poly=polyNumCellsInPoly
+    )
+
+    return(polySumDf)
+
+}
+
+#' @export
+mergeSplitPolys = function(
+    splitPolyDir
+){
+    
+    customPolyPaths = list.files(splitPolyDir, full.names = TRUE)
+
+    polyList = list()
+    for(customPolyPath in customPolyPaths){
+
+        thisPolySp = readRDS(customPolyPath)
+        thisPolySf = sf::st_as_sf(thisPolySp)
+        
+        polyName = tools::file_path_sans_ext(basename(customPolyPath))
+        
+        outRow = sf::st_sf(
+            GID_0=polyName,
+            NAME_0=polyName,
+            geom=thisPolySf$geometry
+        )
+        
+        polyList[[customPolyPath]] = outRow
+    }
+
+    polyDf = dplyr::bind_rows(polyList)
+
+    return(polyDf)
+
 }

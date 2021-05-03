@@ -14,13 +14,13 @@ The only difference in the sim survey vs. inf raster analysis is looking at infe
 
 **Script: `inputs/process_polys`**
 
-TODO: Do I want to have a standalone polygon creation package, probz living in `inputs`?
+The `utils.R` box module in this dir contains functions that can be used to build `polys_n.gpkg` files.
 
-In `inputs` dir, the `process_polys` package enables the:
+For each new polys file, there's a new script at the top level that generates the outputs.
 
-* TODO: Create new polygons by specifying coords
-* Merging custom polygons into a single sf df
-* Append host statistics for each poly to sf df
+There are two different output types:
+* For inf raster statistics, the polygon sf df with host landscape statistics appended. Given that these have data specific to a host landscape, they are named as such e.g. `inputs/inputs_raw/polygons/polys_0_host_default.gpkg` 
+* Generation of sim survey target data within each polygon in the polys sf df. These files are saved underneath the sim survey rasters. See below sim survey section form ore details
 
 ## Simulated surveillance
 
@@ -43,7 +43,7 @@ Then the script will
 
 ### Calculate target inf prop stats for each poly per survey time point
 
-**Script: `inputs/process_polys/gen_poly_stats.R`**
+**Script: e.g. `inputs/process_polys/polys_0.R`**
 
 **NB: This is a work in progress (limited as code migrated from context where only one set of survey data). Maybe merge into `build_inputs.R` script?**
 
@@ -86,10 +86,10 @@ TODO: Will likely refactor so the actual analysis script that uses these functio
 
 ### Generating polys
 
+See top level section for details.
 
+### Processing inf rasters to generate stats for each inf raster / year per poly
 
-
-### Extracting stats for each inf raster / year per poly
 
 
 
