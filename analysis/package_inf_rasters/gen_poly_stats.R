@@ -1,10 +1,12 @@
+tictoc::tic()
+
 args = commandArgs(trailingOnly=TRUE)
 
-configPath = args[[1]]
-jobIndex = args[[2]]
+# configPath = args[[1]]
+# jobIndex = args[[2]]
 
-# configPath = "./config_poly.json"
-# jobIndex = 0
+configPath = "./2021_03_26_cross_continental/config_poly.json"
+jobIndex = 0
 
 # ---------------------------------
 config = rjson::fromJSON(file=configPath)
@@ -26,6 +28,8 @@ hostRaster = raster::raster(hostRasterPath, crs="+proj=longlat +datum=WGS84")
 
 # List all rasters
 rasterPaths = list.files(jobDir, pattern="O_0_L_0_*_.*.000000.tif", full.names = T, recursive = T)
+
+rasterPaths = rasterPaths[1:4]
 
 # Build raster stack
 rasterStack = raster::stack(rasterPaths)
@@ -128,4 +132,7 @@ for(rasterPath in rasterPaths){
 outDf = dplyr::bind_rows(dfList)
 
 outPath = here::here(jobDir, "results_poly_stats.csv")
+print(outPath)
 write.csv(outDf, outPath, row.names = FALSE)
+
+tictoc::toc()
