@@ -55,7 +55,7 @@ unset __conda_setup
 # --------------------------------------------------------
 
 # SET THIS CORRECTLY PER PROJECT
-conda activate /rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/conda_env_default/r_test
+conda activate /rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/conda_env_default/dsg38
 
 # Run stuff
 Rscript ../gen_poly_stats.R config_poly.json $SLURM_ARRAY_TASK_ID
