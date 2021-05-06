@@ -13,9 +13,15 @@ africa_0_df = utils$appendHostStats(
     hostRasterPath=hostRasterPath
 )
 
+# Append POLY_ID col
+africa_0_df_id = cbind(
+    POLY_ID=africa_0_df$GID_0,
+    africa_0_df
+)
+
 outDf = dplyr::bind_rows(
     polys_0_df,
-    africa_0_df
+    africa_0_df_id
 )
 
 polyDfPathOut = "../inputs_raw/polygons/polys_1_host_default.gpkg"

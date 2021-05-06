@@ -5,13 +5,6 @@ polys_1_df = sf::read_sf("../inputs_raw/polygons/polys_1_host_default.gpkg")
 
 hostRasterPath = "../inputs_raw/host_landscape/default/host.tif"
 
-# africa_0_df = sf::read_sf("./gadm36_levels_gpkg/gadm36_level0_africa.gpkg")
-
-# africa_0_df = utils$appendHostStats(
-#     polyDfIn=africa_0_df,
-#     hostRasterPath=hostRasterPath
-# )
-
 africa_1_df = sf::read_sf("./gadm36_levels_gpkg/gadm36_level1_africa.gpkg")
 
 africa_1_df = utils$appendHostStats(
@@ -19,9 +12,15 @@ africa_1_df = utils$appendHostStats(
     hostRasterPath=hostRasterPath
 )
 
+# Append POLY_ID col
+africa_1_df_id = cbind(
+    POLY_ID=africa_1_df$GID_1,
+    africa_1_df
+)
+
 outDf = dplyr::bind_rows(
     polys_1_df,
-    africa_1_df
+    africa_1_df_id
 )
 
 polyDfPathOut = "../inputs_raw/polygons/polys_2_host_default.gpkg"

@@ -46,7 +46,7 @@ calcPolySurveyDataStats = function(
 
         thisPoly = allPolysDf[iRow,]
 
-        polyName = thisPoly$GID_0
+        polyName = thisPoly$POLY_ID
         print(polyName)
         
         inPolyCheck = inPolyCheckList[[iRow]]
@@ -154,8 +154,7 @@ mergeSplitPolys = function(
         polyName = tools::file_path_sans_ext(basename(customPolyPath))
         
         outRow = sf::st_sf(
-            GID_0=polyName,
-            NAME_0=polyName,
+            POLY_ID=polyName,
             geom=thisPolySf$geometry
         )
         
