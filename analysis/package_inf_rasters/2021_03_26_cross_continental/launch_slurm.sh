@@ -15,7 +15,7 @@
 #! How many many cores will be allocated per task? 
 #SBATCH --cpus-per-task=1 
 #! Estimated runtime (job is force-stopped after if exceeded):
-#SBATCH --time=01:00:00
+#SBATCH --time=02:00:00
 #! Estimated memory needed (job is force-stopped if exceeded):
 #SBATCH --mem=5980mb
 #! Submit a job array with index values between 0 and n e.g. 0-100
@@ -38,7 +38,7 @@ module load R/4.0.5-dsg38
 
 # Conda set up
 # >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
+# Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/rds/project/cag1/rds-cag1-general/epidem-programs/miniconda3/4.9.2/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
@@ -54,7 +54,7 @@ unset __conda_setup
 
 # --------------------------------------------------------
 
-# YOU HAVE TO SET THIS CORRECTLY PER PROJECT
+# SET THIS CORRECTLY PER PROJECT
 conda activate /home/dsg38/conda_env_default/dsg38
 
 # Run stuff

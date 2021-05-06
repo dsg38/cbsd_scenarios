@@ -1,12 +1,14 @@
-tictoc::tic()
+box::use(tictoc[...])
+
+tic(msg="total")
 
 args = commandArgs(trailingOnly=TRUE)
 
-# configPath = args[[1]]
-# jobIndex = args[[2]]
+configPath = args[[1]]
+jobIndex = args[[2]]
 
-configPath = "./2021_03_26_cross_continental/config_poly.json"
-jobIndex = 0
+# configPath = "./2021_03_26_cross_continental/config_poly.json"
+# jobIndex = 0
 
 # ---------------------------------
 config = rjson::fromJSON(file=configPath)
@@ -24,62 +26,74 @@ jobDir = here::here(batchPath, paste0("job", jobIndex), "output/runfolder0")
 polyDf = sf::read_sf(polyDfPath)
 
 # Read in host raster
-hostRaster = raster::raster(hostRasterPath, crs="+proj=longlat +datum=WGS84")
+hostRaster = terra::rast(hostRasterPath)
 
 # List all rasters
 rasterPaths = list.files(jobDir, pattern="O_0_L_0_*_.*.000000.tif", full.names = T, recursive = T)
 
-# rasterPaths = rasterPaths[1:4]
-
 # Build raster stack
-rasterStack = raster::stack(rasterPaths)
-raster::crs(rasterStack) = "+proj=longlat +datum=WGS84"
+rasterStack = terra::rast(rasterPaths)
 
 # Calculate num inf fields stack NB: for some reason, this loses the names in the stack
-rasterStackNumFields = rasterStack * hostRaster * 1000
-names(rasterStackNumFields) = names(rasterStack)
+tic(msg="multiply")
+rasterStackNumFieldsTerra = rasterStack * hostRaster * 1000
+toc()
 
-fixColNames = function(df){
-    
-    oldColNames = colnames(df)
-    
-    fixedVec = c()    
-    for(thisOldName in oldColNames){
-        
-        thisSplit = strsplit(thisOldName, "\\.")[[1]]
-        
-        if(length(thisSplit) > 1){
-            fixedName = paste0(thisSplit[2:length(thisSplit)], collapse = ".")
-            
-            fixedVec = c(fixedVec, fixedName)
-        }else{
-            fixedVec = c(fixedVec, thisOldName)
-            
-        }
+# Convert to raster stack for exactextractr
+rasterStackNumFields = raster::stack(rasterStackNumFieldsTerra)
 
-        
-    }
-    
-    return(fixedVec)
-    
-}
-
+# Define func to work out num populated cells
 numCellsPopulated = function(values, coverage_fractions){
     return(sum(values>0, na.rm = TRUE))
 }
 
+# Calc poly stats for each raster
+tic(msg="extract")
+rasterDfList = list()
+for(i in seq_len(dim(rasterStackNumFields)[[3]])){
 
-# Sum within each polygon for each raster in the stack. Cols = rasters, rows = polys
-rasterPolySumDf = exactextractr::exact_extract(rasterStackNumFields, polyDf, 'sum', stack_apply=TRUE, append_cols=c("GID_0"))
+    thisRaster = rasterStackNumFields[[i]]
+    rasterName = names(thisRaster)
+    print(i)
+    print(rasterName)
 
-# Rename cols
-colnames(rasterPolySumDf) = fixColNames(rasterPolySumDf)
+    # Sum within each polygon
+    tic(msg="sum_loop")
+    rasterPolySumDf = exactextractr::exact_extract(
+        thisRaster,
+        polyDf,
+        'sum',
+        stack_apply=TRUE,
+        append_cols=c("POLY_ID")
+    )
+    
+    rasterPolySumDf = dplyr::rename(rasterPolySumDf, "raster_num_fields" = 2)
 
-# Calc num cells with any infection
-rasterPolyNumPopulatedDf = exactextractr::exact_extract(rasterStackNumFields, polyDf, fun=numCellsPopulated, stack_apply=TRUE, append_cols=c("GID_0"))
+    toc()
 
-# Rename cols
-colnames(rasterPolyNumPopulatedDf) = fixColNames(rasterPolyNumPopulatedDf)
+    # Calc num cells with any infection
+    tic(msg="pop_loop")
+    rasterPolyNumPopulatedDf = exactextractr::exact_extract(
+        thisRaster, 
+        polyDf, 
+        fun=numCellsPopulated, 
+        stack_apply=TRUE, 
+        append_cols=c("POLY_ID")
+    )
+
+    rasterPolyNumPopulatedDf = dplyr::rename(rasterPolyNumPopulatedDf, "raster_num_cells_populated" = 2)
+
+    toc()
+    
+    mergedDf = dplyr::full_join(rasterPolySumDf, rasterPolyNumPopulatedDf, by="POLY_ID")
+    
+    rasterDfList[[rasterName]] = mergedDf
+
+}
+toc()
+
+# Drop poly geom to speed up
+sf::st_geometry(polyDf) = NULL
 
 # For each raster = columns of extracted dfs
 dfList = list()
@@ -100,21 +114,21 @@ for(rasterPath in rasterPaths){
     raster_year = as.numeric(dplyr::last(splitFilename))
     raster_type = splitFilename[[5]]
         
-    # Calc stats
-    raster_num_fields = rasterPolySumDf[[rasterFilenameNoExt]]
+    # Pull out corresponding raster stats df
+    rasterStatsDf = rasterDfList[[rasterFilenameNoExt]]
 
-    raster_prop_fields = raster_num_fields / polyDf$cassava_host_num_fields
+    # Join by matching column
+    rasterStatsPolyDfPartial = dplyr::full_join(polyDf, rasterStatsDf, by="POLY_ID")
+
+    # Calc prop fields
+    raster_prop_fields = rasterStatsPolyDfPartial$raster_num_fields / rasterStatsPolyDfPartial$cassava_host_num_fields
     raster_prop_fields[is.na(raster_prop_fields)] = 0
-
-    # Add in num cells stats
-    raster_num_cells_populated = rasterPolyNumPopulatedDf[[rasterFilenameNoExt]]
+    
+    rasterStatsPolyDf = cbind(rasterStatsPolyDfPartial, raster_prop_fields)
     
     # Build out df
     thisRasterDf = cbind(
-        polyDf,
-        raster_num_fields=raster_num_fields,
-        raster_prop_fields=raster_prop_fields,
-        raster_num_cells_populated=raster_num_cells_populated,
+        rasterStatsPolyDf,
         raster_year=raster_year,
         raster_type=raster_type,
         job=job,
@@ -123,16 +137,15 @@ for(rasterPath in rasterPaths){
         raster_path=rasterPathNorm
     )
     
-    sf::st_geometry(thisRasterDf) = NULL
-    
     dfList[[rasterPathNorm]] = thisRasterDf
     
 }
 
 outDf = dplyr::bind_rows(dfList)
 
-outPath = here::here(jobDir, "results_poly_stats.csv")
+outPath = here::here(jobDir, "raster_poly_stats.rds")
 print(outPath)
-write.csv(outDf, outPath, row.names = FALSE)
 
-tictoc::toc()
+saveRDS(outDf, outPath)
+
+toc()
