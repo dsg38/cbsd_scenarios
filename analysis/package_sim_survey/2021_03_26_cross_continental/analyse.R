@@ -1,5 +1,5 @@
-box::use(../utils_analysis)
-# box::reload(utils)
+box::use(../utils_analysis_analysis)
+# box::reload(utils_analysis)
 
 resultsDfPath = "../../results/2021_03_26_cross_continental/2021_04_29_merged/management_results.rds"
 resultsDf = readRDS(resultsDfPath)
@@ -10,7 +10,7 @@ tol = 0.3
 # Get keys for each constraint
 
 # Uga hole - pass all years with tol
-passKeysUgaHole = utils$applyAllPolySuffix(
+passKeysUgaHole = utils_analysis$applyAllPolySuffix(
     resultsDf = resultsDf,
     polySuffix = "mask_uga_hole",
     tol = tol
@@ -18,11 +18,13 @@ passKeysUgaHole = utils$applyAllPolySuffix(
 
 
 # Uga kam - pass all years with tol
-passKeysUgaKam = utils$applyAllPolySuffix(
+passKeysUgaKam = utils_analysis$applyAllPolySuffix(
     resultsDf = resultsDf,
     polySuffix = "mask_uga_kam",
     tol = tol
 )
+
+length(unique(resultsDf$simKey))
 
 passKeysUga = intersect(passKeysUgaHole, passKeysUgaKam)
 
@@ -34,18 +36,18 @@ drcPolyNameVec = c(
     "2017_mask_drc_central_south"
 )
 
-# drcList = list()
+drcList = list()
 drcUgaList = list()
 for(drcPolyName in drcPolyNameVec){
 
     # print(drcPolyName)
 
-    passKeysDrc = utils$anyInfSpecificPoly(
+    passKeysDrc = utils_analysis$anyInfSpecificPoly(
         resultsDf = resultsDf,
         polyName = drcPolyName
     )
 
-    # drcList[[drcPolyName]] = passKeysDrc
+    drcList[[drcPolyName]] = passKeysDrc
     # print(length(passKeysDrc))
 
     passKeysDrcUga = intersect(passKeysDrc, passKeysUga)
@@ -57,13 +59,13 @@ for(drcPolyName in drcPolyNameVec){
 # ------------------------------------
 # Plotting
 
-resultsDfSubset = utils$subsetResultsDf(
+resultsDfSubset = utils_analysis$subsetResultsDf(
     resultsDf = resultsDf,
     polySuffix = "mask_uga_hole",
     passKeys = passKeysUgaHole
 )
 
-p = utils$plotInfProp(
+p = utils_analysis$plotInfProp(
     resultsDf=resultsDfSubset,
     tol=0.3
 )
@@ -72,14 +74,14 @@ print(p)
 
 # --------
 
-resultsDfSubset = utils$subsetResultsDf(
+resultsDfSubset = utils_analysis$subsetResultsDf(
     resultsDf = resultsDf,
     polySuffix = "mask_uga_hole",
     passKeys = drcUgaList[['2017_mask_drc_central_small']]
 )
 
 
-p = utils$plotInfProp(
+p = utils_analysis$plotInfProp(
     resultsDf=resultsDfSubset,
     tol=0.3
 )

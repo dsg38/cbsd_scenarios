@@ -29,7 +29,7 @@ hostRaster = raster::raster(hostRasterPath, crs="+proj=longlat +datum=WGS84")
 # List all rasters
 rasterPaths = list.files(jobDir, pattern="O_0_L_0_*_.*.000000.tif", full.names = T, recursive = T)
 
-rasterPaths = rasterPaths[1:4]
+# rasterPaths = rasterPaths[1:4]
 
 # Build raster stack
 rasterStack = raster::stack(rasterPaths)
