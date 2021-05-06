@@ -34,7 +34,7 @@ module load rhel7/default-peta4            # REQUIRED - loads the basic environm
 module load use.own                        # This line loads the own module list
 module load /rds/project/cag1/rds-cag1-general/epidem-modules/epidem.modules         # This line loads the Epidemiology group module list
 module load miniconda3/4.9.2
-module load R/4.0.5-dsg38
+# module load R/4.0.5-dsg38
 
 # Conda set up
 # >>> conda initialize >>>
@@ -55,7 +55,7 @@ unset __conda_setup
 # --------------------------------------------------------
 
 # SET THIS CORRECTLY PER PROJECT
-conda activate /home/dsg38/conda_env_default/dsg38
+conda activate /rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/conda_env_default/r_test
 
 # Run stuff
 Rscript ../gen_poly_stats.R config_poly.json $SLURM_ARRAY_TASK_ID

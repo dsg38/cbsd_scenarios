@@ -31,7 +31,7 @@ hostRaster = terra::rast(hostRasterPath)
 # List all rasters
 rasterPaths = list.files(jobDir, pattern="O_0_L_0_*_.*.000000.tif", full.names = T, recursive = T)
 
-rasterPaths = rasterPaths[1:3]
+# rasterPaths = rasterPaths[1:3]
 
 # Build raster stack
 rasterStack = terra::rast(rasterPaths)
