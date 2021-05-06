@@ -409,8 +409,12 @@ parseScenarioConfig = function(
     
     surveyPolyStatsDir = NULL
     if(surveyBool){
+
+        polyDfName = scenarioConfig[["processSurvey"]][["polyDfName"]]
+
+        polyDir = paste0(strsplit(polyDfName, "_")[[1]][1:2], collapse = "_")
         
-        surveyPolyStatsDir = here::here("inputs/inputs_raw/survey_rasters", scenarioConfig[["processSurvey"]][["surveyDir"]], "poly_stats", scenarioConfig[["processSurvey"]][["polyDfDir"]])
+        surveyPolyStatsDir = here::here("inputs/inputs_raw/survey_rasters", scenarioConfig[["processSurvey"]][["surveyDir"]], "poly_stats", polyDir)
         
     }
     

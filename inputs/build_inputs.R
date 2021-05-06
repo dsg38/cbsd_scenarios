@@ -122,10 +122,10 @@ if(processSurvey %in% configNames){
 
     surveyConfig = config[[processSurvey]]
     surveyDir = surveyConfig[["surveyDir"]]
-    polyDfDir = surveyConfig[["polyDfDir"]]
+    polyDfName = surveyConfig[["polyDfName"]]
 
     surveyDirPath = file.path("inputs_raw/survey_rasters/", surveyDir)
-    surveyPolysDfPath = file.path("inputs_raw/polygons/", polyDfDir, "custom_poly_df.gpkg")
+    surveyPolysDfPath = file.path("inputs_raw/polygons/", polyDfName)
 
     # Check that all mask polys inside scenario extent
     polysInExtentBool = utils$checkPolysInExtent(

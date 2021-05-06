@@ -121,7 +121,7 @@ genPolyIndex = function(
                 
             polyRow = polyDf[iRow,]
             
-            thisPolygonStr = polyRow$GID_0
+            thisPolygonStr = polyRow$POLY_ID
             print(thisPolygonStr)
             
             thisPolyRaster = raster::mask(thisRaster, polyRow, updateValue=0)
