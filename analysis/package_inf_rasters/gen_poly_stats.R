@@ -81,7 +81,7 @@ toc()
 # Drop poly geom to speed up
 sf::st_geometry(polyDf) = NULL
 
-# For each raster = columns of extracted dfs
+# Build output stats
 dfList = list()
 for(rasterPath in rasterPaths){
 
