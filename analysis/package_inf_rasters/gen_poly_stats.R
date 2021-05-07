@@ -6,11 +6,11 @@ x = peakRAM::peakRAM({
 
     args = commandArgs(trailingOnly=TRUE)
 
-    # configPath = args[[1]]
-    # jobIndex = args[[2]]
+    configPath = args[[1]]
+    jobIndex = args[[2]]
 
-    configPath = "./2021_03_26_cross_continental/config_poly.json"
-    jobIndex = 0
+    # configPath = "./2021_03_26_cross_continental/config_poly.json"
+    # jobIndex = 0
 
     # ---------------------------------
     config = rjson::fromJSON(file=configPath)
