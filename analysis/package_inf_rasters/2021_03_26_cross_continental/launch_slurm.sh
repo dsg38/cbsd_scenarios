@@ -17,9 +17,9 @@
 #! Estimated runtime (job is force-stopped after if exceeded):
 #SBATCH --time=02:00:00
 #! Estimated memory needed (job is force-stopped if exceeded):
-#SBATCH --mem=95680mb
+#SBATCH --mem=5980mb
 #! Submit a job array with index values between 0 and n e.g. 0-100
-#SBATCH --array=0
+#SBATCH --array=0-899
 
 #! This is the partition name. This will request for a node with 6GB RAM for each task
 #SBATCH -p skylake
@@ -32,9 +32,8 @@
 module purge                               # Removes all modules still loaded
 module load rhel7/default-peta4            # REQUIRED - loads the basic environment
 module load use.own                        # This line loads the own module list
-module load /rds/project/cag1/rds-cag1-general/epidem-modules/epidem.modules         # This line loads the Epidemiology group module list
+module load /rds/project/cag1/rds-cag1-general/epidem-modules/epidem.modules         # Loads Epidemiology group module list
 module load miniconda3/4.9.2
-# module load R/4.0.5-dsg38
 
 # Conda set up
 # >>> conda initialize >>>
