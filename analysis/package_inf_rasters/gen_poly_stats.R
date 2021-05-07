@@ -32,7 +32,7 @@ x = peakRAM::peakRAM({
 
     # List all rasters
     rasterPaths = list.files(jobDir, pattern="O_0_L_0_*_.*.000000.tif", full.names = T, recursive = T)
-    # rasterPaths = rasterPaths[1:5]
+    rasterPaths = rasterPaths[1:2]
 
     # Build raster stack
     rasterStack = terra::rast(rasterPaths)
