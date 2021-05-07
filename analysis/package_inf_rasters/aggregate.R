@@ -40,7 +40,7 @@ for(statsDfPath in statsDfPaths){
 
     print(count)
     
-    dfList[[statsDfPath]] = readRDS(statsDfPaths)
+    dfList[[statsDfPath]] = readRDS(statsDfPath)
 
     count = count + 1
 }
