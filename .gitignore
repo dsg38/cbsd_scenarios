@@ -1,9 +1,10 @@
 simulations/sim_output/
 # inputs/inputs_scenarios/2021_03_17_cross_continental
-analysis/results
+# analysis/results
 analysis/junk
 inputs/inputs_raw/init_conditions/nigeria_direct_single_lagos/old
 simulations/relaunch/output_validation
+analysis/results/*/*/output
 
 # History files
 .Rhistory
