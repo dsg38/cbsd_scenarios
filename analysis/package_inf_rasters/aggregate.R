@@ -46,4 +46,5 @@ for(statsDfPath in statsDfPaths){
 }
 
 outDf = dplyr::bind_rows(dfList)
+print(outPath)
 saveRDS(outDf, outPath)
