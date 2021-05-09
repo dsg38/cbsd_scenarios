@@ -7,6 +7,7 @@ config = rjson::fromJSON(file=configPath)
 
 batchPath = here::here(config[["batchPath"]])
 outPath = here::here(batchPath, "raster_poly_stats_agg.rds")
+outPathMinimal = here::here(batchPath, "raster_poly_stats_agg_minimal.rds")
 
 progDfPath = here::here(batchPath, "progress.csv")
 
@@ -48,3 +49,20 @@ for(statsDfPath in statsDfPaths){
 outDf = dplyr::bind_rows(dfList)
 print(outPath)
 saveRDS(outDf, outPath)
+
+# Save minimal
+keepCols = c(
+    "POLY_ID",
+    "raster_num_fields",
+    "raster_num_cells_populated",
+    "raster_prop_fields",
+    "raster_year",
+    "raster_type",
+    "job",
+    "batch",
+    "scenario"
+)
+
+outDfMinimal = outDf[,keepCols]
+print(outPathMinimal)
+saveRDS(outDfMinimal, outPathMinimal)
