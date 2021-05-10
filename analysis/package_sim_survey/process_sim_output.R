@@ -21,8 +21,8 @@ surveyPolyStatsDir = surveyConfigData[["surveyPolyStatsDir"]]
 
 # ----------------------------------------------
 
-simDir = here::here("simulations/sim_output", scenario, batch)
-resultsDir = here::here("analysis/results", scenario, batch)
+simDir = here::here("simulations/sim_output", scenario, batch, "output")
+resultsDir = here::here("analysis/results", scenario, batch, "output")
 
 simInputsDir = file.path(scenarioInputsDir, "inputs")
 indexDir = file.path(scenarioInputsDir, "survey_poly_index")
