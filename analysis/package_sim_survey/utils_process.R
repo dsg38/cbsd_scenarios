@@ -1,4 +1,10 @@
-extractManagementDf = function(thisManagementDf, thisManagementPath, thisBatch, thisJob){
+extractManagementDf = function(
+    thisManagementDf, 
+    thisManagementPath,
+    thisScenario,
+    thisBatch, 
+    thisJob
+    ){
 
     box::use(utils[...])
     
@@ -13,6 +19,7 @@ extractManagementDf = function(thisManagementDf, thisManagementPath, thisBatch, 
     thisJobSim = as.numeric(splitFilename[2])
         
     thisManagementDfOut = cbind(
+        scenario=thisScenario,
         batch=thisBatch,
         job=thisJob,
         jobSim=thisJobSim,
@@ -41,6 +48,8 @@ aggregateManagementResults = function(simDir, stackedPathOut){
 
     thisBatch = basename(simDir)
 
+    thisScenario = basename(dirname(simDir))
+
     stackedManagementList = list()
 
     jobCount = 0
@@ -66,6 +75,7 @@ aggregateManagementResults = function(simDir, stackedPathOut){
                         thisManagementDfOut = extractManagementDf(
                             thisManagementDf=thisManagementDf,
                             thisManagementPath=thisManagementPath,
+                            thisScenario=thisScenario,
                             thisBatch=thisBatch,
                             thisJob=thisJob
                         )
@@ -103,12 +113,13 @@ extractPolygonStats = function(
 
     stackedDfRaw = readRDS(stackedDfPath)
     aggLocKey = paste0(stackedDfRaw$X, "_", stackedDfRaw$Y)
-    aggSimKey = paste0(stackedDfRaw$batch, "_", stackedDfRaw$job, "_", stackedDfRaw$jobSim)
+    aggSimKey = paste(stackedDfRaw$scenario, stackedDfRaw$batch, stackedDfRaw$job, stackedDfRaw$jobSim, sep="-")
     stackedDf = cbind(stackedDfRaw, locKey=aggLocKey, simKey=aggSimKey)
 
     surveyMapping = rjson::fromJSON(file=surveyMappingPath)
 
     outCols = c(
+        "scenario",
         "batch",
         "job",
         "jobSim",

@@ -1,7 +1,7 @@
-box::use(../utils_analysis_analysis)
+box::use(../utils_analysis)
 # box::reload(utils_analysis)
 
-resultsDfPath = "../../results/2021_03_26_cross_continental/2021_04_29_merged/management_results.rds"
+resultsDfPath = "../../results/2021_03_26_cross_continental/2021_04_29_merged/output/management_results.rds"
 resultsDf = readRDS(resultsDfPath)
 # ------------------------------------------------------------------
 
