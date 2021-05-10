@@ -1,8 +1,9 @@
 args = commandArgs(trailingOnly=TRUE)
 box::use(./utils_process)
+# box::reload(utils_process)
 
 launchScriptPath = args[[1]]
-
+# launchScriptPath = "../../simulations/launch/2021_03_17_cross_continental_launch.sh"
 # launchScriptPath = "../simulations/launch/2021_03_29_cross_continental_launch.sh"
 
 # ----------------------------------------------------
@@ -21,7 +22,7 @@ surveyPolyStatsDir = surveyConfigData[["surveyPolyStatsDir"]]
 
 # ----------------------------------------------
 
-simDir = here::here("simulations/sim_output", scenario, batch, "output")
+simDir = here::here("simulations/sim_output", scenario, batch)
 resultsDir = here::here("analysis/results", scenario, batch, "output")
 
 simInputsDir = file.path(scenarioInputsDir, "inputs")
