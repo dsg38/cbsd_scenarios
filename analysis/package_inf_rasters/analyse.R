@@ -1,50 +1,45 @@
-statsDfPath = "../../simulations/sim_output/2021_03_26_cross_continental/2021_03_29_batch_0/raster_poly_stats_agg.rds"
-outPath = "../../simulations/sim_output/2021_03_26_cross_continental/2021_03_29_batch_0/raster_poly_stats_agg_minimal.rds"
+statsDfPath = "../results/2021_03_26_cross_continental/2021_04_29_merged/output/raster_poly_stats_agg_minimal.rds"
+outPath = "../results/2021_03_26_cross_continental/2021_04_29_merged/output/results_inf_polys.json"
 
-# --------------------------------------
+
+# -----------------------------
 
 statsDf = readRDS(statsDfPath)
 
-keepCols = c(
-    "POLY_ID",
-    "raster_num_fields",
-    "raster_num_cells_populated",
-    "raster_prop_fields",
-    "raster_year",
-    "raster_type",
-    "job",
-    "batch",
-    "scenario"
+# --------------------------------------
+
+# "COD.23_1" = sud-ubangi
+# "COD.20_1" = nord-ubangi
+
+drcPolyNameVec = c(
+    "mask_drc_central_small",
+    "mask_drc_central_big",
+    "mask_drc_nw",
+    "mask_drc_central_south",
+    "COD.23_1",
+    "COD.20_1"
 )
 
-x = statsDf[,keepCols]
+year = 2018
 
-print(object.size(statsDf))
-print(object.size(x))
+resList = list()
+for(maskName in drcPolyNameVec){
+    
+    criteriaKey = paste(year, maskName, sep="-")
+    print(criteriaKey)
+    
+    statsDfSubset = statsDf[statsDf$POLY_ID==maskName & statsDf$raster_year==year,]
+    
+    anyInfJobsDf = statsDfSubset[statsDfSubset$raster_num_fields > 0,]
+    
+    # TODO: Remove this '0' hack and replace with proper `jobSim` parsing for simKey
+    passKeys = paste(anyInfJobsDf$scenario, anyInfJobsDf$batch, anyInfJobsDf$job, "0", sep="-")
+    
+    print(length(passKeys))
+    
+    resList[[criteriaKey]] = passKeys
+}
 
-saveRDS(x, outPath)
+outJson = rjson::toJSON(resList, indent=4)
 
-# statsDfPath = "../../simulations/sim_output/2021_03_26_cross_continental/2021_03_29_batch_0/raster_poly_stats_agg.rds"
-
-# ----------------------------------------
-
-# statsDf = readRDS(statsDfPath)
-# 
-# x = object.size(statsDf)
-# 
-# print(x)
-# 
-# statsDfSmall = statsDf[1:10000,]
-# 
-# saveRDS(statsDfSmall, "stuff.rds")
-
-
-# 
-# # Work out average nigeria arrival time
-# 
-# statsDfCode = statsDf[statsDf$POLY_ID=="mask_drc_nw",]
-# 
-# x = statsDfCode[statsDfCode$raster_year==2017,]
-# sum(x$raster_num_fields>0)
-# 
-# length(unique(statsDf$job))
+readr::write_file(outJson, outPath)

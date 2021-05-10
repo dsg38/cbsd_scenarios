@@ -8,7 +8,7 @@ mergedDir = args[[2]]
 
 # ------------------------
 
-outDir = file.path(topDir, mergedDir)
+outDir = file.path(topDir, mergedDir, "output")
 dir.create(outDir, recursive = T, showWarnings = F)
 
 batchPaths = list.files(topDir, pattern="_batch_", full.names = T)
@@ -30,7 +30,7 @@ for(thisDfName in dfNameVec){
     
     print(thisBatchPath)
       
-    thisDfPath = file.path(thisBatchPath, thisDfName)
+    thisDfPath = file.path(thisBatchPath, "output", thisDfName)
     dfList[[thisDfPath]] = readRDS(thisDfPath)
         
   }
