@@ -5,6 +5,7 @@ analysis/junk
 inputs/inputs_raw/init_conditions/nigeria_direct_single_lagos/old
 simulations/relaunch/output_validation
 analysis/results/*/*/output
+stuff/
 
 # History files
 .Rhistory
