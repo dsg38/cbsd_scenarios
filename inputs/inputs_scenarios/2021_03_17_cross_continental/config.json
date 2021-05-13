@@ -8,7 +8,7 @@
     "processInit": "uganda_2005",
     "processSurvey": {
         "surveyDir": "real_world",
-        "polyDfName": "polys_0_host_default.gpkg"
+        "polyDfName": "polys_3_host_default.gpkg"
     },
     "processVector": "default",
     "copyGeneralFiles": {

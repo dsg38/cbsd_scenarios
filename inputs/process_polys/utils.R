@@ -92,7 +92,7 @@ calcPolySurveyDataStats = function(
             
         } else {
             
-            print(paste0("Skipping - no survey points in poly: ", thisPolyPath))
+            print(paste0("Skipping - no survey points in poly: ", polyName))
             
         }
 
