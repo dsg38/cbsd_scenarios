@@ -1,35 +1,10 @@
+box::use(../../../utils_analysis)
+# box::reload(utils_analysis)
+
 surveyKeysList = rjson::fromJSON(file="./output/results_sim_survey.json")
 infKeysList = rjson::fromJSON(file="./output/results_inf_polys.json")
 
-names(surveyKeysList)
-names(infKeysList)
-
-surveyUgaKeys = intersect(surveyKeysList[["mask_uga_hole"]], surveyKeysList[["mask_uga_kam"]])
-
-
-# surveyDrcNwKeys = surveyKeysList[["2017_mask_drc_nw"]]
-# y = intersect(surveyUgaKeys, surveyDrcNwKeys)
-
-# resList = list()
-
-# Uga + inf NW
-infDrcNwKeys = union(infKeysList[["2018-COD.23_1"]], infKeysList[["2018-COD.20_1"]])
-
-ugaDrcNwKeys = intersect(surveyUgaKeys, infDrcNwKeys)
-
-
-x = surveyKeysList[["2017_mask_drc_nw"]]
-# intersect(x, surveyUgaKeys)
-
-
-# resList[["survey_uga_inf_drc-nw"]] = ugaDrcNwKeys
-
-# Inf DRC central small
-ugaDrcCenSmallKeys = intersect(surveyUgaKeys, infKeysList[["2018-mask_drc_central_small"]])
-
-
-# Survey drc central small
-ugaSurveyDrcCenSmallKeys = intersect(surveyUgaKeys, surveyKeysList[["2017_mask_drc_central_small"]])
+# names(surveyKeysList)
 
 # Parse NGA arrival times
 polysDf = readRDS("./output/raster_poly_stats_agg_minimal.rds")
@@ -40,82 +15,85 @@ simKeys = paste(polysDfNgaRaw$scenario, polysDfNgaRaw$batch, polysDfNgaRaw$job, 
 
 polysDfNga = cbind(polysDfNgaRaw, simKey=simKeys)
 
-getArrivalVec = function(
-    polysDfNga, 
-    title,
-    matchKeys=NULL
-    ){
-    
-    if(!is.null(matchKeys)){
-        matchDf = polysDfNga[polysDfNga$simKey%in%matchKeys,]    
-    }else{
-        matchDf = polysDfNga
-    }
-    
-    splitMatch = split(matchDf, matchDf$simKey)
-    
-    minYearVec = c()
-    for(thisMatchDf in splitMatch){
-        minYear = min(thisMatchDf[thisMatchDf$raster_num_fields > 0, "raster_year"])
-        minYearVec = c(minYearVec, minYear)
-        
-    }
-    
-    propInf = round(sum(is.infinite(minYearVec)) / length(minYearVec), digits=3)
-    meanVal = round(mean(minYearVec[!is.infinite(minYearVec)]), digits=1)
-    
-    fullTitle = paste0(title, " - propInf: ", propInf, " - len: ", length(minYearVec), " - avg: ", meanVal)
-    
-    hist(minYearVec, main=fullTitle, breaks=2020:2050)
-    
-    return(minYearVec)
-}
-
-getArrivalVec(
+# --------------------------------------------------------------------------------------
+# Plot all
+utils_analysis$getArrivalVec(
     polysDfNga=polysDfNga,
-    title="all"
-    
+    title="unconstrained"
 )
 
-getArrivalVec(
+# Uga
+surveyUgaKeys = intersect(surveyKeysList[["mask_uga_hole"]], surveyKeysList[["mask_uga_kam"]])
+
+utils_analysis$getArrivalVec(
     polysDfNga=polysDfNga,
-    title="surveyUgaKeys",
+    title="survey_uga",
     matchKeys=surveyUgaKeys
 )
 
-getArrivalVec(
+# Inf DRC central small
+ugaDrcCenSmallKeys = intersect(surveyUgaKeys, infKeysList[["2018-mask_drc_central_small"]])
+
+utils_analysis$getArrivalVec(
     polysDfNga=polysDfNga,
     title="survey_uga_inf_drc-central-small",
     matchKeys=ugaDrcCenSmallKeys
 )
 
-getArrivalVec(
+# Survey drc central small
+ugaSurveyDrcCenSmallKeys = intersect(surveyUgaKeys, surveyKeysList[["2017_mask_drc_central_small"]])
+
+utils_analysis$getArrivalVec(
     polysDfNga=polysDfNga,
     title="survey_uga_survey_drc-central-small",
     matchKeys=ugaSurveyDrcCenSmallKeys
 )
 
+# Uga + inf NW (inf = +1 year as instantaneous at end)
+infDrcNwKeys = union(infKeysList[["2018-COD.23_1"]], infKeysList[["2018-COD.20_1"]])
 
-getArrivalVec(
+utils_analysis$getArrivalVec(
     polysDfNga=polysDfNga,
     title="inf_drc-nw",
     matchKeys=infDrcNwKeys
 )
 
-getArrivalVec(
+ugaDrcNwKeys = intersect(surveyUgaKeys, infDrcNwKeys)
+
+utils_analysis$getArrivalVec(
     polysDfNga=polysDfNga,
     title="survey_uga_inf_drc-nw",
     matchKeys=ugaDrcNwKeys
 )
 
+# Get for either COD regions
+surveyUgaSurveyDrc = intersect(surveyUgaKeys, surveyKeysList[["2016_COD.3_1"]])
 
+utils_analysis$getArrivalVec(
+    polysDfNga=polysDfNga,
+    title="survey_uga_survey_drc_2016",
+    matchKeys=surveyUgaSurveyDrc
+)
 
-# getArrivalVec(
-#     polysDfNga=polysDfNga,
-#     title="drem",
-#     matchKeys=x
-# )
-# 
+# ZBA 2017
+surveyZba2017 = union(surveyKeysList[["2017_ZMB.4_1"]], surveyKeysList[["2017_ZMB.8_1"]])
+surveyUgaSurveyZba2017 = intersect(surveyUgaKeys, surveyZba2017)
+
+utils_analysis$getArrivalVec(
+    polysDfNga=polysDfNga,
+    title="survey_uga_survey_zba_2017",
+    matchKeys=surveyUgaSurveyZba2017
+)
+
+# ZBA 2018
+surveyZba2018 = union(surveyKeysList[["2018_ZMB.4_1"]], surveyKeysList[["2018_ZMB.8_1"]])
+surveyUgaSurveyZba2018 = intersect(surveyUgaKeys, surveyZba2018)
+
+utils_analysis$getArrivalVec(
+    polysDfNga=polysDfNga,
+    title="survey_uga_survey_zba_2018",
+    matchKeys=surveyUgaSurveyZba2018
+)
 
 
 

@@ -131,6 +131,8 @@ genPolyIndex = function(
 
             # NB: Only write out if GREATER THAN 1 survey points in poly
             if(nrow(thisPolyIndexDf)>1){
+
+                print(outPolyIndexPath)
  
                 write.csv(thisPolyIndexDf, outPolyIndexPath, row.names = F)
 

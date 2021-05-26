@@ -59,7 +59,7 @@ Outputs:
 
 ### Agg sim survey output and append target data for easy comparison
 
-**Script: `analysis/process_sim_output.R`**
+**Script: `analysis/package_sim_survey/process_sim_output.R`**
 
 **NB: This is also a work in progress and probably to specific in terms of previous use cases from ABC stuff**
 

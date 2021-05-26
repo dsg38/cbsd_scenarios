@@ -24,28 +24,32 @@ resList[["mask_uga_kam"]] = utils_analysis$applyAllPolySuffix(
     tol = tol
 )
 
-# Any in each DRC poly in 2017
-drcPolyNameVec = c(
+# Any inf in each of following polys of interest
+polyNameVec = c(
     "2017_mask_drc_central_small",
     "2017_mask_drc_central_big",
     "2017_mask_drc_nw",
-    "2017_mask_drc_central_south"
+    "2017_mask_drc_central_south",
+    "2016_COD.24_1",
+    "2016_COD.3_1",
+    "2017_ZMB.4_1",
+    "2017_ZMB.8_1",
+    "2018_ZMB.4_1",
+    "2018_ZMB.8_1"
 )
 
-for(drcPolyName in drcPolyNameVec){
+for(polyName in polyNameVec){
 
-    print(drcPolyName)
+    print(polyName)
 
-    passKeysDrc = utils_analysis$anyInfSpecificPoly(
+    passKeys = utils_analysis$anyInfSpecificPoly(
         resultsDf = resultsDf,
-        polyName = drcPolyName
+        polyName = polyName
     )
 
-    resList[[drcPolyName]] = passKeysDrc
+    resList[[polyName]] = passKeys
 
 }
 
 outJson = rjson::toJSON(resList, indent=4)
-
 readr::write_file(outJson, outPath)
-
