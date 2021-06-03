@@ -76,11 +76,11 @@ By pointing at the batch launch script, this script finds the inputs:
 
 ### Analyse sim survey
 
-**Script: `analysis/package_sim_survey/utils.R`**
+**Script: `analysis/package_sim_survey/utils_analysis_sim_survey.R`**
 
-This `utils.R` box module provides the functions to analyse different scenarios. 
+This `utils_analysis_sim_survey.R` box module provides the functions to analyse different scenarios.
 
-TODO: Will likely refactor so the actual analysis script that uses these functions lives together with all scenario analysis code in some version controlled bit of e.g. results.
+The scripts that use these utils to analyse results live in the relevant `analysis/results/` folder i.e. with the specific scenario data.
 
 ## Infection rasters (arrival times in different polys)
 

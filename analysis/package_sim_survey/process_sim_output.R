@@ -2,8 +2,8 @@ args = commandArgs(trailingOnly=TRUE)
 box::use(./utils_process)
 # box::reload(utils_process)
 
-launchScriptPath = args[[1]]
 # launchScriptPath = "../../simulations/launch/2021_03_17_cross_continental_launch.sh"
+launchScriptPath = args[[1]]
 
 # ----------------------------------------------------
 # Parse launch script and assign key variables
