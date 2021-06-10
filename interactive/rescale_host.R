@@ -20,12 +20,12 @@ rescaleHost = function(
 
 }
 
-# rescaleHost(
-#     hostRasterPath = "../inputs/inputs_scenarios/2021_03_17_uganda/inputs/L_0_HOSTDENSITY.txt",
-#     outPath = "data/host_num_fields_uga.tif"
-# )
+rescaleHost(
+    hostRasterPath = "../inputs/inputs_scenarios/2021_03_17_uganda/inputs/L_0_HOSTDENSITY.txt",
+    outPath = "data/host_num_fields_uga.tif"
+)
 
 rescaleHost(
-    hostRasterPath = "./data/raw/host.tif",
+    hostRasterPath = "../inputs/inputs_raw/host_landscape/default/host.tif",
     outPath = "data/host_num_fields.tif"
 )
