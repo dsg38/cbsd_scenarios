@@ -17,8 +17,15 @@ polyNameVec = c(
     # "2018-mask_drc_nw",
     # "2018-mask_drc_central_south",
     
+    # DRC small region around confirmed positives (Monde near Kisangani)
+    "2017-mask_drc_central_small",
+    "2018-mask_drc_central_small",
+
     # NW DRC
+    "2017-COD.23_1",
     "2018-COD.23_1",
+
+    "2017-COD.20_1",
     "2018-COD.20_1",
     
     # Rwanda + Burundi first confirmed (start of year of detection + End of year (consistent with our survey assumption))
@@ -38,6 +45,7 @@ polyNameVec = c(
     
     "2017-ZMB.8_1",
     "2018-ZMB.8_1"
+
 )
 
 resList = list()
