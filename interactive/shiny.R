@@ -1,53 +1,48 @@
-# this is a shiny web app. Save as app.r
-
 library(shiny)
 library(leaflet)
-library(dplyr)
+# library(RColorBrewer)
 
-# Define UI for application that draws a map
-data<- readRDS("f.rds") # loading the data. It has the timestamp, lon, lat, and the accuracy (size of circles)
+# Read cbsd data
+surveyDf = sf::read_sf("./data/survey_data.gpkg")
+
+bbox = sf::st_bbox(surveyDf)
+
+pal = colorFactor(
+        palette = c('green', 'red'),
+        domain = c(0, 1)
+)
+
 
 ui <- bootstrapPage(
-  tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
-  leafletOutput("mapAct", width = "100%", height = "100%"),
-  absolutePanel(top = 10, right = 10,
-  sliderInput("animation", "Time:",
-              min = as.POSIXct("2017-02-15 00:00:00",tz = "Europe/Budapest"),
-              max = as.POSIXct("2017-02-15 23:59:59",tz = "Europe/Budapest"),
-              value = as.POSIXct("2017-02-15 00:00:00",tz = "Europe/Budapest"),
-              timezone = "+0200",
-              animate =
-                animationOptions(interval = 600, loop = TRUE))
-  )
-                
-  )
+    tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
+    leafletOutput("map", width = "100%", height = "100%"),
+    absolutePanel(top = 10, right = 10,
+        sliderInput("range", "Magnitudes", min(surveyDf$year), max(surveyDf$year), sep="",
+            value = range(surveyDf$year), step = 1,
+            dragRange=TRUE,
+            animate=list(interval=2000)
+        )
+    )
+)
 
+server <- function(input, output, session) {
 
-# Define server logic required
-server <- function(input, output) {
-  #stuff in server
-  filteredData <- reactive({
-    #add rollified thing
-    from<- input$animation-90
-    till<- input$animation+90
-    data %>% filter(time >= from & time <=  till)
-  })
-  
-  output$mapAct<-renderLeaflet({
-    leaflet() %>%
-      addTiles() %>%
-      addProviderTiles(providers$CartoDB.Positron)%>%
-      fitBounds(lng1 = 5,lat1 = 52,lng2 = 5.2,lat2 = 52.2)# set to reactive minimums
-  })
-  
-  observe({
-    leafletProxy("mapAct", data = filteredData()) %>%
-      clearShapes() %>%
-      addCircles(lng = ~lon, lat = ~lat,
-                 radius = ~accuracy, fillOpacity = 0.02,color = "#DF2935")
-  })
-  
+    filteredData <- reactive({
+            surveyDf[surveyDf$year >= input$range[1] & surveyDf$year <= input$range[2],]
+    })
+
+    output$map <- renderLeaflet({
+        leaflet(surveyDf) %>% 
+            addTiles() %>%
+            fitBounds(bbox[["xmin"]], bbox[["ymin"]], bbox[["xmax"]], bbox[["ymax"]])
+    })
+
+    observe({
+        leafletProxy("map", data = filteredData()) %>%
+            clearShapes() %>%
+            addCircles(radius = 2500, color = ~pal(cbsd))
+    })
+
 }
 
-# Run the application 
-shinyApp(ui = ui, server = server)
+shinyApp(ui, server)

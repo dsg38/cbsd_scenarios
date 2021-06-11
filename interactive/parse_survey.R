@@ -2,4 +2,6 @@ surveyDfRaw = read.csv("../../cbsd_landscape_model/input_generation/surveillance
 
 surveyDf = sf::st_as_sf(surveyDfRaw, coords=c("x", "y"))
 
-sf::write_sf(surveyDf, "data/survey_data.gpkg")
+surveyDfOut = surveyDf[surveyDf$year>1970,]
+
+sf::write_sf(surveyDfOut, "data/survey_data.gpkg")
