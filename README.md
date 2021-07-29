@@ -28,6 +28,8 @@ There are two different output types:
 
 **Script: `inputs/build_inputs.R`**
 
+The goal is to specify the locations where I want simulated surveillance to occur. 
+
 If the `config.json` contains `processSurvey` key and info specifying:
 
 * Survey rasters
@@ -41,7 +43,7 @@ Then the script will
   * This XY index output is saved in the scenario dir in a folder called `survey_poly_index`. It has to be calculated on a scenario basis as the zero indexed XY raster cell positions depend on the extent of the scenario. So cannot be stored with the raw polygons / sim survey rasters.
 
 
-### Calculate target inf prop stats for each poly per survey time point
+### Calculate the proportion of survey points that are infected within a given polygon at a given time (i.e. infectious proportion stats)
 
 **Script: e.g. `inputs/process_polys/polys_0.R`**
 
@@ -57,11 +59,11 @@ Outputs:
 * With the `inputs_raw/survey_rasters` data, for a given poly sf df (e.g. `polys_0`), saves csvs specifying the per poly yearly inf prop.
 
 
-### Agg sim survey output and append target data for easy comparison
+### Aggregate simulated survey stats and append target data for easy comparison (i.e. compare simulated inf prop to real world inf prop)
 
 **Script: `analysis/package_sim_survey/process_sim_output.R`**
 
-**NB: This is also a work in progress and probably to specific in terms of previous use cases from ABC stuff**
+**NB: This is also a work in progress and probably too specific in terms of previous use cases from ABC stuff**
 
 By pointing at the batch launch script, this script finds the inputs:
 
@@ -74,7 +76,7 @@ By pointing at the batch launch script, this script finds the inputs:
 * This func looks at the target data for each mask / time point and appends to the sim output stats. So the simulated poly stats can be easily compared to target data stats.
 
 
-### Analyse sim survey
+### Analyse simulated surveillance results
 
 **Script: `analysis/package_sim_survey/utils_analysis_sim_survey.R`**
 
