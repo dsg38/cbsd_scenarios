@@ -43,18 +43,20 @@ Outputs:
 
 **Script: `results/*/*/analyse.R`**
 
-This script
-
+This script combines any set of constraints to isolate the simulations that meet these constraints. The script then plots a histogram of the years in which these simulations lead to infection in the infectious raster within a given polygon (e.g. arrival times of CBSD in Nigeria).
 
 Dependencies:
 
 - `./utils_analysis.R`
 
-Inputs
+Inputs:
 
 - `results/*/*/output/results_sim_survey.json`
 - `output/results_inf_polys.json`
 
+Outputs:
+
+- `plots/*.png`
 
 
 <!-- # Process
