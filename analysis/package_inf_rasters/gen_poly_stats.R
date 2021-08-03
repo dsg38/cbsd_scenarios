@@ -81,6 +81,8 @@ toc()
 # Drop poly geom to speed up
 sf::st_geometry(polyDf) = NULL
 
+# NB: Are these two identical loops split for memory reasons or can they be merged?
+
 # Build output stats
 dfList = list()
 for(rasterPath in rasterPaths){

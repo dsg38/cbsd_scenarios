@@ -92,7 +92,40 @@ See top level section for details.
 
 ### Processing inf rasters to generate stats for each inf raster / year per poly
 
+Script: `analysis/package_inf_rasters/gen_poly_stats.R`
 
+Process the output raster files in a single simulation job folder to calculate statistics based on a given set of polygons. For example, if infectious rasters were output every year by the sim, for each raster and for each polygon of interest, this script will 1) convert the inf raster to a proportion of host infected raster, 2) calculate total amount of infection within the polygon and 3) calculate the level of infection relative to host.
+
+Inputs: 
+
+- `analysis/results/*/*/config_inf_polys.json` = Config json specifying paths to 1) simulations dir, 2) the polygons sf df, 3) the host lanscape input file
+- Job index = which job in the simulations folder e.g. `job0`
+
+Outputs:
+
+- `simulations/sim_output/*/*/job*/raster_poly_stats.rds` = Stats df for all rasters for each poly at the job level
+
+
+### Aggregate raster poly stats df across all jobs
+
+Script: `analysis/package_inf_rasters/aggregate.R`
+
+Read in `raster_poly_stats.rds` from all `job*` and merge into a single file. 
+
+Inputs:
+
+- `analysis/results/*/*/config_inf_polys.json` = Same config as previous
+
+Outputs:
+
+- `simulations/sim_output/*/*/raster_poly_stats.rds` = Merged file at the batch level
+- `simulations/sim_output/*/*/raster_poly_stats_agg_minimal.rds` = Same as `raster_poly_stats.rds` but dropping non-essential columns for analysis memory reasons.
+
+### Merge across batches
+
+Script: `analysis/package_inf_rasters/merge.R`
+
+Merge `raster_poly_stats_agg_minimal.rds` from multiple batches into a single file.
 
 
 ### Analysing stats
