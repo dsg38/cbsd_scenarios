@@ -15,15 +15,10 @@ plottingPriority = reorder(arrivalDf[,"POLY_ID"], arrivalDf[,"arrival_year"], FU
 p = ggplot(arrivalDf, aes(x=plottingPriority, y=arrival_year)) + 
     geom_boxplot() + 
     coord_flip(ylim=c(yearMin, yearMax)) + 
-    scale_y_continuous(breaks=seq(yearMin, yearMax, 5))
+    scale_y_continuous(breaks=seq(yearMin, yearMax, 5)) + 
+    xlab(NULL) + 
+    ylab("Arrival Year") #+
+    # theme(axis.text=element_text(size=14), axis.title=element_text(size=14))
 p
 
-
-# p = ggplot(summaryDf, aes(x = myOrder, y = summaryDf[,whichCol]+startYear)) + geom_boxplot()
-# # p = p + geom_hline(yintercept=2019, linetype="dashed", color = "red")
-# p = p + coord_flip(ylim=c(plotYearMin, plotYearMax)) + scale_y_continuous(breaks=seq(plotYearMin, plotYearMax, 5))
-# p = p + ylab(stringBarplot) + xlab("")
-# p = p + theme(axis.text=element_text(size=14), axis.title=element_text(size=14))
-# # p = p + theme(axis.text=element_text(size=14))
-# 
-# ggsave(outPathBoxplot)#, scale=0.7)#, dpi=600)
+# ggsave("waz.png")

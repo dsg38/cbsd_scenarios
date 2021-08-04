@@ -1,4 +1,9 @@
 rasterStatsDf = readRDS("./results/2021_03_26_cross_continental/2021_04_29_merged/output/raster_poly_stats_agg_minimal_SMALL.rds")
+outPath = "plots/propYearDf.csv"
+
+propThresholdVec = c(0, 0.25, 0.5, 0.75)
+
+# ------------------------------------------------
 
 # Split by job/batch/poly
 splitDfList = split(
@@ -11,36 +16,56 @@ splitDfList = split(
     drop=TRUE
 )
 
-# Extract arrival year, otherwise Inf
-getArrivalYearRow = function(thisDf){
+# Extract first year poly inf exceeds prop threshold, otherwise Inf
+getPropThresholdRows = function(
+    thisDf,
+    propThresholdVec
+    ){
     
     thisJobId = thisDf$job[[1]]
     thisPolyId = thisDf$POLY_ID[[1]]
     thisBatch = thisDf$batch[[1]]
-    
-    # What is arrival year?
-    anyInfDf = thisDf[thisDf$raster_num_fields > 0,]
-    
-    # Deal with never arriving case
-    if(nrow(anyInfDf) == 0){
-        arrivalYear = Inf
-    }else{
-        arrivalYear = min(anyInfDf$raster_year)    
+
+    # Loop over different threshold proportions
+    outRowList = list()
+    for(propThreshold in propThresholdVec){
+
+        # Which year rows exceed this proportion
+        aboveThresholdDf = thisDf[thisDf$raster_prop_fields > propThreshold,]
+        
+        # Deal with never arriving case
+        if(nrow(aboveThresholdDf) == 0){
+            raster_year = Inf
+        }else{
+            raster_year = min(aboveThresholdDf$raster_year)    
+        }
+        
+        # Build row
+        outRow = data.frame(
+            POLY_ID=thisPolyId,
+            job=thisJobId,
+            batch=thisBatch,
+            prop=propThreshold,
+            raster_year=raster_year
+        )
+
+        # Add to list
+        outRowList[[as.character(propThreshold)]] = outRow
+
     }
+
+    # Merge rows
+    outDf = dplyr::bind_rows(outRowList)
+
+    return(outDf)
     
-    outRow = data.frame(
-        POLY_ID=thisPolyId,
-        job=thisJobId,
-        batch=thisBatch,
-        arrival_year=arrivalYear
-    )
 }
 
 # Apply to all dfs
-rowList = pbapply::pblapply(splitDfList, getArrivalYearRow)
+rowList = pbapply::pblapply(splitDfList, getPropThresholdRows, propThresholdVec)
 
 # Merge
-arrivalDf = dplyr::bind_rows(rowList)
+propYearDf = dplyr::bind_rows(rowList)
 
 # Save
-write.csv(arrivalDf, "plots/arrivalDf.csv", row.names = FALSE)
+write.csv(propYearDf, outPath, row.names = FALSE)
