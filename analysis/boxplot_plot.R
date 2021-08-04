@@ -27,7 +27,7 @@ genPlot = function(
     thisPropDf$raster_year[is.infinite(thisPropDf$raster_year)] = infReplaceVal
     
     # Decide order
-    plottingPriority = reorder(thisPropDf[,"POLY_ID"], thisPropDf[,"raster_year"], FUN=quantile, probs=0.75)
+    plottingPriority = reorder(thisPropDf[,"display_name"], thisPropDf[,"raster_year"], FUN=quantile, probs=0.75)
     
     p = ggplot(thisPropDf, aes(x=plottingPriority, y=raster_year)) + 
         geom_boxplot() + 
@@ -41,8 +41,17 @@ genPlot = function(
     
 }
 
-propYearDf = read.csv("./plots/propYearDf.csv")
+propYearDfRaw = read.csv("./plots/propYearDf.csv")
+dispDf = read.csv(here::here("inputs/process_polys/outputs/poly_display_names.csv"))
 
+# Append display name
+propYearDf = dplyr::left_join(propYearDfRaw, dispDf, by="POLY_ID")
+if(any(is.na(propYearDf))){
+    stop("Missing display names")
+}
+
+
+# Loop over prop thresholds
 propThresholdVec = unique(propYearDf$prop)
 
 yearMin = 2004
