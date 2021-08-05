@@ -1,9 +1,14 @@
 rasterStatsDf = readRDS("./results/2021_03_26_cross_continental/2021_04_29_merged/output/raster_poly_stats_agg_minimal.rds")
+catDf = read.csv("../inputs/process_polys/outputs/country_categories.csv")
 
-unique(maskBool$)
+polyIdVec = catDf$POLY_ID[catDf$waveBool | catDf$cdpBool | catDf$interestingBool]
 
-maskBool = stringr::str_detect(rasterStatsDf$POLY_ID, "mask_")
+# unique(maskBool$)
+# maskBool = stringr::str_detect(rasterStatsDf$POLY_ID, "mask_")
 
-rasterStatsDfSmall = rasterStatsDf[maskBool,]
+keepBool = rasterStatsDf$POLY_ID %in% polyIdVec
+
+rasterStatsDfSmall = rasterStatsDf[keepBool,]
 
 saveRDS(rasterStatsDfSmall, "./results/2021_03_26_cross_continental/2021_04_29_merged/output/raster_poly_stats_agg_minimal_SMALL.rds")
+

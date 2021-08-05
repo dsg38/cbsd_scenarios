@@ -27,7 +27,7 @@ genPlot = function(
     thisPropDf$raster_year[is.infinite(thisPropDf$raster_year)] = infReplaceVal
     
     # Decide order
-    plottingPriority = reorder(thisPropDf[,"display_name"], thisPropDf[,"raster_year"], FUN=quantile, probs=0.75)
+    plottingPriority = reorder(thisPropDf[,"display_name"], thisPropDf[,"raster_year"], FUN=quantile, probs=0.25)
     
     p = ggplot(thisPropDf, aes(x=plottingPriority, y=raster_year)) + 
         geom_boxplot() + 
@@ -45,11 +45,18 @@ propYearDfRaw = read.csv("./plots/propYearDf.csv")
 dispDf = read.csv(here::here("inputs/process_polys/outputs/poly_display_names.csv"))
 
 # Append display name
-propYearDf = dplyr::left_join(propYearDfRaw, dispDf, by="POLY_ID")
-if(any(is.na(propYearDf))){
+propYearDfRaw = dplyr::left_join(propYearDfRaw, dispDf, by="POLY_ID")
+if(any(is.na(propYearDfRaw))){
     stop("Missing display names")
 }
 
+# Add batchJobKey
+batchJobKeyVec = paste0(propYearDfRaw$batch, "-", propYearDfRaw$job)
+
+propYearDf = cbind(
+    propYearDfRaw, 
+    batchJobKey=batchJobKeyVec
+)
 
 # Loop over prop thresholds
 propThresholdVec = unique(propYearDf$prop)
@@ -57,16 +64,54 @@ propThresholdVec = unique(propYearDf$prop)
 yearMin = 2004
 yearMax = 2054
 
-for(propThreshold in propThresholdVec){
+
+# Read in constrainsts json
+constraintList = rjson::fromJSON(file = "./results/2021_03_26_cross_continental/2021_04_29_merged/output/constraint_sim_keys.json")
+
+# Convert to job list
+getJob = function(constraintVal){
+    x = stringr::str_split(constraintVal, "-")
+    job = x[[1]][[3]]
+    batch = x[[1]][[2]]
     
-    outPath = file.path('./plots', paste0("boxplot_prop_", propThreshold, ".png"))
+    batchJobKey = paste0(batch, "-", job)
     
-    genPlot(
-        propYearDf=propYearDf,
-        propThreshold=propThreshold,
-        yearMin=yearMin,
-        yearMax=yearMax,
-        outPath=outPath
-    )
+    return(batchJobKey)
+}
+
+constraintListJob = list()
+for(constraintKey in names(constraintList)){
+    
+    constraintVec = constraintList[[constraintKey]]
+    
+    jobVec = sapply(constraintVec, getJob, USE.NAMES=FALSE)
+    
+    constraintListJob[[constraintKey]] = jobVec
+}
+
+
+# Plot all
+for(constraintKey in names(constraintListJob)){
+    
+    constraintJobVec = constraintListJob[[constraintKey]]
+    
+    propYearDfSubset = propYearDf[propYearDf$batchJobKey%in%constraintJobVec,]
+    
+    for(propThreshold in propThresholdVec){
+        
+        outPath = file.path('./plots', paste0("boxplot_", constraintKey, "_prop_", propThreshold, ".png"))
+        
+        print(outPath)
+
+        genPlot(
+            propYearDf=propYearDfSubset,
+            propThreshold=propThreshold,
+            yearMin=yearMin,
+            yearMax=yearMax,
+            outPath=outPath
+        )
+        
+    }
     
 }
+
