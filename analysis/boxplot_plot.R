@@ -99,7 +99,9 @@ for(constraintKey in names(constraintListJob)){
     
     for(propThreshold in propThresholdVec){
         
-        outPath = file.path('./plots', paste0("boxplot_", constraintKey, "_prop_", propThreshold, ".png"))
+        propThresholdStr = sprintf("%0.2f", propThreshold)
+        
+        outPath = file.path('./plots', paste0("boxplot_prop_", propThresholdStr, "_", constraintKey, ".png"))
         
         print(outPath)
 

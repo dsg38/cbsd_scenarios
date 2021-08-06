@@ -1,4 +1,3 @@
-library(shiny)
 library(leaflet)
 
 # Read cbsd data
