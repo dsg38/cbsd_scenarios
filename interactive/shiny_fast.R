@@ -39,10 +39,9 @@ server <- function(input, output, session) {
     })
 
     observe({
-        leafletProxy("map", data = filteredData()) %>%
+        leafletProxy("map") %>%
             leafgl::clearGlLayers() %>%
             leafgl::addGlPoints(filteredData(), fillColor = ~pal(cbsd))
-            # addCircles(radius = 2500, color = ~pal(cbsd))
     })
 
 }
