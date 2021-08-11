@@ -6,7 +6,7 @@
 # to a single dir.
 # ----------------------------------------------------
 box::use(utils_epidem/utils_epidem)
-box::reload(utils_epidem)
+# box::reload(utils_epidem)
 
 passDf = read.csv("./outputs/nga_arrival.csv")
 
@@ -24,12 +24,14 @@ extent_bbox = utils_epidem$get_extent_country_code_vec(country_code_vec)
 
 # -------------------------------------------------------
 
-topDir = here::here("simulations", "sim_output", "scenarioName")
+topDir = here::here("simulations", "sim_output", scenarioName)
 copyDir = here::here("analysis", "surveillance", "output", scenarioName, "rasters")
 
 dir.create(copyDir, showWarnings = FALSE, recursive = TRUE)
 
 for(iRow in seq_len(nrow(passDf))){
+
+    print(paste0(iRow, "/", nrow(passDf)))
     
     thisRow = passDf[iRow,]
     
