@@ -44,19 +44,26 @@ for(iRow in seq_len(nrow(passDf))){
         raster_path = here::here(thisJobDir, paste0(prefix, thisRasterYear, suffix))
         outPath = here::here(copyDir, paste0(thisRow$batch, "-", thisRow$job, "-", "INF", "-", thisRasterYear, ".tif"))
 
-        if(!file.exists(raster_path)){
-            print(raster_path)
-            stop("`raster_path` missing")
-        }
-        
-        # Crop
-        raster_cropped = utils_epidem$crop_raster_extent(
-            raster_path=raster_path,
-            extent_bbox=extent_bbox
-        )
+        # Skip any that have already been done
+        if(!file.exists(outPath)){
 
-        # Save
-        raster::writeRaster(raster_cropped, outPath)
+            if(!file.exists(raster_path)){
+                print(raster_path)
+                stop("`raster_path` missing")
+            }
+            
+            # # Crop
+            # raster_cropped = utils_epidem$crop_raster_extent(
+            #     raster_path=raster_path,
+            #     extent_bbox=extent_bbox
+            # )
+
+            # # Save
+            # raster::writeRaster(raster_cropped, outPath)
+
+
+        }
+
         
     }
 
