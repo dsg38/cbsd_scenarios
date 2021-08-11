@@ -6,12 +6,8 @@
 # to a single dir.
 # ----------------------------------------------------
 box::use(utils_epidem/utils_epidem)
-# box::reload(utils_epidem)
 
 passDf = read.csv("./outputs/nga_arrival.csv")
-
-# HACK!
-passDf = passDf[1:2,]
 
 scenarioName = "2021_03_26_cross_continental"
 prefix = "O_0_L_0_INFECTIOUS_"
