@@ -21,7 +21,7 @@ extent_bbox = utils_epidem$get_extent_country_code_vec(country_code_vec)
 # -------------------------------------------------------
 
 topDir = here::here("simulations", "sim_output", scenarioName)
-copyDir = here::here("analysis", "surveillance", "output", scenarioName, "rasters")
+copyDir = here::here("analysis", "surveillance", "outputs", scenarioName, "rasters")
 
 dir.create(copyDir, showWarnings = FALSE, recursive = TRUE)
 
