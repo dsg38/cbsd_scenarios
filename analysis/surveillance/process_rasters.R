@@ -49,22 +49,18 @@ for(iRow in seq_len(nrow(passDf))){
 
             if(!file.exists(raster_path)){
                 print(raster_path)
-                # stop("`raster_path` missing")
+                stop("`raster_path` missing")
             }
             
-            # # Crop
-            # raster_cropped = utils_epidem$crop_raster_extent(
-            #     raster_path=raster_path,
-            #     extent_bbox=extent_bbox
-            # )
+            # Crop
+            raster_cropped = utils_epidem$crop_raster_extent(
+                raster_path=raster_path,
+                extent_bbox=extent_bbox
+            )
 
-            # # Save
-            # raster::writeRaster(raster_cropped, outPath)
+            # Save
+            raster::writeRaster(raster_cropped, outPath)
 
-
-        }
-
-        
+        }  
     }
-
 }
