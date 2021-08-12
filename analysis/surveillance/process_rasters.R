@@ -49,7 +49,7 @@ for(iRow in seq_len(nrow(passDf))){
 
             if(!file.exists(raster_path)){
                 print(raster_path)
-                stop("`raster_path` missing")
+                # stop("`raster_path` missing")
             }
             
             # Crop
