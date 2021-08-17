@@ -17,4 +17,4 @@ survey_df_list = pbapply::pblapply(inf_raster_paths, FUN=utils_survey$do_full_su
 
 survey_df = dplyr::bind_rows(survey_df_list)
 
-saveRDS(survey_df, "big.rds")
+saveRDS(survey_df, "temp/big.rds")
