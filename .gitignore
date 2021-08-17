@@ -7,6 +7,7 @@ simulations/relaunch/output_validation
 analysis/results/*/*/output
 stuff/
 analysis/surveillance/outputs/2021_03_26_cross_continental
+analysis/surveillance/temp
 
 # History files
 .Rhistory
