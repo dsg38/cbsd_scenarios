@@ -7,7 +7,7 @@
 # ----------------------------------------------------
 box::use(utils_epidem/utils_epidem)
 
-passDf = read.csv("./outputs/nga_arrival.csv")
+passDf = read.csv("./outputs/2021_03_26_cross_continental/sim_subset/nga_arrival.csv")
 
 scenarioName = "2021_03_26_cross_continental"
 prefix = "O_0_L_0_INFECTIOUS_"

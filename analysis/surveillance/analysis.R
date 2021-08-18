@@ -1,4 +1,4 @@
-survey_df = readRDS("./temp/big_OLD.rds")
+survey_df = readRDS("./temp/big.rds")
 
 survey_df_split = split(survey_df, list(survey_df$batch, survey_df$job), drop=TRUE)
 

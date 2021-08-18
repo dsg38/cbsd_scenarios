@@ -6,7 +6,7 @@ dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
 raster_paths = list.files(raster_dir, full.names = TRUE)
 
-host_raster = raster::raster("./outputs/2021_03_26_cross_continental/host/host_num_fields.tif")
+host_raster = raster::raster("./outputs/2021_03_26_cross_continental/host/host_real/host_num_fields.tif")
 
 i = 1
 for(raster_path in raster_paths){

@@ -1,8 +1,8 @@
 box::use(./utils_survey)
 # box::reload(utils_survey)
 
-raster_survey_df = read.csv("./outputs/survey_scheme.csv")
-host_raster_path = "./outputs/2021_03_26_cross_continental/host/host_num_fields.tif"
+raster_survey_df = read.csv("./outputs/2021_03_26_cross_continental/survey_locations/host_real/survey_real/survey_scheme.csv")
+host_raster_path = "./outputs/2021_03_26_cross_continental/host/host_real/host_num_fields.tif"
 inf_raster_dir = "./outputs/2021_03_26_cross_continental/rasters_num_fields/"
 
 # ----------------------------------------------------------------

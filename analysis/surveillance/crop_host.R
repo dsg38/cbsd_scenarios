@@ -13,4 +13,4 @@ host_cropped = utils_epidem$crop_raster_extent(
 
 host_num_fields = host_cropped * 1000
 
-raster::writeRaster(host_num_fields, "./outputs/2021_03_26_cross_continental/host/host_num_fields.tif")
+raster::writeRaster(host_num_fields, "./outputs/2021_03_26_cross_continental/host/host_real/host_num_fields.tif")

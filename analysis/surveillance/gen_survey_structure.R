@@ -1,8 +1,8 @@
 box::use(dplyr[`%>%`])
 
-survey_df = sf::read_sf("./outputs/survey_locations/real/NGA-2017.gpkg")
+survey_df = sf::read_sf("./outputs/2021_03_26_cross_continental/survey_locations/host_real/survey_real/NGA-2017.gpkg")
 
-raster_path = "./outputs/2021_03_26_cross_continental/host/host_num_fields.tif"
+raster_path = "./outputs/2021_03_26_cross_continental/host/host_real/host_num_fields.tif"
 
 raster_layer = raster::raster(raster_path)
 
@@ -23,7 +23,7 @@ stats_df = dplyr::left_join(num_fields_df, cells_df, by="cells") %>%
 stats_df_drop = stats_df[stats_df$problem_bool==FALSE,]
 
 # Save
-write.csv(stats_df_drop, "./outputs/survey_scheme.csv", row.names = FALSE)
+write.csv(stats_df_drop, "./outputs/2021_03_26_cross_continental/survey_locations/host_real/survey_real/survey_scheme.csv", row.names = FALSE)
 
 
 
