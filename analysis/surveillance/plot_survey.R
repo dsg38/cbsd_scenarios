@@ -49,7 +49,7 @@ for(year in names(survey_sf_split)){
         theme(legend.position = "none")
     
     # Save plot
-    out_path = file.path("./outputs//2021_03_26_cross_continental/plots/surveys/", paste0(batch, "-", job, "-", year, ".png"))
+    out_path = file.path("./outputs//2021_03_26_cross_continental/plots/surveys/", paste0(batch, "-", job, "-INF-", year, ".png"))
     ggsave(filename=out_path, plot=p)
 }
 
