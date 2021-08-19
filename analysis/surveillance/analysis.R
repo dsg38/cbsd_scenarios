@@ -1,8 +1,8 @@
-survey_df = readRDS("./temp/big.rds")
+survey_df = readRDS("./outputs/2021_03_26_cross_continental/results/big.rds")
 
 survey_df_split = split(survey_df, list(survey_df$batch, survey_df$job), drop=TRUE)
 
-# thisSurveyDf = survey_df_split[[1]]
+thisSurveyDf = survey_df_split[[1]]
 
 getDetectionYear = function(thisSurveyDf){
     
@@ -35,3 +35,5 @@ detectionYearDf = dplyr::bind_rows(detectionYearDfList)
 # TODO: Do I only look at 
 hist(detectionYearDf$lag_years, breaks=seq(-0.5, 5.5, 1))
 mean(detectionYearDf$lag_years)
+
+write.csv(detectionYearDf, "./outputs/2021_03_26_cross_continental/results/detection_year.csv", row.names=FALSE)
