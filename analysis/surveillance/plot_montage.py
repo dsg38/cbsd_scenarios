@@ -3,9 +3,13 @@ from pathlib import Path
 
 scenario = '2021_03_26_cross_continental'
 batch = '2021_03_29_batch_0'
-job = 'job200'
+job = 'job133'
+
+detection_year = 1
 
 # ----------------------------------------------
+
+detection_year_str = 'detection_year_' + str(detection_year)
 
 topDir = Path('./outputs') / scenario / 'plots'
 
@@ -19,7 +23,11 @@ for infRasterPlotPath in infRasterPlotPaths:
 
     plotName = infRasterPlotPath.name
 
-    outPath = Path('./outputs/2021_03_26_cross_continental/plots/montage/') / plotName
+    print(plotName)
+
+    outPath = Path('./outputs/2021_03_26_cross_continental/plots/montage/') / detection_year_str / plotName
+
+    outPath.parent.mkdir(parents=True, exist_ok=True)
 
     cmd = [
         'montage',
