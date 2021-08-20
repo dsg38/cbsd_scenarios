@@ -66,7 +66,7 @@ do_raster_cell_survey = function(
         num_fields_ceil=host_raster_val,
         num_infected_fields_ceil=inf_raster_val,
         num_surveys=num_surveys,
-        num_positive_surveys_0.00=num_positive_surveys
+        num_positive_surveys_0_00=num_positive_surveys
     )
 
     out_row = dplyr::bind_cols(

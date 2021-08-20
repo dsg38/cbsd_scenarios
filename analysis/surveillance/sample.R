@@ -34,14 +34,14 @@ calcSurveyFalseNeg = function(
     return(survey_num_pos_drop)
 }
 
-num_positive_surveys_0.15 = sapply(survey_df$num_positive_surveys_0.00, FUN=calcSurveyFalseNeg, false_neg_prob=0.15)
+num_positive_surveys_0_15 = sapply(survey_df$num_positive_surveys_0_00, FUN=calcSurveyFalseNeg, false_neg_prob=0.15)
 
-num_positive_surveys_0.30 = sapply(survey_df$num_positive_surveys_0.00, FUN=calcSurveyFalseNeg, false_neg_prob=0.3)
+num_positive_surveys_0_30 = sapply(survey_df$num_positive_surveys_0_00, FUN=calcSurveyFalseNeg, false_neg_prob=0.3)
 
 # Append
 survey_df_out = dplyr::bind_cols(survey_df, 
-    num_positive_surveys_0.15=num_positive_surveys_0.15,
-    num_positive_surveys_0.30=num_positive_surveys_0.30
+    num_positive_surveys_0_15=num_positive_surveys_0_15,
+    num_positive_surveys_0_30=num_positive_surveys_0_30
 
 )
 
