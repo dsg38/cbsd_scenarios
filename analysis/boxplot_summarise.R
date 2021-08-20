@@ -37,7 +37,7 @@ getPropThresholdRows = function(
         if(nrow(aboveThresholdDf) == 0){
             raster_year = Inf
         }else{
-            raster_year = min(aboveThresholdDf$raster_year)    
+            raster_year = min(aboveThresholdDf$raster_year)
         }
         
         # Build row

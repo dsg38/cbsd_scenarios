@@ -13,13 +13,13 @@ getJobBatch = function(inf_raster_name){
     splitList = strsplit(inf_raster_name, "-")[[1]]
     batch = splitList[[1]]
     job = splitList[[2]]
-    year = as.numeric(tools::file_path_sans_ext(splitList[[4]]))
+    raster_year = as.numeric(tools::file_path_sans_ext(splitList[[4]]))
     
     description_cols = data.frame(
         inf_raster_name=inf_raster_name,
         batch=batch,
         job=job,
-        year
+        raster_year
     )
     
     return(description_cols)
@@ -34,6 +34,7 @@ do_raster_cell_survey = function(
     host_raster
 ){
     
+    # browser()
     inf_raster_val = inf_raster[raster_index]
     if(!is.numeric(inf_raster_val)){
         inf_raster_val = 0
@@ -97,7 +98,7 @@ do_full_survey = function(
         survey_result_row = do_raster_cell_survey(
             inf_raster_name=inf_raster_name,
             num_surveys=this_row$num_surveys_in_cell,
-            raster_index=this_row$cells,
+            raster_index=this_row$raster_index,
             inf_raster=inf_raster,
             host_raster=host_raster
         )

@@ -16,7 +16,7 @@ survey_df_subset = survey_df[survey_df$batch==batch & survey_df$job==job,] %>%
     dplyr::left_join(mapping_df, by=c("raster_index")) %>%
     dplyr::mutate(cbsd_bool=num_positive_surveys>0)
 
-raster_year_df = unique(survey_df_subset[,c("inf_raster_name", "year")])
+raster_year_df = unique(survey_df_subset[,c("inf_raster_name", "raster_year_zero_index")])
 
 out_list = list()
 for(i_row in seq_len(nrow(raster_year_df))){
@@ -51,9 +51,9 @@ for(i_row in seq_len(nrow(stats_df))){
     this_row = stats_df[i_row,]
     
     # Plot stats
-    p = ggplot(stats_df, aes(x=year, y=inf_prop)) + 
+    p = ggplot(stats_df, aes(x=raster_year_zero_index, y=inf_prop)) + 
         geom_line(col="red") +
-        geom_point(data=this_row, aes(x=year, y=inf_prop), shape=4, size=3, stroke=3) +
+        geom_point(data=this_row, aes(x=raster_year_zero_index, y=inf_prop), shape=4, size=3, stroke=3) +
         xlab("Year") + 
         ylab("Proportion of fields infected") +
         ylim(0, 1)

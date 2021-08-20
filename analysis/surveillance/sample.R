@@ -1,9 +1,11 @@
+box::use(dplyr[`%>%`])
 box::use(./utils_survey)
 # box::reload(utils_survey)
 
 raster_survey_df = read.csv("./outputs/2021_03_26_cross_continental/survey_locations/host_real/survey_real/survey_scheme.csv")
 host_raster_path = "./outputs/2021_03_26_cross_continental/host/host_real/host_num_fields.tif"
 inf_raster_dir = "./outputs/2021_03_26_cross_continental/rasters_num_fields/"
+year_mapping_df = read.csv("./outputs/2021_03_26_cross_continental/sim_subset/year_mapping.csv")
 
 # ----------------------------------------------------------------
 
@@ -15,6 +17,7 @@ inf_raster_paths = list.files(inf_raster_dir, recursive = TRUE, full.names = TRU
 
 survey_df_list = pbapply::pblapply(inf_raster_paths, FUN=utils_survey$do_full_survey, host_raster=host_raster, raster_survey_df=raster_survey_df)
 
-survey_df = dplyr::bind_rows(survey_df_list)
+survey_df = dplyr::bind_rows(survey_df_list) %>%
+    dplyr::left_join(year_mapping_df, by=c("batch", "job", "raster_year"))
 
-saveRDS(survey_df, "temp/big.rds")
+saveRDS(survey_df, "./outputs/2021_03_26_cross_continental/results/big.rds")
