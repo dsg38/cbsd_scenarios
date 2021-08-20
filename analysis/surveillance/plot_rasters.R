@@ -3,7 +3,7 @@ box::use(utils_epidem/utils_epidem)
 box::use(tmap[...])
 
 batch = '2021_03_29_batch_0'
-job = 'job133'
+job = 'job521'
 
 mapping_df = read.csv("./outputs/2021_03_26_cross_continental/survey_locations/host_real/survey_real/survey_scheme.csv")
 survey_df = readRDS("./outputs/2021_03_26_cross_continental/results/big.rds")
@@ -34,11 +34,12 @@ plot_raster = function(
     p = tm_shape(propRaster, bbox=extent_bbox) + 
         tm_raster(
             title = "Number of CBSD\ninfected fields",
+            breaks=c(0, 10, 50, 500, 1000, 10000, 100000),
             palette="Reds"
         ) + 
         tm_shape(africa_polys_df) +
         tm_borders() + 
-        tm_layout(legend.outside = TRUE, legend.outside.size=0.15)
+        tm_layout(legend.outside = TRUE, legend.outside.size=0.2)
     
     tmap_save(p, out_path)
 
@@ -53,8 +54,8 @@ for(year in names(survey_df_split)){
     raster_name = df$inf_raster_name[[1]]
     fig_name = paste0(tools::file_path_sans_ext(raster_name), ".png")
     
-    raster_path = file.path("./outputs//2021_03_26_cross_continental/rasters_num_fields/", df$inf_raster_name[[1]])
-    out_path = file.path("./outputs/2021_03_26_cross_continental/plots/inf_rasters/", fig_name)
+    raster_path = file.path("./outputs//2021_03_26_cross_continental/rasters_num_fields_agg/", df$inf_raster_name[[1]])
+    out_path = file.path("./outputs/2021_03_26_cross_continental/plots/inf_rasters_agg/", fig_name)
     
     plot_raster(
         raster_path=raster_path,
