@@ -34,7 +34,6 @@ do_raster_cell_survey = function(
     host_raster
 ){
     
-    # browser()
     inf_raster_val = inf_raster[raster_index]
     if(!is.numeric(inf_raster_val)){
         inf_raster_val = 0
