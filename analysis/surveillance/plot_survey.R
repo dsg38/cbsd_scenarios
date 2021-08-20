@@ -16,7 +16,7 @@ survey_df_subset = survey_df[survey_df$batch==batch & survey_df$job==job,] %>%
 survey_sf = sf::st_as_sf(survey_df_subset, coords=c("longitude", "latitude"), crs="WGS84")
 
 # Split by year and plot
-survey_sf_split = split(survey_sf, survey_sf$year)
+survey_sf_split = split(survey_sf, survey_sf$raster_year_zero_index)
 
 # Gen plot constants
 africa_polys_df = utils_epidem$getAfricaPolys()
@@ -48,8 +48,10 @@ for(year in names(survey_sf_split)){
         ggtitle(paste0("Year: ", year, ", nSurveys: ", num_surveys, ", nPos: ", num_surveys_pos)) +
         theme(legend.position = "none")
     
+    raster_year = df$raster_year[[1]]
+
     # Save plot
-    out_path = file.path("./outputs//2021_03_26_cross_continental/plots/surveys/", paste0(batch, "-", job, "-INF-", year, ".png"))
+    out_path = file.path("./outputs//2021_03_26_cross_continental/plots/surveys/", paste0(batch, "-", job, "-INF-", raster_year, ".png"))
     ggsave(filename=out_path, plot=p)
 }
 
