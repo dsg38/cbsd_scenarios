@@ -63,10 +63,6 @@ plotRasters = function(
 
 }
 
-
-# batch = '2021_03_29_batch_0'
-# job = 'job521'
-
 mapping_df = read.csv("./outputs/2021_03_26_cross_continental/survey_locations/host_real/survey_real/survey_scheme.csv")
 survey_df = readRDS("./outputs/2021_03_26_cross_continental/results/big.rds")
 

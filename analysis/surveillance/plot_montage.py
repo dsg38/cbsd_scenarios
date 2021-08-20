@@ -1,51 +1,87 @@
 import subprocess
 from pathlib import Path
+import pandas as pd
+
+plotSubsetDf = pd.read_csv("./outputs/2021_03_26_cross_continental/plots/plot_subset.csv")
 
 scenario = '2021_03_26_cross_continental'
 batch = '2021_03_29_batch_0'
 job = 'job133'
-
 detection_year = 1
+
+num_positive_surveys_column_list = [
+    "num_positive_surveys_0_00",
+    "num_positive_surveys_0_15",
+    "num_positive_surveys_0_30"
+]
 
 # ----------------------------------------------
 
-detection_year_str = 'detection_year_' + str(detection_year)
+def genMontage(
+    scenario,
+    batch,
+    job,
+    detection_year,
+    num_positive_surveys_column
+):
 
-topDir = Path('./outputs') / scenario / 'plots'
+    detection_year_str = 'detection_year_' + str(detection_year)
 
-infRasterDir = topDir / 'inf_rasters'
-infPropDir = topDir / 'inf_prop'
-surveyDir = topDir / 'surveys'
+    topDir = Path('./outputs') / scenario / 'plots'
 
-infRasterPlotPaths = infRasterDir.glob(batch + '-' + job + '*')
+    topDirNumPosCol = topDir / num_positive_surveys_column
 
-for infRasterPlotPath in infRasterPlotPaths:
+    infRasterDir = topDir / 'inf_rasters_agg'
+    infPropDir = topDir / 'inf_prop'
+    surveyDir = topDirNumPosCol / 'surveys'
 
-    plotName = infRasterPlotPath.name
+    infRasterPlotPaths = infRasterDir.glob(batch + '-' + job + '*')
 
-    print(plotName)
+    for infRasterPlotPath in infRasterPlotPaths:
 
-    outPath = Path('./outputs/2021_03_26_cross_continental/plots/montage/') / detection_year_str / plotName
+        plotName = infRasterPlotPath.name
 
-    outPath.parent.mkdir(parents=True, exist_ok=True)
+        print(plotName)
 
-    cmd = [
-        'montage',
-        surveyDir / plotName,
-        './outputs/2021_03_26_cross_continental/plots/host/host.png',
-        infRasterPlotPath,
-        infPropDir / plotName,
-        '-resize',
-        'x1000',
-        '-density',
-        '600',
-        '-tile',
-        '2x2',
-        '-geometry',
-        '+5+5',
-        '-border',
-        '10',
-        outPath
-    ]
+        outPath = Path('./outputs/2021_03_26_cross_continental/plots/') / num_positive_surveys_column / 'montage' / detection_year_str / plotName
 
-    subprocess.call(cmd)
+        outPath.parent.mkdir(parents=True, exist_ok=True)
+
+        cmd = [
+            'montage',
+            surveyDir / plotName,
+            './outputs/2021_03_26_cross_continental/plots/host/host.png',
+            infRasterPlotPath,
+            infPropDir / plotName,
+            '-resize',
+            'x1000',
+            '-density',
+            '600',
+            '-tile',
+            '2x2',
+            '-geometry',
+            '+5+5',
+            '-border',
+            '10',
+            outPath
+        ]
+
+        print(cmd)
+        subprocess.call(cmd)
+
+
+for i, row in plotSubsetDf.iterrows():
+
+    print(i)
+
+    for num_positive_surveys_column in num_positive_surveys_column_list:
+
+        # print(num_positive_surveys_column)
+
+        genMontage(
+            scenario=scenario,
+            batch=row['batch'],
+            job=row['job'],
+            detection_year=row['detection_year'],
+            num_positive_surveys_column=num_positive_surveys_column
+        )
