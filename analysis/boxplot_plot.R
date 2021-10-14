@@ -89,6 +89,19 @@ for(constraintKey in names(constraintList)){
     constraintListJob[[constraintKey]] = jobVec
 }
 
+# HACK to only plot subset of polys
+# x = unique(propYearDf[, c("POLY_ID", "display_name")])
+
+dropCodes = c(
+    "MOZ",
+    "MWI",
+    "TZA",
+    "KEN"
+)
+
+propYearDf = propYearDf[!(propYearDf$POLY_ID%in%dropCodes),]
+
+
 
 # Plot all
 for(constraintKey in names(constraintListJob)){

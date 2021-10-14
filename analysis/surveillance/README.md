@@ -26,6 +26,8 @@
 
 `sample.R`
 
+Carries out the survey based on 
+
 
 
 `analysis.R`

@@ -96,71 +96,8 @@ def processallruns(outputpath, runfolders):
     pmpem.utils.combineresultsfiles(outputpath, runfolders)
     return 1
 
-def calcCheckpointTimeSecs(time_str):
-    """Get Seconds from time."""
-    h, m, s = time_str.split(':')
-    numSecs =  int(h) * 3600 + int(m) * 60 + int(s)
-
-    if numSecs > (6*60*60):
-        # If run time is more than 6 hours, checkpoint -1 hour 
-        chksecs = numSecs - (60*60)
-    else:
-        # If runtime less than 6 hours, checkpoint 25% early
-        chksecs =  int(round(numSecs * 0.75))
-    
-    return(chksecs)
-
-
-def parseCheckpointTime():
-
-    # Get all cmd line args
-    args = sys.argv
-
-    chksecs = None
-
-    # # If specified in cmd args
-    # if '--chksecs' in args:
-
-    #     print("chksecs from cmd args")
-
-    #     for i in range(len(args)):
-    #         if args[i] == '--chksecs':
-    #             chksecs = int(args[i+1])
-    # else:
-
-    print("chksecs auto")
-
-    try:
-
-        # Extract runtimerequest
-        runtimerequest = None
-        for i in range(len(args)):
-            if args[i] == '--runtimerequest':
-                runtimerequest = args[i+1]
-
-        assert(runtimerequest != None)
-
-        print("runtimerequest:")
-        print(runtimerequest)
-
-        # Calc chksecs
-        chksecs = calcCheckpointTimeSecs(runtimerequest)
-
-        assert(chksecs != None)
-
-        print("chksecs:")
-        print(chksecs)
-
-    except:
-        print("OH NO")
-
-    return(chksecs)
-
-
 if __name__ ==  '__main__':
     start = time.time()
-
-    # chksecs = parseCheckpointTime()
 
     ###########################################################################
     # Initialise the object with reference to the functions that
@@ -173,7 +110,7 @@ if __name__ ==  '__main__':
 
     ############################################################################
     # Do the runs and process the results
-    mngr.runoperation(nbatchrunscatofftime=7200, chksecs=126000)
+    mngr.runoperation(nbatchrunscatofftime=7200)
 
     end = time.time()
     print("Simulations execution time: ", end - start, " seconds.")
