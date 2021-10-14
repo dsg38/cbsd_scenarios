@@ -1,0 +1,1 @@
+This `default` vector layer is the one used for the fitting work, based on the dataset available at the time: `cbsd_landscape_model/input_generation/surveillance_data/raw_data/survey_data_summary.csv`

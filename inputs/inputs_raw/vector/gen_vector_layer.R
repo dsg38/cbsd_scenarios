@@ -2,8 +2,6 @@ library(raster)
 library(gstat)
 library(rworldmap)
 
-# genVectorLayer = function(surveyData, outDir, dataset_letter, templateRasterPath){
-
 surveyData = read.csv("../../../../cassava_data/data_merged/data/2021_10_01/cassava_data_minimal.csv") |>
     dplyr::rename(
         x=longitude,
@@ -11,20 +9,11 @@ surveyData = read.csv("../../../../cassava_data/data_merged/data/2021_10_01/cass
         vector=adult_whitefly_mean
     )
 
-
 outDir = "./cassava_data-2021_10_01"
-dataset_letter = "C"
-templateRasterPath = "./inputs/CassavaMap_Prod_v1.tif"
+
+templateRasterPath = "../host_landscape/default/host.tif"
 
 # ------------------------------------------------------------------
-
-# surveyData = read.csv("../../../../cbsd_landscape_model/input_generation/surveillance_data/raw_data/survey_data_summary.csv")
-# outDir = "./default_regen"
-# dataset_letter = "C"
-# templateRasterPath = "./inputs/CassavaMap_Prod_v1.tif"
-
-
-# -------------------------------------------------------------------------------------------
 
 dir.create(outDir, recursive=T, showWarnings = F)
 
@@ -55,17 +44,7 @@ idwRaster = raster(idwOutput)
 idwRaster[idwRaster > cap_post_idw] = cap_post_idw
 normRaster = idwRaster / cap_post_idw
 
-normRasterOutPath = file.path(outDir, paste0("idw_raster_param_", idw_param, "_data_", dataset_letter, ".tif"))
+normRasterOutPath = file.path(outDir, paste0("idw_raster_param_", idw_param, ".tif"))
 
 # Crop and write out
 writeRaster(normRaster, normRasterOutPath, overwrite=T)
-
-countryPolys = getMap(resolution = "high")
-ugaPoly = countryPolys[countryPolys@data$ADM0_A3=="UGA",]  
-
-normRasterOutPathUga = file.path(outDir, paste0("idw_raster_param_", idw_param, "_data_", dataset_letter, "_UGA.tif"))
-normRasterUga = crop(normRaster, ugaPoly)
-
-writeRaster(normRasterUga, normRasterOutPathUga, overwrite=T)
-
-# }
