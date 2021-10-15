@@ -1,4 +1,5 @@
 box::use(./utils)
+box::use(utils_epidem/utils_epidem)
 args = commandArgs(trailingOnly = TRUE)
 
 # configPath = "inputs_scenarios/2021_03_18_nigeria_region/config.json"
@@ -13,7 +14,7 @@ processVector = "processVector"
 copyGeneralFiles = "copyGeneralFiles"
 
 # Read config
-config = my::readJsonFile(configPath)
+config = utils_epidem$readJsonFile(configPath)
 
 # NB: Assumes config is in scenario dir
 outDir = file.path(dirname(configPath), "inputs")
@@ -45,7 +46,7 @@ if(cropBool){
     print("PLOT EXTENT")
     plotPathOut = file.path(outDir, "extent.png")
     
-    africaPolys = my::loadPolysAfrica()
+    africaPolys = utils_epidem$getAfricaPolys()
     
     tm = tmap::tm_shape(africaPolys) +
         tmap::tm_polygons() +
@@ -71,7 +72,7 @@ if(processHost %in% configNames){
     hostPathOut = file.path(outDir, "L_0_HOSTDENSITY.txt")
     
     # Process
-    processRaster(
+    utils$processRaster(
         rasterPath = hostPath,
         extentVec = extentVec,
         cropBool = cropBool,
@@ -178,7 +179,7 @@ if(processVector %in% configNames){
     vectorRasterPathOut = file.path(outDir, "vector.asc")
     
     # Process
-    processRaster(
+    utils$processRaster(
         rasterPath = vectorRasterPath,
         extentVec = extentVec,
         cropBool = cropBool,

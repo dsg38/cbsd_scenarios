@@ -1,5 +1,7 @@
 #' @export
 getExtentVecFromConfig = function(config){
+
+    box::use(utils_epidem/utils_epidem)
                 
     # Invalid if both null OR both not null
     extentNullBool = is.null(config[["cropExtent"]])
@@ -16,7 +18,7 @@ getExtentVecFromConfig = function(config){
     if(!codeNullBool){
             
         countryCodeArray = config[["cropByCountryCode"]]
-        extentVec = my::getCountryVecExtentVec(countryCodeArray)
+        extentVec = utils_epidem$getCountryVecExtentVec(countryCodeArray)
             
     }else if(!extentNullBool){
             

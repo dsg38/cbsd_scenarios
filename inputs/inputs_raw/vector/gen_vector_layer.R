@@ -44,7 +44,7 @@ idwRaster = raster(idwOutput)
 idwRaster[idwRaster > cap_post_idw] = cap_post_idw
 normRaster = idwRaster / cap_post_idw
 
-normRasterOutPath = file.path(outDir, paste0("idw_raster_param_", idw_param, ".tif"))
+normRasterOutPath = file.path(outDir, "vector.tif")
 
 # Crop and write out
 writeRaster(normRaster, normRasterOutPath, overwrite=T)

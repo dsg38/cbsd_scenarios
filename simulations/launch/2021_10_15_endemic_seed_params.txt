@@ -1,0 +1,2 @@
+SimulationStartTime SimulationLength ManagementEnable RasterEnable RasterFrequency RasterEnable_0_REMOVED
+0 30 0 1 1 0
