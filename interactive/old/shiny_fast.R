@@ -2,7 +2,6 @@ library(shiny)
 library(leaflet)
 # library(RColorBrewer)
 
-
 # Read cbsd data
 surveyDf = sf::read_sf("./data/survey_data.gpkg")
 
