@@ -17,7 +17,7 @@
 #! Estimated runtime (job is force-stopped after if exceeded):
 #SBATCH --time=01:00:00
 #! Estimated memory needed (job is force-stopped if exceeded):
-#SBATCH --mem=3380mb
+#SBATCH --mem=3420mb
 #! Submit a job array with index values between 0 and n e.g. 0-100
 #SBATCH --array=0-99
 
