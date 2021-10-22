@@ -41,8 +41,23 @@ genPlot = function(
     
 }
 
-propYearDfRaw = read.csv("./plots/propYearDf.csv")
+
+propYearDfRaw = read.csv("./results/2021_10_15_endemic_seed/2021_10_15_batch_0/output/propYearDf.csv") |> 
+    dplyr::filter(job == "job91")
+
+plotDir = "./results/2021_10_15_endemic_seed/2021_10_15_batch_0/plutes/"
+
+# propYearDfRaw = read.csv("./results/2021_10_15_endemic_seed/2021_10_15_batch_0/output/propYearDfCriteriaFalse.csv")
+# plotDir = "./results/2021_10_15_endemic_seed/2021_10_15_batch_0/plots_criteria_false/"
+
+# propYearDfRaw = read.csv("./results/2021_10_15_endemic_seed/2021_10_15_batch_0/output/propYearDf.csv")
+# plotDir = "./results/2021_10_15_endemic_seed/2021_10_15_batch_0/plots/"
+
+# ----------------------------------------------------------------------------
+
 dispDf = read.csv(here::here("inputs/process_polys/outputs/poly_display_names.csv"))
+
+dir.create(plotDir, recursive = TRUE, showWarnings = FALSE)
 
 # Append display name
 propYearDfRaw = dplyr::left_join(propYearDfRaw, dispDf, by="POLY_ID")
@@ -61,72 +76,72 @@ propYearDf = cbind(
 # Loop over prop thresholds
 propThresholdVec = unique(propYearDf$prop)
 
-yearMin = 2004
-yearMax = 2054
+yearMin = 0
+yearMax = 30
 
 
 # Read in constrainsts json
-constraintList = rjson::fromJSON(file = "./results/2021_03_26_cross_continental/2021_04_29_merged/output/constraint_sim_keys.json")
+# constraintList = rjson::fromJSON(file = "./results/2021_03_26_cross_continental/2021_04_29_merged/output/constraint_sim_keys.json")
 
-# Convert to job list
-getJob = function(constraintVal){
-    x = stringr::str_split(constraintVal, "-")
-    job = x[[1]][[3]]
-    batch = x[[1]][[2]]
+# # Convert to job list
+# getJob = function(constraintVal){
+#     x = stringr::str_split(constraintVal, "-")
+#     job = x[[1]][[3]]
+#     batch = x[[1]][[2]]
     
-    batchJobKey = paste0(batch, "-", job)
+#     batchJobKey = paste0(batch, "-", job)
     
-    return(batchJobKey)
-}
+#     return(batchJobKey)
+# }
 
-constraintListJob = list()
-for(constraintKey in names(constraintList)){
+# constraintListJob = list()
+# for(constraintKey in names(constraintList)){
     
-    constraintVec = constraintList[[constraintKey]]
+#     constraintVec = constraintList[[constraintKey]]
     
-    jobVec = sapply(constraintVec, getJob, USE.NAMES=FALSE)
+#     jobVec = sapply(constraintVec, getJob, USE.NAMES=FALSE)
     
-    constraintListJob[[constraintKey]] = jobVec
-}
+#     constraintListJob[[constraintKey]] = jobVec
+# }
 
 # HACK to only plot subset of polys
 # x = unique(propYearDf[, c("POLY_ID", "display_name")])
 
-dropCodes = c(
-    "MOZ",
-    "MWI",
-    "TZA",
-    "KEN"
-)
+# dropCodes = c(
+#     "MOZ",
+#     "MWI",
+#     "TZA",
+#     "KEN"
+# )
 
-propYearDf = propYearDf[!(propYearDf$POLY_ID%in%dropCodes),]
+# propYearDf = propYearDf[!(propYearDf$POLY_ID%in%dropCodes),]
 
 
 
 # Plot all
-for(constraintKey in names(constraintListJob)){
+# for(constraintKey in names(constraintListJob)){
     
-    constraintJobVec = constraintListJob[[constraintKey]]
-    
-    propYearDfSubset = propYearDf[propYearDf$batchJobKey%in%constraintJobVec,]
-    
-    for(propThreshold in propThresholdVec){
-        
-        propThresholdStr = sprintf("%0.2f", propThreshold)
-        
-        outPath = file.path('./plots', paste0("boxplot_prop_", propThresholdStr, "_", constraintKey, ".png"))
-        
-        print(outPath)
+    # constraintJobVec = constraintListJob[[constraintKey]]
 
-        genPlot(
-            propYearDf=propYearDfSubset,
-            propThreshold=propThreshold,
-            yearMin=yearMin,
-            yearMax=yearMax,
-            outPath=outPath
-        )
-        
-    }
+    # propYearDfSubset = propYearDf[propYearDf$batchJobKey%in%constraintJobVec,]
+
+for(propThreshold in propThresholdVec){
+    
+    propThresholdStr = sprintf("%0.2f", propThreshold)
+    
+    outPath = file.path(plotDir, paste0("boxplot_prop_", propThresholdStr, ".png"))
+    
+    print(outPath)
+
+    genPlot(
+        propYearDf=propYearDf,
+        propThreshold=propThreshold,
+        yearMin=yearMin,
+        yearMax=yearMax,
+        outPath=outPath
+    )
     
 }
+
+# }
 

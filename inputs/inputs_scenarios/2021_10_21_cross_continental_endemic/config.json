@@ -1,0 +1,16 @@
+{
+    "cropByCountryCode": [
+        "AGO","BDI","BEN","BFA","CAF","CIV","CMR","COD","COG","GAB","GHA","GIN","GMB","GNB","GNQ","KEN","LBR","MLI","MOZ","MWI","NER","NGA","RWA","SEN","SLE","SSD","TCD","TGO","TZA","UGA","ZMB","ZWE"
+    ],
+    "processHost": "default",
+    "processInit": "endemic_layer",
+    "processSurvey": {
+        "surveyDir": "real_world",
+        "polyDfName": "polys_3_host_default.gpkg"
+    },
+    "processVector": "cassava_data-2021_10_01",
+    "copyGeneralFiles": {
+        "P_WeatherSwitchTimes_IS.txt": "P_WeatherSwitchTimes.txt",
+        "surveyTiming.json": "surveyTiming.json"
+    }
+}

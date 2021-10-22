@@ -1,4 +1,6 @@
-x = read.csv("../inputs/process_polys/outputs/country_categories.csv")
+propYearDfRaw = read.csv("./results/2021_10_15_endemic_seed/2021_10_15_batch_0/output/propYearDf.csv")
 
-keepDf = x[x$waveBool | x$cdpBool | x$interestingBool,]
-dropDf = x[!(x$waveBool | x$cdpBool | x$interestingBool),]
+x = propYearDfRaw[propYearDfRaw$POLY_ID=="ZWE" & propYearDfRaw$prop==0,]
+
+
+hist(x$raster_year)

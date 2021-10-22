@@ -1,7 +1,10 @@
-rasterStatsDf = readRDS("./results/2021_03_26_cross_continental/2021_04_29_merged/output/raster_poly_stats_agg_minimal_SMALL.rds")
-outPath = "plots/propYearDf.csv"
+rasterStatsDf = readRDS("./results/2021_10_15_endemic_seed/2021_10_15_batch_0/output/raster_poly_stats_agg_minimal.rds")
+outPath = "./results/2021_10_15_endemic_seed/2021_10_15_batch_0/output/propYearDf.csv"
 
-propThresholdVec = c(0, 0.25, 0.5, 0.75)
+# rasterStatsDf = readRDS("./results/2021_03_26_cross_continental/2021_04_29_merged/output/raster_poly_stats_agg_minimal_SMALL.rds")
+# outPath = "plots/propYearDf.csv"
+
+propThresholdVec = c(seq(0, 0.1, 0.01), 0.25, 0.5, 0.75)
 
 # ------------------------------------------------
 
