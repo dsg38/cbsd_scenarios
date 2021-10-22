@@ -4,7 +4,7 @@ module load python3
 module load pmpem
 
 python3.sh my_pmpem.py \
--o "../sim_output/2021_10_22_cross_continental_endemic/2021_10_22_batch_0/" \
+-o "../sim_output/2021_10_21_cross_continental_endemic/2021_10_21_batch_0/" \
 --nsamplesperparamset 1000 \
 --densityfile "../../inputs/inputs_raw/params/2009_1_tol_0_65_mask_10_posterior.txt" \
 --opertype pd \
