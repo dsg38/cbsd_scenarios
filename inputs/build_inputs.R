@@ -137,7 +137,7 @@ if(processSurvey %in% configNames){
     stopifnot(polysInExtentBool)
 
     # Crop survey rasters
-    surveyRasterPaths = list.files(surveyDirPath, full.names = TRUE)
+    surveyRasterPaths = list.files(surveyDirPath, "*.tif", full.names = TRUE,)
 
     for(surveyRasterPath in surveyRasterPaths){
         

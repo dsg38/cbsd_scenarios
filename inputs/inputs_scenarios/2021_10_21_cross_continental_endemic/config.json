@@ -5,8 +5,8 @@
     "processHost": "default",
     "processInit": "endemic_layer",
     "processSurvey": {
-        "surveyDir": "real_world",
-        "polyDfName": "polys_3_host_default.gpkg"
+        "surveyDir": "cassava_data-2021_10_01",
+        "polyDfName": "polys_fitting.gpkg"
     },
     "processVector": "cassava_data-2021_10_01",
     "copyGeneralFiles": {

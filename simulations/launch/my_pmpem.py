@@ -40,7 +40,7 @@ def setmodelparameters(x=None):
     opts.changempemparams('BatchEnable', 0)
     opts.changempemparams('BatchRuns', 1)
 
-    surveyTimingJson = '{"2005":"2004_raster_total.asc","2006":"2005_raster_total.asc","2007":"2006_raster_total.asc","2008":"2007_raster_total.asc","2009":"2008_raster_total.asc","2010":"2009_raster_total.asc","2011":"2010_raster_total.asc","2012":"2011_raster_total.asc","2013":"2012_raster_total.asc","2014":"2013_raster_total.asc","2015":"2014_raster_total.asc","2016":"2015_raster_total.asc","2017":"2016_raster_total.asc","2018":"2017_raster_total.asc","2019":"2018_raster_total.asc"}'
+    surveyTimingJson = '{"2005":"2004_raster_total.asc","2006":"2005_raster_total.asc","2007":"2006_raster_total.asc","2008":"2007_raster_total.asc","2009":"2008_raster_total.asc","2010":"2009_raster_total.asc","2011":"2010_raster_total.asc","2012":"2011_raster_total.asc","2013":"2012_raster_total.asc","2014":"2013_raster_total.asc","2015":"2014_raster_total.asc","2016":"2015_raster_total.asc","2017":"2016_raster_total.asc","2018":"2017_raster_total.asc","2019":"2018_raster_total.asc","2020":"2019_raster_total.asc","2021":"2020_raster_total.asc","2022":"2021_raster_total.asc"}'
     opts.changempemparams('ManagementSurveillanceTimesAndFiles', surveyTimingJson)
     opts.changempemparams('ManagementDetectionProbability', 0.85)
 
