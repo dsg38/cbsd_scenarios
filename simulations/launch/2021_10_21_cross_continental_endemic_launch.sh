@@ -10,7 +10,7 @@ python3.sh my_pmpem.py \
 --opertype pd \
 --scheduler s \
 --slurmqueue "SL3" \
---memoryrequest 13680 \
+--memoryrequest 13520 \
 --runtimerequest "12:00:00" \
 --parametersfile "2021_10_21_cross_continental_endemic_params.txt" \
 --landscapefolder "/rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/cbsd_scenarios/inputs/inputs_scenarios/2021_10_21_cross_continental_endemic/inputs" \

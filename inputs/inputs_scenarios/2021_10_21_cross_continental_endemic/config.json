@@ -2,7 +2,7 @@
     "cropByCountryCode": [
         "AGO","BDI","BEN","BFA","CAF","CIV","CMR","COD","COG","GAB","GHA","GIN","GMB","GNB","GNQ","KEN","LBR","MLI","MOZ","MWI","NER","NGA","RWA","SEN","SLE","SSD","TCD","TGO","TZA","UGA","ZMB","ZWE"
     ],
-    "processHost": "default",
+    "processHost": "cassava_data-2021_10_01",
     "processInit": "endemic_layer",
     "processSurvey": {
         "surveyDir": "cassava_data-2021_10_01",
