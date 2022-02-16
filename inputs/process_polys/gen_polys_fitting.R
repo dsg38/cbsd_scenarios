@@ -8,5 +8,5 @@ polysFittingDf = polys_0_df[polys_0_df$POLY_ID %in% targetPolys,]
 
 outPath = "../inputs_raw/polygons/polys_fitting.gpkg"
 
-utils_epidem$sf_write_sf_ro(polysFittingDf, outPath)
+utils_epidem$write_sf(polysFittingDf, outPath)
 
