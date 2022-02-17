@@ -46,17 +46,19 @@ if(cropBool){
     print("PLOT EXTENT")
     plotPathOut = file.path(outDir, "extent.png")
     
-    # africaPolys = utils_epidem$getAfricaPolys()
+    africaPolys = sf::st_as_sf(rworldmap::getMap(resolution = "high")) |>
+        dplyr::filter(continent=="Africa")
     
-    # tm = tmap::tm_shape(africaPolys) +
-    #     tmap::tm_polygons() +
-    #     tmap::tm_shape(extentPolygonDf) +
-    #     tmap::tm_borders(col="red", lwd=5)
     
-    # tmap::tmap_save(
-    #     tm=tm,
-    #     filename=plotPathOut
-    # )
+    tm = tmap::tm_shape(africaPolys) +
+        tmap::tm_polygons() +
+        tmap::tm_shape(extentPolygonDf) +
+        tmap::tm_borders(col="red", lwd=5)
+    
+    tmap::tmap_save(
+        tm=tm,
+        filename=plotPathOut
+    )
 
 }
 
@@ -82,126 +84,126 @@ if(processHost %in% configNames){
     
 }
 
-# # Init conditions
-# if(processInit %in% configNames){
+# Init conditions
+if(processInit %in% configNames){
     
-#     print("INIT")
+    print("INIT")
     
-#     initDir = config[[processInit]]
+    initDir = config[[processInit]]
     
-#     initDirPath = file.path("inputs_raw/init_conditions", initDir)
+    initDirPath = file.path("inputs_raw/init_conditions", initDir)
     
-#     initFileNamesList = list()
-#     initFileNamesList[["inf_raster.tif"]] = "L_0_INFECTIOUS.txt"
-#     initFileNamesList[["sus_raster.tif"]] = "L_0_SUSCEPTIBLE.txt"
-#     initFileNamesList[["rem_raster.tif"]] = "L_0_REMOVED.txt"
+    initFileNamesList = list()
+    initFileNamesList[["inf_raster.tif"]] = "L_0_INFECTIOUS.txt"
+    initFileNamesList[["sus_raster.tif"]] = "L_0_SUSCEPTIBLE.txt"
+    initFileNamesList[["rem_raster.tif"]] = "L_0_REMOVED.txt"
         
-#     for(initFileName in names(initFileNamesList)){
+    for(initFileName in names(initFileNamesList)){
         
-#         initRasterPath = file.path(initDirPath, initFileName)
-#         initRasterPathOut = file.path(outDir, initFileNamesList[[initFileName]])
+        initRasterPath = file.path(initDirPath, initFileName)
+        initRasterPathOut = file.path(outDir, initFileNamesList[[initFileName]])
         
-#         print(initRasterPath)
+        print(initRasterPath)
         
-#         # Process
-#         utils$processRaster(
-#             rasterPath = initRasterPath,
-#             extentVec = extentVec,
-#             cropBool = cropBool,
-#             pathOut = initRasterPathOut,
-#             renameBool = TRUE
-#         )
+        # Process
+        utils$processRaster(
+            rasterPath = initRasterPath,
+            extentVec = extentVec,
+            cropBool = cropBool,
+            pathOut = initRasterPathOut,
+            renameBool = TRUE
+        )
 
-#     }
+    }
     
-# }
+}
 
-# # Survey rasters
-# if(processSurvey %in% configNames){
+# Survey rasters
+if(processSurvey %in% configNames){
 
-#     print("SURVEY")
+    print("SURVEY")
 
-#     surveyConfig = config[[processSurvey]]
-#     surveyDir = surveyConfig[["surveyDir"]]
-#     polyDfName = surveyConfig[["polyDfName"]]
+    surveyConfig = config[[processSurvey]]
+    surveyDir = surveyConfig[["surveyDir"]]
+    polyDfName = surveyConfig[["polyDfName"]]
 
-#     surveyDirPath = file.path("inputs_raw/survey_rasters/", surveyDir)
-#     surveyPolysDfPath = file.path("inputs_raw/polygons/", polyDfName)
+    surveyDirPath = file.path("inputs_raw/survey_rasters/", surveyDir)
+    surveyPolysDfPath = file.path("inputs_raw/polygons/", polyDfName)
 
-#     # Check that all mask polys inside scenario extent
-#     polysInExtentBool = utils$checkPolysInExtent(
-#         surveyPolysDfPath=surveyPolysDfPath,
-#         extentPolygonDf=extentPolygonDf
-#     )
+    # Check that all mask polys inside scenario extent
+    polysInExtentBool = utils$checkPolysInExtent(
+        surveyPolysDfPath=surveyPolysDfPath,
+        extentPolygonDf=extentPolygonDf
+    )
 
-#     stopifnot(polysInExtentBool)
+    stopifnot(polysInExtentBool)
 
-#     # Crop survey rasters
-#     surveyRasterPaths = list.files(surveyDirPath, "*.tif", full.names = TRUE,)
+    # Crop survey rasters
+    surveyRasterPaths = list.files(surveyDirPath, "*.tif", full.names = TRUE,)
 
-#     for(surveyRasterPath in surveyRasterPaths){
+    for(surveyRasterPath in surveyRasterPaths){
         
-#         print(surveyRasterPath)
+        print(surveyRasterPath)
         
-#         surveyRasterFileName = tools::file_path_sans_ext(basename(surveyRasterPath))
+        surveyRasterFileName = tools::file_path_sans_ext(basename(surveyRasterPath))
         
-#         surveyRasterPathOut = file.path(outDir, paste0(surveyRasterFileName, ".asc"))
+        surveyRasterPathOut = file.path(outDir, paste0(surveyRasterFileName, ".asc"))
         
-#         utils$processRaster(
-#             rasterPath = surveyRasterPath,
-#             extentVec = extentVec,
-#             cropBool = cropBool,
-#             pathOut = surveyRasterPathOut
-#         )
+        utils$processRaster(
+            rasterPath = surveyRasterPath,
+            extentVec = extentVec,
+            cropBool = cropBool,
+            pathOut = surveyRasterPathOut
+        )
 
-#     }
+    }
 
-#     # Build indexes for cropped survey rasters (i.e. specify XY raster cell indexes for survey points in each poly)
-#     outIndexDir = file.path(dirname(configPath), "survey_poly_index")
+    # Build indexes for cropped survey rasters (i.e. specify XY raster cell indexes for survey points in each poly)
+    outIndexDir = file.path(dirname(configPath), "survey_poly_index")
 
-#     utils$genPolyIndex(
-#         surveyRasterDir=outDir,
-#         polyDfPath=surveyPolysDfPath,
-#         outIndexDir=outIndexDir
-#     )
+    utils$genPolyIndex(
+        surveyRasterDir=outDir,
+        polyDfPath=surveyPolysDfPath,
+        outIndexDir=outIndexDir
+    )
 
-# }
+}
 
-# # Vector
-# if(processVector %in% configNames){
+# Vector
+if(processVector %in% configNames){
     
-#     print("VECTOR")
+    print("VECTOR")
     
-#     vectorDir = config[[processVector]]
+    vectorDir = config[[processVector]]
     
-#     vectorRasterPath = file.path("inputs_raw/vector", vectorDir, "vector.tif")
+    vectorRasterPath = file.path("inputs_raw/vector", vectorDir, "vector.tif")
     
-#     vectorRasterPathOut = file.path(outDir, "vector.asc")
+    vectorRasterPathOut = file.path(outDir, "vector.asc")
     
-#     # Process
-#     utils$processRaster(
-#         rasterPath = vectorRasterPath,
-#         extentVec = extentVec,
-#         cropBool = cropBool,
-#         pathOut = vectorRasterPathOut
-#     )
+    # Process
+    utils$processRaster(
+        rasterPath = vectorRasterPath,
+        extentVec = extentVec,
+        cropBool = cropBool,
+        pathOut = vectorRasterPathOut
+    )
     
-# }
+}
 
-# # Copy general files
-# if(copyGeneralFiles %in% configNames){
+# Copy general files
+if(copyGeneralFiles %in% configNames){
     
-#     print("COPY")
+    print("COPY")
     
-#     copyFilesList = config[[copyGeneralFiles]]
+    copyFilesList = config[[copyGeneralFiles]]
     
-#     for(fileNameIn in names(copyFilesList)){
+    for(fileNameIn in names(copyFilesList)){
         
-#         filePathIn = file.path("inputs_raw/general_files", fileNameIn)
-#         filePathOut = file.path(outDir, copyFilesList[[fileNameIn]])
+        filePathIn = file.path("inputs_raw/general_files", fileNameIn)
+        filePathOut = file.path(outDir, copyFilesList[[fileNameIn]])
         
-#         file.copy(filePathIn, filePathOut, overwrite = TRUE)
+        file.copy(filePathIn, filePathOut, overwrite = TRUE)
         
-#     }
+    }
     
-# }
+}

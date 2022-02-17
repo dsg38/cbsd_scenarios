@@ -2,16 +2,16 @@ library(raster)
 library(gstat)
 library(rworldmap)
 
-surveyData = read.csv("../../../../cassava_data/data_merged/data/2021_10_01/cassava_data_minimal.csv") |>
+surveyData = read.csv("../../../../cassava_data/data_merged/data/2022_02_09/cassava_data_minimal.csv") |>
     dplyr::rename(
         x=longitude,
         y=latitude,
         vector=adult_whitefly_mean
     )
 
-outDir = "./cassava_data-2021_10_01"
+outDir = "./cassava_data-2022_02_09"
 
-templateRasterPath = "../host_landscape/default/host.tif"
+templateRasterPath = "../host_landscape/CassavaMap/host.tif"
 
 # ------------------------------------------------------------------
 

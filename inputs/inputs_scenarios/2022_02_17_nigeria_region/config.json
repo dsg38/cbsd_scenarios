@@ -1,0 +1,14 @@
+{
+    "cropExtent": {
+        "xmin": -3.71,
+        "xmax": 18.6,
+        "ymin": 3.77,
+        "ymax": 15.3
+    },
+    "processHost": "CassavaMap-cassava_data-2022_02_09",
+    "processInit": "nigeria_direct_single_lagos",
+    "processVector": "cassava_data-2022_02_09",
+    "copyGeneralFiles": {
+        "P_WeatherSwitchTimes_IS.txt": "P_WeatherSwitchTimes.txt"
+    }
+}
