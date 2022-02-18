@@ -1,0 +1,2 @@
+scenario_name,batch,inputs,posterior,Description
+2022_02_17_nigeria_direct_intro,2022_02_17_batch_0,2022_02_17_nigeria_region,2022_02_04_model_2_posterior.txt,Single infected field near Lagos. Landscape is the region around NGA. No control. No surveillance.
