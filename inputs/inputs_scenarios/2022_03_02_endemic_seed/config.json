@@ -1,0 +1,13 @@
+{
+    "cropByCountryCode": [
+        "MOZ",
+        "ZMB",
+        "ETH"
+    ],
+    "processHost": "CassavaMap-cassava_data-2022_02_09",
+    "processInit": "endemic_seed",
+    "processVector": "cassava_data-2022_02_09",
+    "copyGeneralFiles": {
+        "P_WeatherSwitchTimes_IS.txt": "P_WeatherSwitchTimes.txt"
+    }
+}
