@@ -32,14 +32,16 @@ mwiDf = countryDf |>
     dplyr::filter(ADM0_A3=="MWI")
 
 endemicDf = sf::st_intersection(x=oceanDfBuffer, y=coastalCountryDf) |>
-    dplyr::bind_rows(mwiDf)
+    dplyr::bind_rows(mwiDf)|>
+    dplyr::select(SOV_A3, geometry)
 
+# Save the buffer polygon for plotting etc.
+sf::write_sf(endemicDf, "./endemic_poly.gpkg", overwrite=TRUE) 
+    
 # Extract points that intersect with endemic polys
 iRowsInPoly = unlist(sf::st_intersects(endemicDf, surveyDf))
 
 surveyDfSubset = surveyDf[iRowsInPoly,]
-
-# mapview::mapview(endemicDf) + mapview::mapview(surveyDfSubset, zcol="year")
 
 # Read in template raster
 hostRasterRaw = raster::raster("../../host_landscape/CassavaMap-cassava_data-2022_02_09/host.tif")
