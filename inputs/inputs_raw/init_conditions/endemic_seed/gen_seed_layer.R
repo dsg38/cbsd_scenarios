@@ -1,16 +1,48 @@
-# Read in survey points and endemic region polygon
-surveyDf = sf::read_sf("../../../../../cassava_data/data_merged/data/2021_10_01/cassava_data_minimal.gpkg")
-endemicPolyDf = sf::read_sf("./endemic.geojson")
+# Define endemic country codes
+endemicCountryCoastalCodes = c(
+    "KEN",
+    "TZA",
+    "MOZ"
+)
 
-# Which points are in endemic poly
-iRowsInPoly = unlist(sf::st_intersects(endemicPolyDf, surveyDf))
+endemicCountryCodes = c(
+    endemicCountryCoastalCodes,
+    "MWI"
+)
 
-# Extract points in endemic poly that are also CBSD positive
-surveyDfSubset = surveyDf[iRowsInPoly,] |>
+# Read in survey points and extract CBSD positives
+surveyDf = sf::read_sf("../../../../../cassava_data/data_merged/data/2022_02_09/cassava_data_minimal.gpkg") |>
+    dplyr::filter(country_code %in% endemicCountryCodes) |>
     dplyr::filter(cbsd_any_bool==TRUE)
 
+# Download ocean polys
+oceanDf = rnaturalearth::ne_download(scale = 10, type = 'ocean', category = 'physical', returnclass='sf')
+
+# Buffer ocean by 1dd (approx 110km)
+sf::sf_use_s2(FALSE)
+oceanDfBuffer = sf::st_buffer(x=oceanDf, dist=2)
+
+# Intersect coastal endemic countries with with oceanBuffer & Glue in MWI
+countryDf = rnaturalearth::ne_download(scale = 10, type = 'countries', category = 'cultural', returnclass='sf') 
+
+coastalCountryDf = countryDf |>
+    dplyr::filter(ADM0_A3%in%endemicCountryCoastalCodes)
+
+mwiDf = countryDf |>
+    dplyr::filter(ADM0_A3=="MWI")
+
+endemicDf = sf::st_intersection(x=oceanDfBuffer, y=coastalCountryDf) |>
+    dplyr::bind_rows(mwiDf)
+
+# Extract points that intersect with endemic polys
+iRowsInPoly = unlist(sf::st_intersects(endemicDf, surveyDf))
+
+surveyDfSubset = surveyDf[iRowsInPoly,]
+
+# mapview::mapview(endemicDf) + mapview::mapview(surveyDfSubset, zcol="year")
+
 # Read in template raster
-hostRasterRaw = raster::raster("../../host_landscape/default/host.tif")
+hostRasterRaw = raster::raster("../../host_landscape/CassavaMap-cassava_data-2022_02_09/host.tif")
 hostRaster = hostRasterRaw * 1000
 
 surveyRaster = raster::rasterize(x=surveyDfSubset, y=hostRaster, field=1, fun="sum", background=0)
