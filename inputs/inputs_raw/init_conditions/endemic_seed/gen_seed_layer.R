@@ -33,10 +33,10 @@ mwiDf = countryDf |>
 
 endemicDf = sf::st_intersection(x=oceanDfBuffer, y=coastalCountryDf) |>
     dplyr::bind_rows(mwiDf)|>
-    dplyr::select(SOV_A3, geometry)
+    dplyr::select(NAME, SOV_A3, geometry)
 
 # Save the buffer polygon for plotting etc.
-sf::write_sf(endemicDf, "./endemic_poly.gpkg", overwrite=TRUE) 
+sf::write_sf(endemicDf, "./endemic_poly.gpkg") 
     
 # Extract points that intersect with endemic polys
 iRowsInPoly = unlist(sf::st_intersects(endemicDf, surveyDf))
