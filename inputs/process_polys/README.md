@@ -10,3 +10,6 @@ https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_levels_gpkg.zip
 
 # Process order
 
+# Polygon df docs
+
+See `polys_summary.csv`

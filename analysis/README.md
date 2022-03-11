@@ -4,7 +4,9 @@ NB: All paths are relative to this README dir
 
 ## Pre-processing
 
-### Isolate which sims meet individual simulated survey stats constraints
+### Survey data-based stats
+
+#### Isolate which sims meet individual simulated survey stats constraints
 
 **Script: `results/*/*/preprocess_sim_survey.R`**
 
@@ -23,7 +25,45 @@ Output:
 
 - `results/*/*/output/results_sim_survey.json`
 
-### Isolate which sims meet individual inf raster constraints
+### Infectious raster-based stats
+
+#### Extract stats within given polygons
+
+**Script: `package_inf_rasters/gen_poly_stats.R`**
+
+Generates a df with a summary, for each given raster (e.g. t=0, t=1), how much infection is present in each of the given polygons (e.g. Uganda). The 'amount of infection' is reported in terms of number of cells, number of fields, and proportion of fields (relative to total host in poly).
+
+Inputs:
+
+- A given simulation job folder e.g. job0
+- A polygon sf gpkg with the polgons to extract the stats within
+- Host raster (to allow inf raster to be converted to num inf fields raster)
+
+Outputs:
+
+- e.g. `../simulations/sim_output/2022_03_02_endemic_seed/2022_03_02_batch_0/job0/output/runfolder0/raster_poly_stats.rds`
+
+NB: `launch_slurm_gen_poly_stats.sh` allows this to be launched as a slurm job for all sim output jobs.
+
+
+#### Aggregate all the inf poly stats for a given batch
+
+**Script: `package_inf_rasters/aggregate.R`**
+
+Loops over all the job dirs for a given batch and glues together all the job level `raster_poly_stats.rds` files
+
+Inputs:
+
+- e.g. `../simulations/sim_output/2022_03_02_endemic_seed/2022_03_02_batch_0/job*/output/runfolder0/raster_poly_stats.rds`
+
+Outputs:
+
+- e.g. `../simulations/sim_output/2022_03_02_endemic_seed/2022_03_02_batch_0/raster_poly_stats_agg.rds`
+- e.g. `../simulations/sim_output/2022_03_02_endemic_seed/2022_03_02_batch_0/raster_poly_stats_agg_minimal.rds`
+
+TODO: Should these actually be written out to this analysis dir rather than the simulations dir? What makes sense?
+
+#### Isolate which sims meet individual inf raster constraints
 
 **Script: `results/*/*/preprocess_inf_rasters.R`**
 

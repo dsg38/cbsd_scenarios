@@ -126,12 +126,16 @@ appendHostStats = function(
     # Calc num cells total
     polyNumCellsInPoly = exactextractr::exact_extract(hostRaster, polyDfIn, fun=numCellsInPoly)
 
+    # Calc land area km^2
+    poly_area_km2 = as.numeric(units::set_units(sf::st_area(polyDfIn), km^2))
+
     # Build out df
     polySumDf = cbind(
         polyDfIn, 
         cassava_host_num_fields=polyHostNumFields,
         cassava_host_num_cells_with_host=polyNumCellsWithHost,
-        cassava_host_num_cells_in_poly=polyNumCellsInPoly
+        cassava_host_num_cells_in_poly=polyNumCellsInPoly,
+        poly_area_km2=poly_area_km2
     )
 
     return(polySumDf)

@@ -2,8 +2,8 @@ box::use(./utils)
 
 # Build gpkg with appended host stats
 splitPolyDir = "./custom_polys/polys_0/"
-hostRasterPath = "../inputs_raw/host_landscape/default/host.tif"
-polyDfPathOut = "../inputs_raw/polygons/polys_0_host_default.gpkg"
+hostRasterPath = "../inputs_raw/host_landscape/CassavaMap/host.tif"
+polyDfPathOut = "../inputs_raw/polygons/polys_0_host_CassavaMap.gpkg"
 
 polyDfMerged = utils$mergeSplitPolys(
     splitPolyDir=splitPolyDir

@@ -5,7 +5,7 @@ library(leaflet)
 # Read cbsd data
 surveyDf = sf::read_sf("../../../cassava_data/data_merged/data/2021_10_01/cassava_data_minimal.gpkg")
 
-x = sf::read_sf("../../inputs/inputs_raw/init_conditions/endemic_seed/endemic.geojson")
+# x = sf::read_sf("../../inputs/inputs_raw/init_conditions/endemic_seed/endemic.geojson")
 
 bbox = sf::st_bbox(surveyDf)
 
@@ -42,7 +42,7 @@ server <- function(input, output, session) {
     observe({
         leafletProxy("map") %>%
             leafgl::clearGlLayers() %>%
-            leafgl::addGlPolygons(x) %>%
+            # leafgl::addGlPolygons(x) %>%
             leafgl::addGlPoints(filteredData(), fillColor = ~pal(cbsd_any_bool))
     })
 

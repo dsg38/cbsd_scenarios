@@ -6,3 +6,4 @@ inputs/inputs_raw/polygons/polys_2_host_default.gpkg filter=lfs diff=lfs merge=l
 inputs/inputs_scenarios/2021_10_15_endemic_seed/inputs/L_0_HOSTDENSITY.txt filter=lfs diff=lfs merge=lfs -text
 inputs/inputs_scenarios/2021_10_21_cross_continental_endemic/inputs/L_0_HOSTDENSITY.txt filter=lfs diff=lfs merge=lfs -text
 inputs/inputs_scenarios/2022_03_02_endemic_seed/inputs/L_0_HOSTDENSITY.txt filter=lfs diff=lfs merge=lfs -text
+inputs/inputs_raw/polygons/polys_2_host_CassavaMap.gpkg filter=lfs diff=lfs merge=lfs -text

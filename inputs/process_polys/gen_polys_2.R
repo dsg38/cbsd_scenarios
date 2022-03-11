@@ -1,9 +1,9 @@
 box::use(./utils)
 
 # Bind polys_0 output to polys_1
-polys_1_df = sf::read_sf("../inputs_raw/polygons/polys_1_host_default.gpkg")
+polys_1_df = sf::read_sf("../inputs_raw/polygons/polys_1_host_CassavaMap.gpkg")
 
-hostRasterPath = "../inputs_raw/host_landscape/default/host.tif"
+hostRasterPath = "../inputs_raw/host_landscape/CassavaMap/host.tif"
 
 africa_1_df = sf::read_sf("./gadm36_levels_gpkg/gadm36_level1_africa.gpkg")
 
@@ -23,5 +23,5 @@ outDf = dplyr::bind_rows(
     africa_1_df_id
 )
 
-polyDfPathOut = "../inputs_raw/polygons/polys_2_host_default.gpkg"
+polyDfPathOut = "../inputs_raw/polygons/polys_2_host_CassavaMap.gpkg"
 sf::write_sf(outDf, polyDfPathOut)
