@@ -1,5 +1,15 @@
-rasterStatsDf = readRDS("./results/2021_10_15_endemic_seed/2021_10_15_batch_0/output/raster_poly_stats_agg_minimal.rds")
-outPath = "./results/2021_10_15_endemic_seed/2021_10_15_batch_0/output/propYearDf.csv"
+args = commandArgs(trailingOnly=TRUE)
+
+rasterStatsDfPath = args[[1]]
+outPath = args[[2]]
+
+rasterStatsDf = readRDS(rasterStatsDfPath)
+
+# rasterStatsDf = readRDS("./results/2022_03_02_endemic_seed/2022_03_02_batch_0/data_simulations/raster_poly_stats_agg_minimal.rds")
+# outPath = "./results/2022_03_02_endemic_seed/2022_03_02_batch_0/data_simulations/propYearDf.csv"
+
+# rasterStatsDf = readRDS("./results/2021_10_15_endemic_seed/2021_10_15_batch_0/output/raster_poly_stats_agg_minimal.rds")
+# outPath = "./results/2021_10_15_endemic_seed/2021_10_15_batch_0/output/propYearDf.csv"
 
 # rasterStatsDf = readRDS("./results/2021_03_26_cross_continental/2021_04_29_merged/output/raster_poly_stats_agg_minimal_SMALL.rds")
 # outPath = "plots/propYearDf.csv"

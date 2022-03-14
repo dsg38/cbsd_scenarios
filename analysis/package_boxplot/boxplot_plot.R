@@ -1,4 +1,8 @@
 box::use(ggplot2[...])
+args = commandArgs(trailingOnly=TRUE)
+
+propYearDfRawPath = args[[1]]
+plotDir = args[[2]]
 
 genPlot = function(
     propYearDf,
@@ -41,17 +45,15 @@ genPlot = function(
     
 }
 
+# propYearDfRaw = read.csv("./results/2022_03_02_endemic_seed/2022_03_02_batch_0/data_simulations/propYearDf.csv")
+# plotDir = "./results/2022_03_02_endemic_seed/2022_03_02_batch_0/plots/criteria_none"
 
-propYearDfRaw = read.csv("./results/2021_10_15_endemic_seed/2021_10_15_batch_0/output/propYearDf.csv") |> 
-    dplyr::filter(job == "job91")
+# propYearDfRaw = read.csv("./results/2022_03_02_endemic_seed/2022_03_02_batch_0/data_simulations/propYearDfCriteriaTrue.csv")
+# plotDir = "./results/2022_03_02_endemic_seed/2022_03_02_batch_0/plots/criteria_true/"
 
-plotDir = "./results/2021_10_15_endemic_seed/2021_10_15_batch_0/plutes/"
+# propYearDfRaw = read.csv("./results/2022_03_02_endemic_seed/2022_03_02_batch_0/data_simulations/propYearDfCriteriaFalse.csv")
+# plotDir = "./results/2022_03_02_endemic_seed/2022_03_02_batch_0/plots/criteria_false/"
 
-# propYearDfRaw = read.csv("./results/2021_10_15_endemic_seed/2021_10_15_batch_0/output/propYearDfCriteriaFalse.csv")
-# plotDir = "./results/2021_10_15_endemic_seed/2021_10_15_batch_0/plots_criteria_false/"
-
-# propYearDfRaw = read.csv("./results/2021_10_15_endemic_seed/2021_10_15_batch_0/output/propYearDf.csv")
-# plotDir = "./results/2021_10_15_endemic_seed/2021_10_15_batch_0/plots/"
 
 # ----------------------------------------------------------------------------
 
@@ -77,7 +79,7 @@ propYearDf = cbind(
 propThresholdVec = unique(propYearDf$prop)
 
 yearMin = 0
-yearMax = 30
+yearMax = 20
 
 
 # Read in constrainsts json

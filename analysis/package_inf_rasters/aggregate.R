@@ -1,7 +1,7 @@
 args = commandArgs(trailingOnly=TRUE)
 
 configPath = args[[1]]
-aggFinishedBool = as.logical(as.numeric(args[[2]]))
+aggOnlyFinishedBool = as.logical(as.numeric(args[[2]]))
 
 # configPath = "./2021_03_26_cross_continental/config_poly.json"
 
@@ -17,7 +17,7 @@ outPathMinimal = here::here(batchPath, "raster_poly_stats_agg_minimal.rds")
 # Only agg finished
 statsDfPathsAll = list.files(batchPath, pattern="raster_poly_stats.rds", full.names = T, recursive = T)
 
-if(aggFinishedBool){
+if(aggOnlyFinishedBool){
 
     progDfPath = here::here(batchPath, "progress.csv")
 
