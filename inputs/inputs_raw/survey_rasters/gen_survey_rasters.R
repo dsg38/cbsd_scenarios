@@ -1,5 +1,5 @@
 
-genSurveyRasters = function(surveyData, templateRasterPath, outDir){
+genSurveyRasters = function(surveyData, templateRasterPath, rasterSuffix, outDir){
   
   templateRaster = raster::raster(templateRasterPath)
   templateRaster[] = 0
@@ -20,19 +20,30 @@ genSurveyRasters = function(surveyData, templateRasterPath, outDir){
       outRasterTotal = templateRaster
     }
     
-    outPathTotal = file.path(outDir, paste0(thisYear, "_raster_total.tif"))
+    outPathTotal = file.path(outDir, paste0(thisYear, rasterSuffix))
     raster::writeRaster(outRasterTotal, outPathTotal, overwrite=TRUE)
     
   }
   
 }
 
-surveyData = sf::read_sf("../../../../cassava_data/data_merged/data/2022_02_09/cassava_data_minimal.gpkg")
-templateRasterPath = "../host_landscape/default/host.tif"
-outDir = "./cassava_data-2022_02_09/"
+# All
+# surveyData = sf::read_sf("../../../../cassava_data/data_merged/data/2022_02_09/cassava_data_minimal.gpkg")
+# templateRasterPath = "../host_landscape/default/host.tif"
+# rasterSuffix = "_raster_total.tif"
+# outDir = "./cassava_data-2022_02_09/"
+
+# Positives
+surveyData = sf::read_sf("../../../../cassava_data/data_merged/data/2022_02_09/cassava_data_minimal.gpkg") |>
+    dplyr::filter(cbsd_foliar_bool==TRUE)
+
+templateRasterPath = "../host_landscape/CassavaMap/host.tif"
+rasterSuffix = "_raster_positive.tif"
+outDir = "./cassava_data-2022_02_09/cbsd_positive/"
 
 genSurveyRasters(
     surveyData=surveyData,
     templateRasterPath=templateRasterPath,
+    rasterSuffix=rasterSuffix,
     outDir=outDir
 )
