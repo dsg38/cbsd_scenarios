@@ -35,7 +35,7 @@ def setmodelparameters(x=None):
     opts.changempemparams('WeatherFileName', 'P_WeatherSwitchTimes.txt')
 
     opts.changempemparams('DPCTimeFirst', 0)
-    opts.changempemparams('DPCFrequency', 0.25)
+    opts.changempemparams('DPCFrequency', 0.1)
 
     opts.changempemparams('BatchEnable', 0)
     opts.changempemparams('BatchRuns', 1)

@@ -1,0 +1,2 @@
+SimulationStartTime SimulationLength ManagementEnable RasterEnable RasterFrequency RasterEnable_0_REMOVED Rate_0_ItoR Rate_0_RtoS DetectionEnable DetectionParameter DetectionFrequency DetectionFirst ControlCullEnable ControlCullFrequency ControlCullFirst ControlCullLast ControlCullControlMethodSpecification ControlCullControlMethodRasterName ControlCullEffectiveness
+1 2004 19 1 1 1 0 0 1000000000 1 1.0 1 2013.0 1 1.0 2013.01 2015.5 RASTER control_raster.asc 0.15

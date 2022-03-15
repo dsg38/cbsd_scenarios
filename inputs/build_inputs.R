@@ -11,6 +11,7 @@ processHost = "processHost"
 processInit = "processInit"
 processSurvey = "processSurvey"
 processVector = "processVector"
+processControl = "processControl"
 copyGeneralFiles = "copyGeneralFiles"
 
 # Read config
@@ -188,6 +189,50 @@ if(processVector %in% configNames){
         pathOut = vectorRasterPathOut
     )
     
+}
+
+# Control raster
+if(processControl %in% configNames){
+
+    print("CONTROL RASTER")
+    
+    controlRasterDir = config[[processControl]]
+    
+    controlRasterPath = file.path("inputs_raw/control_raster", controlRasterDir, "outputs/control_raster_TEMP.tif")
+
+    controlRasterPathOutTemp = file.path(outDir, "control_raster_TEMP.asc")
+    controlRasterPathOutFinal = file.path(outDir, "control_raster.asc")
+
+    # Crop raster and save as temporary file
+    utils$processRaster(
+        rasterPath = controlRasterPath,
+        extentVec = extentVec,
+        cropBool = cropBool,
+        pathOut = controlRasterPathOutTemp
+    )
+
+    # Read temp and replace temp values with required string values
+    posValTemp = 12345
+    negValTemp = 54321
+
+    posVal = "CULL"
+    negVal = "NONE"
+
+    readLines(controlRasterPathOutTemp) |>
+        stringr::str_replace_all(
+            pattern = as.character(posValTemp), 
+            replace = posVal) |>
+        stringr::str_replace_all(
+            pattern = as.character(negValTemp), 
+            replace = negVal) |>
+        stringr::str_replace_all(
+            pattern = ".000000000000000", 
+            replace = "") |>
+        writeLines(con = controlRasterPathOutFinal)
+
+    # Delete the temp raster
+    file.remove(controlRasterPathOutTemp)
+
 }
 
 # Copy general files
