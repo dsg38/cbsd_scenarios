@@ -15,7 +15,7 @@ endemicCountryCodes = c(
 # Read in survey points and drop cbsd NAs
 surveyDf = sf::read_sf("../../../../../cassava_data/data_merged/data/2022_02_09/cassava_data_minimal.gpkg") |>
     dplyr::filter(country_code %in% endemicCountryCodes) |>
-    dplyr::filter(!is.na(cbsd_any_bool))
+    dplyr::filter(!is.na(cbsd_foliar_bool))
 
 # Endemic poly
 endemicDf = sf::read_sf("../../../../inputs/inputs_raw/init_conditions/endemic_seed/endemic_poly.gpkg")
@@ -32,7 +32,7 @@ outList = list()
 for(thisCountryCode in countryCodes){
     
     thisDf = surveyDfSubset[surveyDfSubset$country_code==thisCountryCode,]
-    infProp = sum(thisDf$cbsd_any_bool) / nrow(thisDf)
+    infProp = sum(thisDf$cbsd_foliar_bool) / nrow(thisDf)
     
     outList[[thisCountryCode]] = data.frame(
         thisCountryCode,

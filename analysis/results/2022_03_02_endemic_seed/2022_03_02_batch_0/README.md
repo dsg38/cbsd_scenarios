@@ -1,5 +1,9 @@
 # Stages of this analysis
 
+## Justification for 50% criteria
+
+`./stats_survey_inf_prop.R`: Calcualates the infectious proportion of survey points in the endemic polys. Avg across all of them is ~56%.
+
 ## Process simulations to generate summary dfs
 
 First, used `analysis/package_inf_rasters` to generate the `raster_poly_stats_agg.rds` summaries of the changing inf prop for different poly regions for each simulations rasters. Specifically:
