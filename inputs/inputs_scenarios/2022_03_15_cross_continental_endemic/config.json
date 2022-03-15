@@ -1,0 +1,16 @@
+{
+    "cropByCountryCode": [
+        "AGO","BDI","BEN","BFA","CAF","CIV","CMR","COD","COG","GAB","GHA","GIN","GMB","GNB","GNQ","KEN","LBR","MLI","MOZ","MWI","NER","NGA","RWA","SEN","SLE","SSD","TCD","TGO","TZA","UGA","ZMB","ZWE"
+    ],
+    "processHost": "CassavaMap-cassava_data-2022_02_09",
+    "processInit": "endemic_layer-uganda_2005",
+    "processSurvey": {
+        "surveyDir": "cassava_data-2022_02_09",
+        "polyDfName": "polys_fitting_host_CassavaMap.gpkg"
+    },
+    "processVector": "cassava_data-2022_02_09",
+    "copyGeneralFiles": {
+        "P_WeatherSwitchTimes_IS.txt": "P_WeatherSwitchTimes.txt",
+        "surveyTiming.json": "surveyTiming.json"
+    }
+}
