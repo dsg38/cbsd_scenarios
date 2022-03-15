@@ -43,6 +43,7 @@ propYearDfExceed = propYearDf |>
     dplyr::filter(POLY_ID%in%endemicPolyCodes & prop==0.5 & !is.infinite(raster_year))
 
 
+# Now work out which sims meet this criteria for all endemic polys
 polyJobListEndemic = list()
 for(polyId in endemicPolyCodes){
     
