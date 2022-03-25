@@ -6,6 +6,11 @@ NB: All paths are relative to this README dir
 
 ### Survey data-based stats
 
+#### Aggregate sim survey simulation output
+
+
+
+
 #### Isolate which sims meet individual simulated survey stats constraints
 
 **Script: `results/*/*/preprocess_sim_survey.R`**
