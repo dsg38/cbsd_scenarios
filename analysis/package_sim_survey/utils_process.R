@@ -44,7 +44,7 @@ aggregateManagementResults = function(simDir, stackedPathOut){
     
     dir.create(dirname(stackedPathOut), showWarnings = F, recursive = T)
 
-    jobDirs = list.files(simDir, "job*", full.names = T)[1:10]
+    jobDirs = list.files(simDir, "job*", full.names = T)
 
     thisBatch = basename(simDir)
 
