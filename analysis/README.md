@@ -4,11 +4,30 @@ NB: All paths are relative to this README dir
 
 ## Pre-processing
 
-### Survey data-based stats
+### Check all sims have finished
+
+Script `../../utils_hpc/check_sim_status.py`
+
+Single arg path to batch e.g: `python check_sim_status.py "../cbsd_scenarios/simulations/sim_output/2022_03_15_cross_continental_endemic/2022_03_20_batch_0/"`
+
+Outputs:
+
+- Saves `progress.csv` inside batch folder
+
+### Surveillance data-based stats
 
 #### Aggregate sim survey simulation output
 
+Script: `package_sim_survey/process_sim_output.R`
 
+Inputs:
+
+- Launch script for simulations e.g. `../../simulations/launch/2021_03_17_cross_continental_launch.sh`
+- `progress.csv` inside batch dir
+
+Outputs:
+
+- 
 
 
 #### Isolate which sims meet individual simulated survey stats constraints
