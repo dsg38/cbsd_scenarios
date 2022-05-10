@@ -22,7 +22,8 @@ calcPolyHostStats = function(
 calcPolySurveyDataStats = function(
     polysDfPath,
     surveyDataPath,
-    outDir
+    outDir,
+    ugaStatsBool=FALSE
 ){
 
     box::use(utils[...])
@@ -32,9 +33,13 @@ calcPolySurveyDataStats = function(
 
     allPolysDf = sf::st_read(polysDfPath)
 
-    surveyDataRaw = read.csv(surveyDataPath)
-    surveyData = sf::st_as_sf(surveyDataRaw, coords = c("x","y"))
-    sf::st_crs(surveyData) = "WGS84"
+    surveyData = sf::read_sf(surveyDataPath)
+    # surveyData = sf::st_as_sf(surveyDataRaw, coords = c("x","y"))
+    # sf::st_crs(surveyData) = "WGS84"
+
+    if(ugaStatsBool){
+        surveyData = surveyData |> dplyr::filter(country_code=="UGA")
+    }
 
     dir.create(outDir, showWarnings=F, recursive=T)
     dir.create(plotDir, showWarnings = F, recursive=T)
@@ -62,7 +67,7 @@ calcPolySurveyDataStats = function(
                         
                 thisYearDf = inPolyDf[inPolyDf$year==thisYear,]
                 
-                nPos = sum(thisYearDf$cbsd)
+                nPos = sum(thisYearDf$cbsd_foliar_bool, na.rm=TRUE)
                 nTotal = nrow(thisYearDf)
                 nNeg = nTotal - nPos
                 propPos = nPos / nTotal

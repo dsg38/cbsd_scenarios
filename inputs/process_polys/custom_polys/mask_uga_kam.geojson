@@ -1,0 +1,7 @@
+{
+"type": "FeatureCollection",
+"name": "mask_uga_kam",
+"features": [
+{ "type": "Feature", "properties": { "POLY_ID": "mask_uga_kam" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 32.1983, 0.08599059 ], [ 32.1983, 1.160991 ], [ 33.21496, 1.160991 ], [ 33.21496, 0.08599059 ], [ 32.1983, 0.08599059 ] ] ] } }
+]
+}
