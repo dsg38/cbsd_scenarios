@@ -63,13 +63,13 @@ applyConstraintList = function(
         
         tol = constraints[[polyName]]
         
-        passDf = applySpecificPoly(
+        passKeysPolyName = applySpecificPoly(
             resultsDf = resultsDf,
             polyName = polyName,
             tol = tol
         )
         
-        passKeysList[[polyName]] = unique(passDf$simKey)
+        passKeysList[[polyName]] = passKeysPolyName
         
     }
 
@@ -140,7 +140,7 @@ plotInfProp = function(
 
     box::use(
         ggplot2[...],
-        ggfan[...],
+        ggfan[...]
     )
     
     resultsDf$surveyDataYear = as.numeric(resultsDf$surveyDataYear)

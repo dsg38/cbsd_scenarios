@@ -98,6 +98,10 @@ aggregateManagementResults = function(simDir, stackedPathOut){
 
     dir.create(dirname(stackedPathOut), showWarnings = FALSE, recursive = TRUE)
 
+    if(nrow(stackedManagementDf)==0){
+        stop("No management files found")
+    }
+
     saveRDS(stackedManagementDf, stackedPathOut)
 
 }
@@ -195,7 +199,7 @@ extractPolygonStats = function(
             simYear=thisSimYear,
             polyName=polyName,
             polySuffix=polySuffix,
-            surveyDataYear=thisSurveyDataYear
+            surveyDataYear=as.numeric(thisSurveyDataYear)
         )
         
         mergedDfList[[thisYearMaskDfPath]] = thisMergedDf
