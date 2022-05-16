@@ -3,13 +3,19 @@ args = commandArgs(trailingOnly=TRUE)
 configPath = args[[1]]
 aggOnlyFinishedBool = as.logical(as.numeric(args[[2]]))
 
-# configPath = "./2021_03_26_cross_continental/config_poly.json"
+# configPath = "../results/2022_03_15_cross_continental_endemic/2022_03_20_batch_0/config_inf_polys.json"
+# aggOnlyFinishedBool = 0
 
 config = rjson::fromJSON(file=configPath)
 
 batchPath = here::here(config[["batchPath"]])
-outPath = here::here(batchPath, "raster_poly_stats_agg.rds")
-outPathMinimal = here::here(batchPath, "raster_poly_stats_agg_minimal.rds")
+
+batchName = basename(batchPath)
+scenarioName = basename(dirname(batchPath))
+outputsDir = here::here("analysis/results", scenarioName, batchName, "output")
+
+outPath = here::here(outputsDir, "raster_poly_stats_agg.rds")
+outPathMinimal = here::here(outputsDir, "raster_poly_stats_agg_minimal.rds")
 
 
 # --------------------------------------------------------------------------
