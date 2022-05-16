@@ -14,6 +14,8 @@ batchName = basename(batchPath)
 scenarioName = basename(dirname(batchPath))
 outputsDir = here::here("analysis/results", scenarioName, batchName, "output")
 
+dir.create(outputsDir, showWarnings = FALSE, recursive = TRUE)
+
 outPath = here::here(outputsDir, "raster_poly_stats_agg.rds")
 outPathMinimal = here::here(outputsDir, "raster_poly_stats_agg_minimal.rds")
 

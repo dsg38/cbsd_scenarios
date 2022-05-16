@@ -6,9 +6,6 @@ infKeysList = rjson::fromJSON(file="./output/results_inf_polys.json")
 
 gridDf = readRDS("./output/grid_sim_pass_criteria.rds")
 
-
-
-
 # Inf prop pass keys
 surveyUgaKeys = intersect(surveyKeysList[["mask_uga_hole"]], surveyKeysList[["mask_uga_kam"]])
 

@@ -30,6 +30,7 @@ Outputs:
 - `./results/2022_03_15_cross_continental_endemic/2022_03_20_batch_0/output/management_stacked.rds`
 - `./results/2022_03_15_cross_continental_endemic/2022_03_20_batch_0/output/management_results.rds`
 
+e.g. `Rscript process_sim_output.R ../../simulations/launch/2022_03_15_cross_continental_endemic_launch.sh`
 
 #### Isolate which sims meet individual simulated survey stats constraints
 

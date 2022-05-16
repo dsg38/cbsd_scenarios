@@ -84,8 +84,8 @@ surveyDfSubset = surveyDf |>
 
 # Create df of all points
 pointsDf = dplyr::bind_rows(
-    nonSfPointsDf,
-    surveyDfSubset
+    nonSfPointsDf#,
+    # surveyDfSubset
 )
 
 # Buffer 100km radius around each point
@@ -96,7 +96,7 @@ polysDf = dplyr::bind_rows(
     rwaBwiDf,
     zmbUnionDf,
     pwetoDf,
-    hkDf,
+    # hkDf,
     bufferDf
 )
 
