@@ -1,6 +1,8 @@
 box::use(./utils)
 
 countriesDf = sf::read_sf("./gadm36_levels_gpkg/gadm36_level0_africa.gpkg")
+regionsDf = sf::read_sf("./gadm36_levels_gpkg/gadm36_level1_africa.gpkg")
+subRegionsDf = sf::read_sf("./gadm36_levels_gpkg/gadm36_level2_africa.gpkg")
 
 # Filter out Rwanda + Burundi
 rwaBwiDf = countriesDf |>
@@ -10,8 +12,6 @@ rwaBwiDf = countriesDf |>
 
 
 # Zambian small regions of first observation
-subRegionsDf = sf::read_sf("./gadm36_levels_gpkg/gadm36_level2_africa.gpkg")
-
 zmbDf = subRegionsDf |>
     dplyr::filter(
         GID_0=="ZMB",
@@ -28,8 +28,6 @@ zmbUnionDf = data.frame(
     dplyr::rename(geom=geometry)
 
 # DRC southern observations in Haut Katanga = casingaExpansionCassavaBrown2020
-regionsDf = sf::read_sf("./gadm36_levels_gpkg/gadm36_level1_africa.gpkg")
-
 hkDf = regionsDf |>
     dplyr::filter(
         GID_0=="COD",
@@ -38,6 +36,15 @@ hkDf = regionsDf |>
     dplyr::rename(POLY_ID=NAME_1) |>
     dplyr::select(POLY_ID, geom)
 
+
+# DRC Pweto = subregion within haut katanga
+pwetoDf = subRegionsDf |>
+    dplyr::filter(
+        GID_0=="COD",
+        NAME_2%in%c("Pweto")
+    ) |>
+    dplyr::rename(POLY_ID=NAME_2) |>
+    dplyr::select(POLY_ID, geom)
 
 # First DRC confirmation (in east) = mulimbi_first_2012
 drcEastDf = data.frame(
@@ -84,17 +91,14 @@ pointsDf = dplyr::bind_rows(
 # Buffer 100km radius around each point
 bufferDf = sf::st_buffer(pointsDf, dist=100000)
 
-# mapview::mapview(bufferDf)
-
 # Merge all polys
 polysDf = dplyr::bind_rows(
     rwaBwiDf,
     zmbUnionDf,
+    pwetoDf,
     hkDf,
     bufferDf
 )
-
-# mapview::mapview(polysDf)
 
 # Generate host stats
 hostRasterPath = "../inputs_raw/host_landscape/CassavaMap/host.tif"
