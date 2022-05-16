@@ -2,7 +2,7 @@ x = data.frame(
     
     # Standard params
     SimulationStartTime="2004",
-    SimulationLength="19",
+    SimulationLength="50",
     ManagementEnable="1",
     RasterEnable="1",
     RasterFrequency="1",
@@ -29,4 +29,4 @@ x = data.frame(
 
 )
 
-write.table(x, "./2022_03_15_cross_continental_endemic_params.txt", quote=FALSE, row.names = FALSE)
+write.table(x, "./2022_05_16_cross_continental_endemic_params.txt", quote=FALSE, row.names = FALSE)
