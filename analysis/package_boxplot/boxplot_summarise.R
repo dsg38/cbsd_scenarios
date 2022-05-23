@@ -3,27 +3,20 @@ args = commandArgs(trailingOnly=TRUE)
 rasterStatsDfPath = args[[1]]
 outPath = args[[2]]
 
+# rasterStatsDfPath = "../results/2022_03_15_cross_continental_endemic/2022_03_20_batch_0/output/raster_poly_stats_agg_minimal.rds"
+# outPath = "../results/2022_03_15_cross_continental_endemic/2022_03_20_batch_0/output/propYearDf.csv"
+
 rasterStatsDf = readRDS(rasterStatsDfPath)
 
-# rasterStatsDf = readRDS("./results/2022_03_02_endemic_seed/2022_03_02_batch_0/data_simulations/raster_poly_stats_agg_minimal.rds")
-# outPath = "./results/2022_03_02_endemic_seed/2022_03_02_batch_0/data_simulations/propYearDf.csv"
-
-# rasterStatsDf = readRDS("./results/2021_10_15_endemic_seed/2021_10_15_batch_0/output/raster_poly_stats_agg_minimal.rds")
-# outPath = "./results/2021_10_15_endemic_seed/2021_10_15_batch_0/output/propYearDf.csv"
-
-# rasterStatsDf = readRDS("./results/2021_03_26_cross_continental/2021_04_29_merged/output/raster_poly_stats_agg_minimal_SMALL.rds")
-# outPath = "plots/propYearDf.csv"
-
-propThresholdVec = c(seq(0, 0.1, 0.01), 0.25, 0.5, 0.75)
+propThresholdVec = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75)
 
 # ------------------------------------------------
 
-# Split by job/batch/poly
+# Split by simKey/poly
 splitDfList = split(
     rasterStatsDf, 
     list(
-        rasterStatsDf$job,
-        rasterStatsDf$batch,
+        rasterStatsDf$simKey,
         rasterStatsDf$POLY_ID
     ),
     drop=TRUE
@@ -35,9 +28,8 @@ getPropThresholdRows = function(
     propThresholdVec
     ){
     
-    thisJobId = thisDf$job[[1]]
     thisPolyId = thisDf$POLY_ID[[1]]
-    thisBatch = thisDf$batch[[1]]
+    thisSimKey = thisDf$simKey[[1]]
 
     # Loop over different threshold proportions
     outRowList = list()
@@ -56,8 +48,7 @@ getPropThresholdRows = function(
         # Build row
         outRow = data.frame(
             POLY_ID=thisPolyId,
-            job=thisJobId,
-            batch=thisBatch,
+            simKey=thisSimKey,
             prop=propThreshold,
             raster_year=raster_year
         )

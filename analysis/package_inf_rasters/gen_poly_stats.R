@@ -95,6 +95,11 @@ for(rasterPath in rasterPaths){
     job = dplyr::nth(splitPath, -4)
     batch = dplyr::nth(splitPath, -5)
     scenario = dplyr::nth(splitPath, -6)
+
+    # NB: Hardcoded so never using pmpem multiple sims per dir
+    jobSim = 0
+
+    simKey = paste(scenario, batch, job, jobSim, sep="-")
     
     # Get year
     rasterFilenameNoExt = tools::file_path_sans_ext(basename(rasterPathNorm))
@@ -122,6 +127,7 @@ for(rasterPath in rasterPaths){
         job=job,
         batch=batch,
         scenario=scenario,
+        simKey=simKey,
         raster_path=rasterPathNorm
     )
     

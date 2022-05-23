@@ -79,7 +79,8 @@ keepCols = c(
     "raster_type",
     "job",
     "batch",
-    "scenario"
+    "scenario",
+    "simKey"
 )
 
 outDfMinimal = outDf[,keepCols]
