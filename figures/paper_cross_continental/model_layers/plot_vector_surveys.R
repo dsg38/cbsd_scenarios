@@ -17,6 +17,10 @@ surveyCountsDf = surveyDfWhitefly |>
     sf::st_drop_geometry() |>
     dplyr::count(country_code)
 
+# x = surveyDfWhitefly |>
+#     sf::st_drop_geometry() |>
+#     dplyr::count(country_code, year)
+
 print(sum(surveyCountsDf[surveyCountsDf$country_code!="UGA","n"]))
 
 extent = c(
