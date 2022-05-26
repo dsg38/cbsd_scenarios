@@ -18,5 +18,6 @@ for thisJob in doneJobs:
     oldDir = oldBatch / thisJob
     newDir = newBatch / thisJob
 
-    print(newDir)
-    shutil.copytree(src=oldDir, dst=newDir, dirs_exist_ok=True)
+    if not newDir.exists():
+        print(newDir)
+        shutil.copytree(src=oldDir, dst=newDir, dirs_exist_ok=True)
