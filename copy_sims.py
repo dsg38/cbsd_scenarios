@@ -21,3 +21,8 @@ for thisJob in doneJobs:
     if not newDir.exists():
         print(newDir)
         shutil.copytree(src=oldDir, dst=newDir, dirs_exist_ok=True)
+
+x = [x.replace('job', '') for x in doneJobs]
+
+with open("text.txt", 'w') as file:
+    file.write(','.join(x))
