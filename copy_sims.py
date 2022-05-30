@@ -13,6 +13,7 @@ doneDf = progDf[(progDf['numRastersTif'] == 51)]
 
 doneJobs = list(natsort.natsorted(doneDf['jobName']))[0:1000]
 
+i = 0
 for thisJob in doneJobs:
 
     oldDir = oldBatch / thisJob
@@ -20,9 +21,13 @@ for thisJob in doneJobs:
 
     if not newDir.exists():
         print(newDir)
+        print(i)
+
         shutil.copytree(src=oldDir, dst=newDir, dirs_exist_ok=True)
 
-x = [x.replace('job', '') for x in doneJobs]
+        i += 1
 
-with open("text.txt", 'w') as file:
-    file.write(','.join(x))
+# x = [x.replace('job', '') for x in doneJobs]
+
+# with open("text.txt", 'w') as file:
+#     file.write(','.join(x))
