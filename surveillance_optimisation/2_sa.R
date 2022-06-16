@@ -37,17 +37,18 @@ objectiveFun = function(x){
         print(i)    
     }
     
-    if(i<=100){
+    # if(i<=100){
         # coordsDfList[[as.character(i)]] = cbind(coordsDf, iteration=i)
         # assign(coordsDfList[[as.character(i)]], cbind(coordsDf, iteration=i), envir = .GlobalEnv)
-        
-        tmp <- get('coordsDfList',.GlobalEnv)
-        tmp[[as.character(i)]] <- cbind(coordsDf, iteration=i)
-        assign("coordsDfList",tmp, .GlobalEnv)
-        
-    }
     
-    print(probDetectAcrossRastersMean)
+    # Put survey coords into global list 
+    tmp <- get('coordsDfList',.GlobalEnv)
+    tmp[[as.character(paste0("loop_", i))]] <- cbind(coordsDf, iteration=i)
+    assign("coordsDfList",tmp, .GlobalEnv)
+        
+    # }
+    
+    # print(probDetectAcrossRastersMean)
     
     return(probDetectAcrossRastersMean)
     
@@ -66,7 +67,7 @@ startVec = c(xRand, yRand)
 controlList = list(
     k=0.1,
     r=0.99,
-    nlimit=1
+    nlimit=5
 )
 
 
@@ -80,15 +81,16 @@ x = optimization::optim_sa(
     control=controlList
 )
 
+coordsDf = dplyr::bind_rows(coordsDfList)
 
-plot(objFuncVals, main=paste(controlList, collapse="_"))
+write.csv(coordsDf, "./data/coordsDf.csv", row.names = FALSE)
 
-# names(coordsDfList)
+# plot(objFuncVals, main=paste(controlList, collapse="_"))
 
-surveyDf = coordsDfList[["2"]] |>
-    sf::st_as_sf(coords=c("x", "y"), crs="WGS84")
-
-mapview::mapview(surveyDf)
+# surveyDf = coordsDfList[["loop_2"]] |>
+#     sf::st_as_sf(coords=c("x", "y"), crs="WGS84")
+# 
+# mapview::mapview(surveyDf)
 
 # plot(x$trace)
 # 
