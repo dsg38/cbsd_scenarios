@@ -15,4 +15,4 @@ templateRasterCrop[] = 0
 maskRaster = raster::mask(x=templateRasterCrop, mask=ugaPolysDf, updatevalue=1, inverse=TRUE)
 
 # Save
-raster::writeRaster(maskRaster, "mask.tif")
+raster::writeRaster(maskRaster, "./data/mask.tif")

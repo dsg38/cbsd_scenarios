@@ -1,7 +1,22 @@
+library(tictoc)
 library(tmap)
 tmap_options(show.messages=FALSE)
 
+# Define what interval of plots to plot (i.e. 1 = plot all)
+plotFactor = 3
 coordsDf = read.csv("./data/coordsDf.csv")
+
+infBrick = raster::brick("./data/brick.tif")
+sumRaster = infBrick[[1]]
+for(i in 2:raster::nlayers(infBrick)){
+    sumRaster = sumRaster + infBrick[[i]]
+}
+
+# TEMP: Downscale raster for plotting speed
+sumRaster = raster::aggregate(sumRaster, 2)
+
+# Set all zeros to NA
+sumRaster[sumRaster==0] = NA
 
 countryPolysDf = sf::read_sf("../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg")
 countryPolysDfSimple = sf::st_simplify(countryPolysDf, dTolerance = 1000)
@@ -26,22 +41,27 @@ plotMap = function(changeDf, plotPath){
     changeSf = changeDf |>
         sf::st_as_sf(coords=c("x", "y"), crs="WGS84")
     
-    p = tm_shape(changeSf, bbox=ugaExtent) + 
-        tm_dots(size=0.2, col="coordsChangeBool", palette=c("TRUE"='green', "FALSE"='black')) + 
+    p = tm_shape(sumRaster, bbox=ugaExtent) +
+        tm_raster(palette="Reds") +
+        tm_shape(changeSf) +
+        tm_dots(size=0.2, col="coordsChangeBool", palette=c("TRUE"='green', "FALSE"='black')) +
         tm_shape(countryPolysDfSimple) +
-        tm_borders(lwd=0.5) + 
+        tm_borders(lwd=0.5) +
         tm_layout(
             main.title=paste0("Iteration: ", changeDf$iteration[[1]], " - Num change: ", numChange),
             legend.position = c("right", "top")
         )
-    
+    # p
+    # browser()
     tmap_save(p, plotPath)
 }
 
 
 iMax = max(coordsDf$iteration)
+plotSeq = seq(1, iMax, by=plotFactor)
 
-for(i in seq_len(iMax)){
+tic()
+for(i in plotSeq){
     
     print(i)
     
@@ -57,11 +77,11 @@ for(i in seq_len(iMax)){
     
     iStr = sprintf("%06d", i)
     
-    plotPath = file.path("./plots/", paste0("plot_", iStr, ".png"))
+    plotPath = file.path("./plots/maps/", paste0("plot_", iStr, ".png"))
     
     plotMap(changeDf=changeDf, plotPath=plotPath)
     
 }
-
+toc()
 
 

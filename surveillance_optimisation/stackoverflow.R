@@ -1,6 +1,6 @@
 library(tictoc)
 
-simulated_annealing = function(func, startCoordsDf, extent, niter = 1000, step = 0.003) {
+simulated_annealing = function(func, startCoordsDf, extent, rewardRatio, niter = 2000, step = 0.01) {
 
     # Initialize
     ## s stands for state
@@ -9,7 +9,7 @@ simulated_annealing = function(func, startCoordsDf, extent, niter = 1000, step =
     ## c stands for current
     ## n stands for neighbor
     s_b = s_c = s_n = startCoordsDf
-    f_b = f_c = f_n = func(s_n)
+    f_b = f_c = f_n = func(s_n, rewardRatio)
     # message("It\tBest\tCurrent\tNeigh\tTemp")
     # message(sprintf("%i\t%.4f\t%.4f\t%.4f\t%.4f", 0L, f_b, f_c, f_n, 1))
 
@@ -24,6 +24,8 @@ simulated_annealing = function(func, startCoordsDf, extent, niter = 1000, step =
         }
 
         Temp = (1 - step)^k
+        
+        tempVec <<- c(tempVec, Temp)
 
         # Pick random coordinate to change
         randRowIndex = sample(rowIndexVec, 1, replace = TRUE)
@@ -36,8 +38,9 @@ simulated_annealing = function(func, startCoordsDf, extent, niter = 1000, step =
         s_n = s_c
         s_n$x[randRowIndex] = newX
         s_n$y[randRowIndex] = newY
-
-        f_n = func(s_n)
+        
+        f_n = func(s_n, rewardRatio)
+        
         # update current state
         
         if(f_n > f_c || runif(1, 0, 1) < exp(-abs(f_n - f_c) / Temp)){
@@ -63,16 +66,30 @@ simulated_annealing = function(func, startCoordsDf, extent, niter = 1000, step =
 }
 
 
-objectiveFun = function(coordsDf){
+objectiveFun = function(coordsDf, rewardRatio){
      
     detectionProb = 1
         
     cellIndexVec = raster::cellFromXY(object=infBrick[[1]], xy=coordsDf)
     
     brickValsDf = as.data.frame(infBrick[cellIndexVec])
+
+    # Probability that you DO detect per cell
+    probDetectPerCellDf = detectionProb * brickValsDf
+
+    # ----------------------
+    # Rewarding maximising number of findings
+    
+    # Expected num findings cells positive per raster
+    expectedNumCellsDetectedPerRaster = colSums(probDetectPerCellDf)
+    
+    expectedNumCellsDetectedPerRasterMean = mean(expectedNumCellsDetectedPerRaster)
+    
+    # ----------------------
+    # Rewarding maximising number of realisations that detect
     
     # Probability that you don't detect per cell
-    probNotDetectPerCellDf = 1 - (detectionProb * brickValsDf)
+    probNotDetectPerCellDf = 1 - probDetectPerCellDf
     
     # Prob that you DO detect per raster layer
     probDetectPerRasterVec = 1 - apply(X=probNotDetectPerCellDf, 2, FUN=prod)
@@ -80,32 +97,30 @@ objectiveFun = function(coordsDf){
     # As in parnel, we take the mean = This is the interesting choice - We need to collapse across all realisations somehow
     # TODO: Investigate returning the 'min' instead of the 'mean' to minimise how bad the worse case is... - need to think more
     probDetectAcrossRastersMean = mean(probDetectPerRasterVec)
-
-    i <<- i + 1
     
-    # if(i<=100){
-        # coordsDfList[[as.character(i)]] = cbind(coordsDf, iteration=i)
-        # assign(coordsDfList[[as.character(i)]], cbind(coordsDf, iteration=i), envir = .GlobalEnv)
+    # ----------------------
+    # Multi-objective optimisation: linear scalarization - i.e. reward both
+    normNumDetections = (expectedNumCellsDetectedPerRasterMean / nrow(coordsDf)) * (1 - rewardRatio)
     
-
-        
-    # }
+    reward = (probDetectAcrossRastersMean*rewardRatio) + normNumDetections
     
-    # print(probDetectAcrossRastersMean)
-    
-    return(probDetectAcrossRastersMean)
+    return(reward)
      
 }
 
-infBrick = raster::brick("./brick.tif")
+infBrick = raster::brick("./data/brick.tif")
+
 
 # ------------------------
-i = 0
 objFuncVals = c()
+tempVec = c()
+# objFuncProbDetectVec = 
+
 coordsDfList = list()
 
 # SA bit
 numSurveys = 10
+rewardRatio = 0.95
 
 rasterExtent = raster::extent(infBrick)
 
@@ -120,24 +135,40 @@ startCoordsDf = data.frame(
 )
 
 tic()
-sol = simulated_annealing(objectiveFun, extent=rasterExtent, startCoordsDf = startCoordsDf)
+sol = simulated_annealing(objectiveFun, extent=rasterExtent, startCoordsDf = startCoordsDf, rewardRatio=rewardRatio)
 toc()
 
 coordsDf = dplyr::bind_rows(coordsDfList)
 
-write.csv(coordsDf, "coordsDf.csv", row.names = FALSE)
+write.csv(coordsDf, "./data/coordsDf.csv", row.names = FALSE)
 
+# Plot trace
+
+png("./plots/trace/trace.png", width=600, height=600)
 plot(objFuncVals)
+lines(objFuncVals, pch=16)
 
-Temp = (1 -  0.003)^(1:length(objFuncVals))
-tempVals = exp(-1 / Temp)
+points(tempVec, col="red")
 
-points(1-tempVals, col="red")
-# schaffer = function(xx){
-#      x1 = xx[1]
-#      x2 = xx[2]
-#      fact1 = (sin(x1^2-x2^2))^2 - 0.5
-#      fact2 = (1 + 0.001*(x1^2+x2^2))^2
-#      y = 0.5 + fact1/fact2
-#      return(y)
+x = exp(-(rewardRatio/tempVec))
+points(x, col="blue")
+
+y = exp(-((1-rewardRatio)/tempVec))
+points(y, col="green")
+dev.off()
+
+
+
+
+# endCoordsDf = coordsDf[coordsDf$iteration==max(coordsDf$iteration),] |>
+#     sf::st_as_sf(coords=c("x", "y"), crs="WGS84")
+
+# sumRaster = infBrick[[1]]
+# for(i in 2:8){
+#     sumRaster = sumRaster + infBrick[[i]]
 # }
+# 
+
+# mapview::mapview(sumRaster) #+ mapview::mapview(endCoordsDf)
+
+
