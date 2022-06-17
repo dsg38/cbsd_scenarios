@@ -1,6 +1,6 @@
 library(tictoc)
 
-simulated_annealing = function(func, startCoordsDf, extent, rewardRatio, niter = 2000, step = 0.01) {
+simulated_annealing = function(func, startCoordsDf, extent, rewardRatio, niter = 1000, step = 0.01) {
 
     # Initialize
     ## s stands for state
@@ -31,13 +31,12 @@ simulated_annealing = function(func, startCoordsDf, extent, rewardRatio, niter =
         randRowIndex = sample(rowIndexVec, 1, replace = TRUE)
         
         # Pick random location to update coord within extent
-        newX = runif(1, min=extent@xmin, max=extent@xmax)
-        newY = runif(1, min=extent@ymin, max=extent@ymax)
+        newCoord = dplyr::sample_n(sumRasterPointsDf, 1, replace = TRUE)
 
         # Update new state
         s_n = s_c
-        s_n$x[randRowIndex] = newX
-        s_n$y[randRowIndex] = newY
+        s_n$x[randRowIndex] = newCoord$x
+        s_n$y[randRowIndex] = newCoord$y
         
         f_n = func(s_n, rewardRatio)
         
@@ -109,12 +108,11 @@ objectiveFun = function(coordsDf, rewardRatio){
 }
 
 infBrick = raster::brick("./data/brick.tif")
-
+sumRasterPointsDf = read.csv("./data/sumRasterMaskPointsDf.csv")
 
 # ------------------------
 objFuncVals = c()
 tempVec = c()
-# objFuncProbDetectVec = 
 
 coordsDfList = list()
 
@@ -124,15 +122,7 @@ rewardRatio = 0.95
 
 rasterExtent = raster::extent(infBrick)
 
-xRand = runif(n=numSurveys, min=rasterExtent@xmin, max=rasterExtent@xmax)
-yRand = runif(n=numSurveys, min=rasterExtent@ymin, max=rasterExtent@ymax)
-
-startVec = c(xRand, yRand)
-
-startCoordsDf = data.frame(
-    x = xRand,
-    y = yRand
-)
+startCoordsDf = dplyr::sample_n(sumRasterPointsDf, numSurveys, replace = TRUE)
 
 tic()
 sol = simulated_annealing(objectiveFun, extent=rasterExtent, startCoordsDf = startCoordsDf, rewardRatio=rewardRatio)
@@ -145,7 +135,7 @@ write.csv(coordsDf, "./data/coordsDf.csv", row.names = FALSE)
 # Plot trace
 
 png("./plots/trace/trace.png", width=600, height=600)
-plot(objFuncVals)
+plot(objFuncVals, ylim=c(0, 1))
 lines(objFuncVals, pch=16)
 
 points(tempVec, col="red")

@@ -3,7 +3,11 @@ library(tmap)
 tmap_options(show.messages=FALSE)
 
 # Define what interval of plots to plot (i.e. 1 = plot all)
-plotFactor = 3
+plotFactor = 1
+downscaleBool = FALSE
+
+# --------------------------
+
 coordsDf = read.csv("./data/coordsDf.csv")
 
 infBrick = raster::brick("./data/brick.tif")
@@ -13,7 +17,9 @@ for(i in 2:raster::nlayers(infBrick)){
 }
 
 # TEMP: Downscale raster for plotting speed
-sumRaster = raster::aggregate(sumRaster, 2)
+if(downscaleBool){
+    sumRaster = raster::aggregate(sumRaster, 2)
+}
 
 # Set all zeros to NA
 sumRaster[sumRaster==0] = NA

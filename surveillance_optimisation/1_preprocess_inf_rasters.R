@@ -28,3 +28,18 @@ infRasterBrickMask[is.na(infRasterBrickMask)] = 0
 
 # Save
 raster::writeRaster(infRasterBrickMask, "./data/brick.tif", overwrite=TRUE)
+
+# --------------------------------
+
+sumRaster = infRasterBrickMask[[1]]
+for(i in 2:raster::nlayers(infRasterBrickMask)){
+    sumRaster = sumRaster + infRasterBrickMask[[i]]
+}
+
+sumRasterMask = sumRaster * maskRaster
+sumRasterMask[sumRasterMask==0] = NA
+
+sumRasterMaskPointsDf = as.data.frame(raster::rasterToPoints(sumRasterMask))
+
+write.csv(sumRasterMaskPointsDf, "./data/sumRasterMaskPointsDf.csv", row.names=FALSE)
+# mapview::mapview(sumRasterMask)
