@@ -2,7 +2,10 @@ args = commandArgs(trailingOnly=TRUE)
 box::use(./utils_process)
 # box::reload(utils_process)
 
-launchScriptPath = args[[1]]
+configPath = args[[1]]
+config = rjson::fromJSON(file=configPath)
+
+launchScriptPath = here::here(config[["launchScriptPath"]])
 # launchScriptPath = "../../simulations/launch/2022_03_15_cross_continental_endemic_launch.sh"
 
 # ----------------------------------------------------

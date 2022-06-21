@@ -1,5 +1,6 @@
 {
     "batchPath": "simulations/sim_output/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/",
     "polyDfPath": "inputs/inputs_raw/polygons/polys_cross_continental_constraints_host_CassavaMap.gpkg",
-    "hostRasterPath": "inputs/inputs_scenarios/2022_03_15_cross_continental_endemic/inputs/L_0_HOSTDENSITY.txt"
+    "hostRasterPath": "inputs/inputs_scenarios/2022_03_15_cross_continental_endemic/inputs/L_0_HOSTDENSITY.txt",
+    "launchScriptPath": "simulations/launch/2022_05_16_cross_continental_endemic_launch.sh"
 }
