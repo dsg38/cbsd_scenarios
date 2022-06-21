@@ -26,7 +26,10 @@ polyDf = sf::read_sf(polyDfPath)
 hostRaster = raster::raster(hostRasterPath, crs="+proj=longlat +datum=WGS84")
 
 # List all rasters
-rasterPaths = list.files(jobDir, pattern="O_0_L_0_*_.*.000000.tif", full.names = T, recursive = T)
+rasterPathsRaw = list.files(jobDir, pattern="O_0_L_0_*_.*.000000.tif", full.names = T, recursive = T)
+
+# Drop any weird xml metadata files
+rasterPaths = rasterPathsRaw[!stringr::str_detect(rasterPathsRaw, ".xml")]
 
 # Define func to work out num populated cells
 numCellsPopulated = function(values, coverage_fractions){
