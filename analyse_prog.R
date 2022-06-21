@@ -26,3 +26,6 @@ processDf = progDf |>
 
 
 # stringr::str_detect(x, ".xml")
+
+x = sf::read_sf("./inputs/inputs_raw/polygons/polys_cross_continental_constraints_host_CassavaMap.gpkg")
+mapview::mapview(x)
