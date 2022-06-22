@@ -38,13 +38,19 @@ extractManagementDf = function(
 }
 
 #' @export
-aggregateManagementResults = function(simDir, stackedPathOut){
+aggregateManagementResults = function(simDir, stackedPathOut, startRowIndex=1, endRowIndex=Inf){
 
     box::use(utils[...])
     
     dir.create(dirname(stackedPathOut), showWarnings = F, recursive = T)
 
     jobDirs = list.files(simDir, "job*", full.names = T)
+    print("Num jobs total")
+    print(length(jobDirs))
+
+    jobDirs = jobDirs[startRowIndex:endRowIndex]
+    print("Num jobs subset")
+    print(length(jobDirs))
 
     thisBatch = basename(simDir)
 

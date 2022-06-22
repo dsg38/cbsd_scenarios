@@ -80,9 +80,9 @@ genMinimalDf(
 )
 
 
-# Extract subset that have finished (done) - use simKey
 if(saveSubsetFinishedBool){
-
+    
+    # Extract subset that have finished (done) - use simKey
     mergedDfDoneOutPath = here::here(outputsDir, "raster_poly_stats_agg_DONE.rds")
     outPathDoneMinimal = here::here(outputsDir, "raster_poly_stats_agg_minimal_DONE.rds")
 
@@ -106,6 +106,25 @@ if(saveSubsetFinishedBool){
     genMinimalDf(
         mergedDf=mergedDfDone,
         outPathMinimal=outPathDoneMinimal
+    )
+
+    # ---------------------------------------------
+    # Extract subset that made it to 2018 sim time (i.e. last major real-world observation)
+    mergedDfPresentDayOutPath = here::here(outputsDir, "raster_poly_stats_agg_PRESENTDAY.rds")
+    outPathPresentDayMinimal = here::here(outputsDir, "raster_poly_stats_agg_minimal_PRESENTDAY.rds")
+
+    presentDayDoneDf = progDf[progDf$maxRasterYearTif >= 2018,]
+
+    presentDaySimKeys = paste(presentDayDoneDf$scenarioName, presentDayDoneDf$batchName, presentDayDoneDf$jobName, "0", sep="-")
+
+    mergedDfPresentDay = mergedDf[mergedDf$simKey %in% presentDaySimKeys,]
+
+    saveRDS(mergedDfPresentDay, mergedDfPresentDayOutPath)
+
+    # Save minimal version of done
+    genMinimalDf(
+        mergedDf=mergedDfPresentDay,
+        outPathMinimal=outPathPresentDayMinimal
     )
 
 }
