@@ -1,5 +1,5 @@
 args = commandArgs(trailingOnly=TRUE)
-box::use(../../../package_sim_survey/utils_process.R)
+box::use(../../../package_sim_survey/utils_process)
 
 config = rjson::fromJSON(file="./config/config_paths.json")
 
