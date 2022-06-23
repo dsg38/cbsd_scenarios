@@ -38,7 +38,7 @@ extractManagementDf = function(
 }
 
 #' @export
-aggregateManagementResults = function(simDir, stackedPathOut, startRowIndex=1, endRowIndex=Inf){
+aggregateManagementResults = function(simDir, stackedPathOut, startRowIndex=NULL, endRowIndex=NULL){
 
     box::use(utils[...])
     
@@ -48,9 +48,15 @@ aggregateManagementResults = function(simDir, stackedPathOut, startRowIndex=1, e
     print("Num jobs total")
     print(length(jobDirs))
 
-    jobDirs = jobDirs[startRowIndex:endRowIndex]
-    print("Num jobs subset")
-    print(length(jobDirs))
+    if(!is.null(startRowIndex) & !is.null(endRowIndex)){
+
+        stopifnot(startRowIndex>=1)
+        stopifnot(endRowIndex<=length(jobDirs))
+
+        jobDirs = jobDirs[startRowIndex:endRowIndex]
+        print("Num jobs subset")
+        print(length(jobDirs))
+    }
 
     thisBatch = basename(simDir)
 
