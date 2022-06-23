@@ -31,7 +31,7 @@ stackedPathOut = file.path(resultsDir, "management_stacked.rds")
 if(length(args) == 3){
     startRowIndex = as.numeric(args[[1]])
     endRowIndex = as.numeric(args[[2]])
-    stackedPathOut = file.path(resultsDir, paste0("management_stacked", args[[3]], ".rds"))
+    stackedPathOut = file.path(resultsDir, paste0("management_stacked_", args[[3]], ".rds"))
 }
 
 # ----------------------------------------------
