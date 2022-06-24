@@ -10,32 +10,41 @@ box::use(../../../utils_analysis)
 # --------------------------------------
 
 
-# surveyKeysList = rjson::fromJSON(file="./output/results_sim_survey.json")
-infKeysList = rjson::fromJSON(file="./output/results_inf_polys.json")
+surveyKeysList = rjson::fromJSON(file="./output/results_sim_survey.json")
+infKeysList = rjson::fromJSON(file="./output/results_inf_polys_DONE.json")
+
+# gridDf = readRDS("./output/grid_sim_pass_criteria.rds")
 
 # Inf prop pass keys
-# surveyUgaKeys = intersect(surveyKeysList[["mask_uga_hole"]], surveyKeysList[["mask_uga_kam"]])
+surveyUgaKeys = intersect(surveyKeysList[["mask_uga_hole"]], surveyKeysList[["mask_uga_kam"]])
 
 targetYearsDf = read.csv("./config/inf_target_years.csv") |>
     dplyr::filter(POLY_ID != "kampala")
 
 targetPolyOrderVec = targetYearsDf$POLY_ID
+# -----------------------------------
+
+# Grid metric pass keys
+# thisCriteria = "tol_applied_only_where_both_bool"
+# gridTol = 0.48
+# 
+# gridDfSubset = gridDf[gridDf$criteria==thisCriteria & gridDf$propFail<=gridTol,]
+# 
+# x = intersect(surveyUgaKeys, gridDfSubset$simKey)
 
 # -----------------------------------
 cumulativePassKeysList = list()
 
 # Add in all pass keys
-y = readRDS("./output/raster_poly_stats_agg_minimal.rds")
+y = readRDS("./output/raster_poly_stats_agg_minimal_DONE.rds")
 cumulativePassKeysList[["all"]] = unique(y$simKey)
 
-cumulativeKey = ""
-# cumulativeKey = "uga"
-# cumulativePassKeysList[[cumulativeKey]] = surveyUgaKeys
+
+cumulativeKey = "uga"
+cumulativePassKeysList[[cumulativeKey]] = surveyUgaKeys
 
 statsDfList = list()
-# runningPassList = surveyUgaKeys
-runningPassList = unique(y$simKey)
-
+runningPassList = surveyUgaKeys
 
 for(thisInfPoly in targetPolyOrderVec){
     
@@ -53,7 +62,7 @@ for(thisInfPoly in targetPolyOrderVec){
     outRow = data.frame(
         POLY_ID=thisInfPoly,
         num_pass=length(thisInfPolyPassKeys),
-        # num_pass_inc_uga=length(intersect(thisInfPolyPassKeys, surveyUgaKeys)),
+        num_pass_inc_uga=length(intersect(thisInfPolyPassKeys, surveyUgaKeys)),
         num_pass_cumulative=length(runningPassList)
     )
     
@@ -64,6 +73,6 @@ for(thisInfPoly in targetPolyOrderVec){
 x = dplyr::bind_rows(statsDfList)
 
 # Save as JSON
-# outPath = "./output/cumulative_passKeys.json"
-# outJson = rjson::toJSON(cumulativePassKeysList, indent=4)
-# readr::write_file(outJson, outPath)
+outPath = "./output/cumulative_passKeys.json"
+outJson = rjson::toJSON(cumulativePassKeysList, indent=4)
+readr::write_file(outJson, outPath)

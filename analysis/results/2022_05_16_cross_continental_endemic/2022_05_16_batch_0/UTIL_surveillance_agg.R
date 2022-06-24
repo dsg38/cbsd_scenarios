@@ -11,11 +11,16 @@ launchScriptData = utils_process$parseLaunchScript(launchScriptPath)
 
 scenario = launchScriptData[["scenario"]]
 batch = launchScriptData[["batch"]]
+scenarioInputsDir = launchScriptData[["inputsDir"]]
 
 # ----------------------------------------------
 
 simDir = here::here("simulations/sim_output", scenario, batch)
 resultsDir = here::here("analysis/results", scenario, batch, "output")
+
+simInputsDir = file.path(scenarioInputsDir, "inputs")
+surveyMappingPath = file.path(simInputsDir, "surveyTiming.json")
+
 
 # ----------------------------------------------
 
@@ -27,11 +32,13 @@ dir.create(resultsDir, showWarnings = FALSE, recursive = TRUE)
 startRowIndex = NULL
 endRowIndex = NULL
 stackedPathOut = file.path(resultsDir, "management_stacked.rds")
+resultsDfSummaryOutPath = file.path(resultsDir, "resultsDfSummary.rds")
 
 if(length(args) == 3){
     startRowIndex = as.numeric(args[[1]])
     endRowIndex = as.numeric(args[[2]])
     stackedPathOut = file.path(resultsDir, paste0("management_stacked_", args[[3]], ".rds"))
+    resultsDfSummaryOutPath = file.path(resultsDir, paste0("resultsDfSummary", args[[3]], ".rds"))
 }
 
 # ----------------------------------------------
@@ -42,3 +49,13 @@ utils_process$aggregateManagementResults(
     startRowIndex=startRowIndex,
     endRowIndex=endRowIndex
 )
+
+# ----------------------------------------------
+# For key regions of interest (e.g. Kampala), extract **SIM SURVEY** stats for this specific region
+resultsDfSummary = utils_process$extractPolygonStats(
+    stackedDfPath=stackedPathOut,
+    surveyMappingPath=surveyMappingPath,
+    indexDir=indexDir
+)
+
+saveRDS(resultsDfSummary, resultsDfSummaryOutPath)

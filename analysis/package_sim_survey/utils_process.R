@@ -266,7 +266,11 @@ dropIncompleteSimsSimSurvey = function(
 
     brokenSimsVec = c()
     fullSims = c()
+    i = 0
     for(thisSimKey in unique(resDf$simKey)){
+
+        print(i)
+        i = i + 1
         
         for(thisPolySuffix in names(polyYearList)){
             

@@ -3,8 +3,8 @@ args = commandArgs(trailingOnly=TRUE)
 rasterStatsDfPath = args[[1]]
 outPath = args[[2]]
 
-# rasterStatsDfPath = "../results/2022_03_15_cross_continental_endemic/2022_03_20_batch_0/output/raster_poly_stats_agg_minimal.rds"
-# outPath = "../results/2022_03_15_cross_continental_endemic/2022_03_20_batch_0/output/propYearDf.csv"
+# rasterStatsDfPath = "../results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/output/raster_poly_stats_agg_minimal_DONE.rds"
+# outPath = "../results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/output/propYearDf.csv"
 
 rasterStatsDf = readRDS(rasterStatsDfPath)
 
