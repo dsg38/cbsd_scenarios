@@ -9,7 +9,7 @@ numJobs = as.numeric(args[[2]])
 # numJobs = 10000
 
 # Def out dir
-outDir = file.path("./raw/", paste0("inf_rasters_", rasterYear))
+outDir = file.path("./output/raw/", paste0("inf_rasters_", rasterYear))
 dir.create(outDir, recursive = TRUE, showWarnings = FALSE)
 
 print("Copying")
