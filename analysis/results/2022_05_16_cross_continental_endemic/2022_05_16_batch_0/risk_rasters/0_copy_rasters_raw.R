@@ -20,11 +20,13 @@ for(i in seq(0, numJobs-1)){
     rasterPath = file.path(simDir, job, "output/runfolder0/", paste0("O_0_L_0_INFECTIOUS_", rasterYear, ".000000.tif"))
     
     if(file.exists(rasterPath)){
+        
         print(job)
+        
+        outPath = file.path(outDir, paste0(job, "-", basename(rasterPath)))
+        
+        file.copy(from=rasterPath, to=outPath, overwrite = TRUE)
     }
-    
-    outPath = file.path(outDir, paste0(job, "-", basename(rasterPath)))
-    
-    file.copy(from=rasterPath, to=outPath, overwrite = TRUE)
+
 
 }
