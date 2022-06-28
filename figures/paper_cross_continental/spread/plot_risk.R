@@ -9,7 +9,7 @@ hostRaster = raster::raster("../../../inputs/inputs_scenarios/2022_03_15_cross_c
 
 riskRasterPath = file.path("../../../analysis/results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/risk_rasters/output/risk/", paste0("risk_", rasterYear,".tif"))
 
-plotDir = "./risk/"
+plotDir = "./risk_no_host/"
 plotPath = file.path(plotDir, gsub(".tif", ".png", basename(riskRasterPath)))
 
 dir.create(plotDir, recursive = TRUE, showWarnings = FALSE)
@@ -51,7 +51,7 @@ p = tm_shape(hostRaster, bbox=extent, raster.downsample=FALSE) +
         title="",
         legend.reverse = TRUE
     ) +
-    tm_shape(riskRaster, raster.downsample=FALSE) +
+    tm_shape(riskRaster, bbox=extent, raster.downsample=FALSE) +
     tm_raster(
         breaks=c(0, 0.2, 0.4, 0.6, 0.8, 1),
         labels=c("0< to 0.2", "0.2 to 0.4", "0.4 to 0.6", "0.6 to 0.8", "0.8 to 1.0"),
