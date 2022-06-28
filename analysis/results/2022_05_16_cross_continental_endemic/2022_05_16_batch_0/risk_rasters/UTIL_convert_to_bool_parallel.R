@@ -60,7 +60,7 @@ for(iJob in jobIndexVecSubset){
 
         outPath = file.path(outDir, basename(thisRasterPath))
 
-        raster::writeRaster(boolRaster, outPath)
+        raster::writeRaster(boolRaster, outPath, overwrite=TRUE)
 
     }
 

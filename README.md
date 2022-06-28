@@ -1,3 +1,7 @@
+# Setup instructions
+
+In global R options (i.e. `~/.Rprofile`), be sure to include `rgdal::setCPLConfigOption("GDAL_PAM_ENABLED", "FALSE")` to prevent the writing out of the `.xml` raster metadata files
+
 # Setting up new scenarios
 
 Depending on the scenario, will want to generate different kinds of outputs and carry out different kinds of analysis. The main kinds are:

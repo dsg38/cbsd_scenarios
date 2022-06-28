@@ -72,5 +72,5 @@ dir.create(sumRasterBatchOutDir, recursive = TRUE, showWarnings = FALSE)
 
 sumRasterBatchOutPath = file.path(sumRasterBatchOutDir, paste0("rasterYear_", rasterYear, "-", "batchIndex_", batchIndex, ".tif"))
 
-raster::writeRaster(sumRaster, sumRasterBatchOutPath)
+raster::writeRaster(sumRaster, sumRasterBatchOutPath, overwrite=TRUE)
 
