@@ -6,7 +6,7 @@ tic()
 
 rankIndex = as.numeric(args[[1]])
 
-outPath = file.path("plots", paste0("rank_", sprintf("%06d", rankIndex), ".tif"))
+outPath = file.path("./plots", paste0("rank_", sprintf("%06d", rankIndex), ".png"))
 
 dir.create(dirname(outPath), recursive = TRUE, showWarnings = FALSE)
 # -------------------------
