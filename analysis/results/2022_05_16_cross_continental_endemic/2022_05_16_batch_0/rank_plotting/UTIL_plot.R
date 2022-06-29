@@ -8,6 +8,7 @@ rankIndex = as.numeric(args[[1]])
 
 outPath = file.path("plots", paste0("rank_", sprintf("%06d", rankIndex), ".tif"))
 
+dir.create(dirname(outPath), recursive = TRUE, showWarnings = FALSE)
 # -------------------------
 
 rankDf = read.csv("./output/rankDf.csv")
