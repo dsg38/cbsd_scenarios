@@ -9,20 +9,19 @@ plotPosterior = function(
     passKeysDfPath,
     plotDir,
     plotPrefix,
+    plotPath,
     passKeysDfPredroppedPath=NULL,
-    paramsPath=NULL
+    paramsRow=NULL
 ){
 
     keyKernalAlphaVal = NULL
     keyLogBetaVal = NULL
     keyKernelPVal = NULL
-    if(!is.null(paramsPath)){
-        
-        paramsDf = read.csv(paramsPath)
-        
-        keyKernalAlphaVal = paramsDf[paramsDf$param_name=="Kernel_0_Parameter",c("param_val")]
-        keyLogBetaVal = paramsDf[paramsDf$param_name=="Rate_0_Sporulation",c("param_val")]
-        keyKernelPVal = paramsDf[paramsDf$param_name=="Kernel_0_WithinCellProportion",c("param_val")]
+    if(!is.null(paramsRow)){
+                
+        keyKernalAlphaVal = paramsRow$Kernel_0_Parameter
+        keyLogBetaVal = paramsRow$Rate_0_Sporulation_log
+        keyKernelPVal = paramsRow$Kernel_0_WithinCellProportion
 
     }
 
@@ -31,7 +30,7 @@ plotPosterior = function(
     configList[["a"]] = list()
     configList[["a"]][["xKey"]] = "Kernel_0_Parameter"
     configList[["a"]][["yKey"]] = "Rate_0_Sporulation_log"
-    configList[["a"]][["plotName"]] = "posterior_alpha_beta.png"
+    # configList[["a"]][["plotName"]] = "posterior_alpha_beta.png"
     configList[["a"]][["xlab"]] = expression(italic(α))
     configList[["a"]][["ylab"]] = expression(ln(italic(β)))
     configList[["a"]][["xintercept"]] = keyKernalAlphaVal
@@ -59,17 +58,17 @@ plotPosterior = function(
 
         xKey = configList[[thisConfigName]][["xKey"]]
         yKey = configList[[thisConfigName]][["yKey"]]
-        plotName = configList[[thisConfigName]][["plotName"]]
+        # plotName = configList[[thisConfigName]][["plotName"]]
         xlab = configList[[thisConfigName]][["xlab"]]
         ylab = configList[[thisConfigName]][["ylab"]]
         xintercept = configList[[thisConfigName]][["xintercept"]]
         yintercept = configList[[thisConfigName]][["yintercept"]]
 
-        plotPath = file.path(plotDir, paste0(plotPrefix, plotName))
+        # plotPath = file.path(plotDir, paste0(plotPrefix, plotName))
 
         dir.create(plotDir, recursive = TRUE, showWarnings = FALSE)
 
-        print(plotDir)
+        print(plotPath)
 
         bigDf = readRDS(bigDfPath) |>
             dplyr::mutate(
@@ -121,56 +120,55 @@ plotPosterior = function(
         p = gplot(passRateRaster) +
             geom_tile(aes(fill = value)) +
             scale_fill_continuous(na.value="transparent") +
-            geom_polygon(data = hull, aes_string(x=xKey, y=yKey), alpha = 0.2) +
-            xlab(xKey) +
-            ylab(yKey) +
+            # geom_polygon(data = hull, aes_string(x=xKey, y=yKey), alpha = 0.2) +
             labs(fill="Density") + 
+            guides(fill = guide_colourbar(ticks.linewidth = 3)) + 
+            ylim(5, 6.75) +
+            xlim(2.5, 4.6) +
             xlab(xlab) +
             ylab(ylab) +
-            guides(fill = guide_colourbar(ticks.linewidth = 3))
-
-        # if(bigFont){
-        #     p = p +
-        #         theme(text = element_text(size=25))
-        # }
-
-        if(!is.null(xintercept)){
-
-            p = p + 
-                geom_vline(xintercept=xintercept, color = "green", size=1.1)
-
-        }
-
-        if(!is.null(yintercept)){
-            
-            p = p + 
-                geom_hline(yintercept=yintercept, color = "green", size=1.1)
-            
-        }
-
-
-        # p
-        # ggsave("posterior_alpha_beta.png", p)
-        cowplot::save_plot(plotPath, p)
+            theme(text = element_text(size=25)) +
+            theme(legend.position="none", plot.background = element_rect(colour = "black", fill="white", size=3.5)) +
+            geom_vline(xintercept=xintercept, color = "green", size=2.5) +
+            geom_hline(yintercept=yintercept, color = "green", size=2.5)
+        
+        ggsave(plotPath, p)
+        # cowplot::save_plot(plotPath, p)
 
     }
 
 }
 
 # ------------------------------------
+# Get plot sequence
+paramsDf = read.csv("./inputs/params.csv")
 
-bigDfPath = "./inputs/results_summary_fixed_TARGET_MINIMAL.rds"
-passKeysDfPath = "./inputs/passKeys.csv"
-plotDir = "plots_model_2"
-plotPrefix = ""
-passKeysDfPredroppedPath = NULL
-paramsPath = NULL
+rankDf = read.csv("../rank_plotting/output/rankDf.csv") |>
+    dplyr::left_join(paramsDf, by="simKey")
 
-plotPosterior(
-    bigDfPath=bigDfPath,
-    passKeysDfPath=passKeysDfPath,
-    plotDir=plotDir,
-    plotPrefix=plotPrefix,
-    passKeysDfPredroppedPath=passKeysDfPredroppedPath,
-    paramsPath=paramsPath
-)
+# rankDf = rankDf[1:1,]
+
+for(rank in sort(rankDf$rank)){
+
+    paramsRow = rankDf[rankDf$rank==rank,]
+
+    plotPath = file.path("./plots", paste0("rank_", sprintf("%06d", rank), ".png"))
+
+    bigDfPath = "./inputs/results_summary_fixed_TARGET_MINIMAL.rds"
+    passKeysDfPath = "./inputs/passKeys.csv"
+    plotDir = "plots"
+    plotPrefix = ""
+    passKeysDfPredroppedPath = NULL
+
+    plotPosterior(
+        bigDfPath=bigDfPath,
+        passKeysDfPath=passKeysDfPath,
+        plotDir=plotDir,
+        plotPrefix=plotPrefix,
+        plotPath=plotPath,
+        passKeysDfPredroppedPath=passKeysDfPredroppedPath,
+        paramsRow=paramsRow
+    )
+
+}
+
