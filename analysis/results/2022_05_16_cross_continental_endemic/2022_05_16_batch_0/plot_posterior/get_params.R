@@ -7,7 +7,7 @@ for(jobIndex in jobIndexVec){
     
     simKey = paste0("2022_05_16_cross_continental_endemic-2022_05_16_batch_0-", job, "-0")
     
-    paramsDfPath = file.path("../simulations/sim_output/2022_05_16_cross_continental_endemic/2022_05_16_batch_0", job,"output/runfolder0/O_0_ParameterDistribution_0_Log.txt")
+    paramsDfPath = file.path("../../../../../simulations/sim_output/2022_05_16_cross_continental_endemic/2022_05_16_batch_0", job,"output/runfolder0/O_0_ParameterDistribution_0_Log.txt")
     
     if(file.exists(paramsDfPath)){
         
