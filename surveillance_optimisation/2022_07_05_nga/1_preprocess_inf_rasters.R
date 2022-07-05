@@ -3,7 +3,7 @@ maskRaster = raster::raster("./data/mask.tif")
 
 # Define paths to target rasters
 infRasterPaths = list.files(
-    path="../simulations/sim_output/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/",
+    path="../../simulations/sim_output/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/",
     pattern="O_0_L_0_INFECTIOUS_2006.000000.tif",
     recursive = TRUE,
     full.names = TRUE
