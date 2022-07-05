@@ -1,17 +1,19 @@
-args = commandArgs(trailingOnly=TRUE)
+x = read.csv("./analysis/results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/output/medianArrivalDf.csv")
 
-# configPath = args[[1]]
+# args = commandArgs(trailingOnly=TRUE)
 
-# b = args[[2]]
+# # configPath = args[[1]]
 
-# c = args[[3]]
+# # b = args[[2]]
 
-progDf = read.csv("./simulations/sim_output/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/progress.csv")
+# # c = args[[3]]
 
-x = progDf[1:10,]
-y = progDf[11:20,]
+# progDf = read.csv("./simulations/sim_output/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/progress.csv")
 
-a = c(1, 2, 3, 4, 5)
+# x = progDf[1:10,]
+# y = progDf[11:20,]
 
-a[1:5]
-length(a)
+# a = c(1, 2, 3, 4, 5)
+
+# a[1:5]
+# length(a)
