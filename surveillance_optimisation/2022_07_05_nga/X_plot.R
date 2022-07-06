@@ -10,11 +10,7 @@ downscaleBool = FALSE
 
 coordsDf = read.csv("./data/coordsDf.csv")
 
-infBrick = raster::brick("./data/brick.tif")
-sumRaster = infBrick[[1]]
-for(i in 2:raster::nlayers(infBrick)){
-    sumRaster = sumRaster + infBrick[[i]]
-}
+sumRaster = raster::raster("./data/sumRasterMask.tif")
 
 # TEMP: Downscale raster for plotting speed
 if(downscaleBool){

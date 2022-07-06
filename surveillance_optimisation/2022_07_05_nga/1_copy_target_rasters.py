@@ -3,7 +3,7 @@ from pathlib import Path
 import shutil
 
 dpcDf = pd.read_csv('./data/dpcDf.csv')
-outDir = Path('./inf_rasters/')
+outDir = Path('./inf_rasters/raw/')
 
 outDir.mkdir(exist_ok=True, parents=True)
 

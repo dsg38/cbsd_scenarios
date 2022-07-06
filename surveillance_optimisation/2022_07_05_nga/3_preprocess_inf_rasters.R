@@ -3,8 +3,8 @@ maskRaster = raster::raster("./data/mask.tif")
 
 # Define paths to target rasters
 infRasterPaths = list.files(
-    path="../../simulations/sim_output/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/",
-    pattern="O_0_L_0_INFECTIOUS_2006.000000.tif",
+    path="./inf_rasters/raw/",
+    pattern=".*-0.tif",
     recursive = TRUE,
     full.names = TRUE
 )
@@ -33,6 +33,7 @@ raster::writeRaster(infRasterBrickMask, "./data/brick.tif", overwrite=TRUE)
 
 sumRaster = infRasterBrickMask[[1]]
 for(i in 2:raster::nlayers(infRasterBrickMask)){
+    print(i)
     sumRaster = sumRaster + infRasterBrickMask[[i]]
 }
 
@@ -42,4 +43,8 @@ sumRasterMask[sumRasterMask==0] = NA
 sumRasterMaskPointsDf = as.data.frame(raster::rasterToPoints(sumRasterMask))
 
 write.csv(sumRasterMaskPointsDf, "./data/sumRasterMaskPointsDf.csv", row.names=FALSE)
+
+# Save sum raster
+raster::writeRaster(sumRasterMask, "./data/sumRasterMask.tif", overwrite=TRUE)
+
 # mapview::mapview(sumRasterMask)
