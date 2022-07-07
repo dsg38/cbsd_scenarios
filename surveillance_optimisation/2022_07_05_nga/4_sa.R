@@ -19,7 +19,7 @@ simulated_annealing = function(func, startCoordsDf, extent, rewardRatio, niter =
     for (k in 1:niter) {      
 
         # print(k)
-        if(k%%100==0){
+        if(k%%10==0){
             print(k)
         }
 
@@ -117,7 +117,8 @@ tempVec = c()
 coordsDfList = list()
 
 # SA bit
-numSurveys = 10
+numSurveys = 500
+# numSurveys = 10
 rewardRatio = 0.95
 
 rasterExtent = raster::extent(infBrick)
@@ -125,7 +126,9 @@ rasterExtent = raster::extent(infBrick)
 startCoordsDf = dplyr::sample_n(sumRasterPointsDf, numSurveys, replace = TRUE)
 
 tic()
-sol = simulated_annealing(objectiveFun, extent=rasterExtent, startCoordsDf = startCoordsDf, rewardRatio=rewardRatio)
+# sol = simulated_annealing(objectiveFun, extent=rasterExtent, startCoordsDf = startCoordsDf, rewardRatio=rewardRatio)
+sol = simulated_annealing(objectiveFun, extent=rasterExtent, startCoordsDf = startCoordsDf, rewardRatio=rewardRatio, niter=2000)
+
 toc()
 
 coordsDf = dplyr::bind_rows(coordsDfList)

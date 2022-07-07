@@ -20,10 +20,10 @@ if(downscaleBool){
 # Set all zeros to NA
 sumRaster[sumRaster==0] = NA
 
-countryPolysDf = sf::read_sf("../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg")
+countryPolysDf = sf::read_sf("../../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg")
 countryPolysDfSimple = sf::st_simplify(countryPolysDf, dTolerance = 1000)
 
-ugaExtent = sf::st_bbox(countryPolysDfSimple |> dplyr::filter(GID_0 == "UGA"))
+ngaExtent = sf::st_bbox(countryPolysDfSimple |> dplyr::filter(GID_0 == "NGA"))
 
 compareCoords = function(a, b){
     xBool = a$x == b$x
@@ -43,7 +43,7 @@ plotMap = function(changeDf, plotPath){
     changeSf = changeDf |>
         sf::st_as_sf(coords=c("x", "y"), crs="WGS84")
     
-    p = tm_shape(sumRaster, bbox=ugaExtent) +
+    p = tm_shape(sumRaster, bbox=ngaExtent) +
         tm_raster(palette="Reds") +
         tm_shape(changeSf) +
         tm_dots(size=0.2, col="coordsChangeBool", palette=c("TRUE"='green', "FALSE"='black')) +
@@ -61,6 +61,9 @@ plotMap = function(changeDf, plotPath){
 
 iMax = max(coordsDf$iteration)
 plotSeq = seq(1, iMax, by=plotFactor)
+
+print("NUM TO PLOT:")
+print(length(plotSeq))
 
 tic()
 for(i in plotSeq){
@@ -85,5 +88,3 @@ for(i in plotSeq){
     
 }
 toc()
-
-
