@@ -3,7 +3,7 @@ library(tmap)
 tmap_options(show.messages=FALSE)
 
 # Define what interval of plots to plot (i.e. 1 = plot all)
-plotFactor = 1
+plotFactor = 10
 downscaleBool = FALSE
 
 # --------------------------
