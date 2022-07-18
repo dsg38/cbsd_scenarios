@@ -16,7 +16,9 @@ simulated_annealing = function(func, startCoordsDf, extent, rewardRatio, niter =
     numPoints = nrow(startCoordsDf)
     rowIndexVec = seq(1, numPoints)
 
-    for (k in 1:niter) {      
+    for (k in 1:niter) {
+        
+        tic()
 
         # print(k)
         if(k%%10==0){
@@ -37,8 +39,13 @@ simulated_annealing = function(func, startCoordsDf, extent, rewardRatio, niter =
         s_n = s_c
         s_n$x[randRowIndex] = newCoord$x
         s_n$y[randRowIndex] = newCoord$y
+
+        # Get the raster index pos for 
+        cellIndexVec = raster::cellFromXY(object=infBrick[[1]], xy=s_n)
         
-        f_n = func(s_n, rewardRatio)
+        brickValsDf = as.data.frame(infBrick[cellIndexVec])
+
+        f_n = func(brickValsDf, rewardRatio)
         
         # update current state
         
@@ -60,18 +67,16 @@ simulated_annealing = function(func, startCoordsDf, extent, rewardRatio, niter =
             f_b = f_n            
         }
         # message(sprintf("%i\t%.4f\t%.4f\t%.4f\t%.4f", k, f_b, f_c, f_n, Temp))
+        
+        toc()
     }
     return(list(iterations = niter, best_value = f_b, best_state = s_b))
 }
 
 
-objectiveFun = function(coordsDf, rewardRatio){
+objectiveFun = function(brickValsDf, rewardRatio){
      
     detectionProb = 1
-        
-    cellIndexVec = raster::cellFromXY(object=infBrick[[1]], xy=coordsDf)
-    
-    brickValsDf = as.data.frame(infBrick[cellIndexVec])
 
     # Probability that you DO detect per cell
     probDetectPerCellDf = detectionProb * brickValsDf
@@ -99,7 +104,7 @@ objectiveFun = function(coordsDf, rewardRatio){
     
     # ----------------------
     # Multi-objective optimisation: linear scalarization - i.e. reward both
-    normNumDetections = (expectedNumCellsDetectedPerRasterMean / nrow(coordsDf)) * (1 - rewardRatio)
+    normNumDetections = (expectedNumCellsDetectedPerRasterMean / nrow(brickValsDf)) * (1 - rewardRatio)
     
     reward = (probDetectAcrossRastersMean*rewardRatio) + normNumDetections
     
