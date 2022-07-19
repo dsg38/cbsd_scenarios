@@ -10,10 +10,14 @@ simulated_annealing = function(objectiveFunc, startCoordsDf, extent, rewardRatio
     ## b stands for best
     ## c stands for current
     ## n stands for neighbor
-    s_b = s_c = s_n = startCoordsDf
+    ## v stands for value (i.e. cached brickDf thing)
+    s_b = s_c = startCoordsDf
 
-    f_b = f_c = f_n = objectiveFunc(
-        brickValsDf=s_n, 
+    cellIndexVec = raster::cellFromXY(object=infBrick[[1]], xy=s_c)
+    v_b = v_c = as.data.frame(infBrick[cellIndexVec])
+
+    f_b = f_c = objectiveFunc(
+        brickValsDf=v_c, 
         rewardRatio=rewardRatio,
         detectionProb=detectionProb
     )
@@ -47,25 +51,16 @@ simulated_annealing = function(objectiveFunc, startCoordsDf, extent, rewardRatio
         s_n$y[randRowIndex] = newCoord$y
         
         # If first iteration, extract raster vals for all, otherwise just re-calc single value
-        if(k==1){
+        cellIndexNewCoord = raster::cellFromXY(object=infBrick[[1]], xy=newCoord)
+        
+        brickValsDfSingleIndex = as.data.frame(infBrick[cellIndexNewCoord])
+        
+        # Replace corresponding row in the brickValsDf
+        v_n = v_c
+        v_n[randRowIndex,] = brickValsDfSingleIndex
             
-            cellIndexVec = raster::cellFromXY(object=infBrick[[1]], xy=s_n)
-            brickValsDf = as.data.frame(infBrick[cellIndexVec])
-            
-        }else{
-            
-            cellIndexNewCoord = raster::cellFromXY(object=infBrick[[1]], xy=newCoord)
-            
-            brickValsDfSingleIndex = as.data.frame(infBrick[cellIndexNewCoord])
-            
-            # Replace corresponding row in the brickValsDf
-            brickValsDf[randRowIndex,] = brickValsDfSingleIndex
-            
-            # browser()
-        }
-
         f_n = objectiveFunc(
-            brickValsDf=brickValsDf, 
+            brickValsDf=v_n, 
             rewardRatio=rewardRatio, 
             detectionProb=detectionProb
         )
@@ -74,6 +69,7 @@ simulated_annealing = function(objectiveFunc, startCoordsDf, extent, rewardRatio
         if(f_n > f_c || runif(1, 0, 1) < exp(-abs(f_n - f_c) / Temp)){
             s_c = s_n
             f_c = f_n
+            v_c = v_n
         }
         
         objFuncVals <<- c(objFuncVals, f_c)
@@ -86,7 +82,8 @@ simulated_annealing = function(objectiveFunc, startCoordsDf, extent, rewardRatio
         # update best state
         if(f_n > f_b){
             s_b = s_n
-            f_b = f_n            
+            f_b = f_n
+            v_b = v_n
         }
         # message(sprintf("%i\t%.4f\t%.4f\t%.4f\t%.4f", k, f_b, f_c, f_n, Temp))
         
@@ -137,13 +134,13 @@ objectiveFunc = function(brickValsDf, rewardRatio, detectionProb){
 
 infBrickPath = "./data/brick.tif"
 sumRasterPointsDfPath = "./data/sumRasterMaskPointsDf.csv"
-outDir = "./results/2022_07_18_test/"
+outDir = "./results/2022_07_19_fix/"
 
 # Define SA params
 numSurveys = 500
 rewardRatio = 0.95
 detectionProb = 1
-niter = 50
+niter = 2000
 
 # ------------------------
 dir.create(outDir, showWarnings = FALSE, recursive = TRUE)
