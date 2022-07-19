@@ -2,6 +2,13 @@ library(tictoc)
 
 set.seed(10)
 
+coordsDfPath = "./results/2022_07_18_test/coordsDf_1.csv"
+plotPath = "./results/2022_07_18_test/trace_1.png"
+niter = 100
+numSurveys = 10
+
+# ------------------------------------------------------------
+
 simulated_annealing = function(func, startCoordsDf, extent, rewardRatio, niter = 1000, step = 0.01) {
 
     # Initialize
@@ -105,6 +112,8 @@ objectiveFun = function(coordsDf, rewardRatio){
     
     reward = (probDetectAcrossRastersMean*rewardRatio) + normNumDetections
     
+    browser()
+    
     return(reward)
      
 }
@@ -119,7 +128,6 @@ tempVec = c()
 coordsDfList = list()
 
 # SA bit
-numSurveys = 500
 # numSurveys = 10
 rewardRatio = 0.95
 
@@ -129,17 +137,16 @@ startCoordsDf = dplyr::sample_n(sumRasterPointsDf, numSurveys, replace = TRUE)
 
 tic()
 # sol = simulated_annealing(objectiveFun, extent=rasterExtent, startCoordsDf = startCoordsDf, rewardRatio=rewardRatio)
-sol = simulated_annealing(objectiveFun, extent=rasterExtent, startCoordsDf = startCoordsDf, rewardRatio=rewardRatio, niter=2000)
+sol = simulated_annealing(objectiveFun, extent=rasterExtent, startCoordsDf = startCoordsDf, rewardRatio=rewardRatio, niter=niter)
 
 toc()
 
 coordsDf = dplyr::bind_rows(coordsDfList)
 
-write.csv(coordsDf, "./results/2022_07_18_test/coordsDf_OLD.csv", row.names = FALSE)
+write.csv(coordsDf, coordsDfPath, row.names = FALSE)
 
 # Plot trace
-
-png("./results/2022_07_18_test/trace_OLD.png", width=600, height=600)
+png(plotPath, width=600, height=600)
 plot(objFuncVals, ylim=c(0, 1))
 lines(objFuncVals, pch=16)
 
