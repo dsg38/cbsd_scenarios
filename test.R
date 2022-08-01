@@ -1,4 +1,6 @@
-x = read.csv("./analysis/results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/output/medianArrivalDf.csv")
+x = sf::read_sf("/Users/dsg38/Documents/gilligan_lab/cbsd_scenarios/inputs/inputs_raw/polygons/polys_cross_continental_constraints_host_CassavaMap.gpkg")
+
+# x = read.csv("./analysis/results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/output/medianArrivalDf.csv")
 
 # args = commandArgs(trailingOnly=TRUE)
 

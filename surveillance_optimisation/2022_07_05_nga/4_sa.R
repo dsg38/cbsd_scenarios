@@ -2,7 +2,7 @@ library(tictoc)
 
 set.seed(10)
 
-simulated_annealing = function(objectiveFunc, startCoordsDf, extent, rewardRatio, detectionProb, niter = 1000, step = 0.01) {
+simulated_annealing = function(objectiveFunc, startCoordsDf, extent, rewardRatio, detectionProb, niter = 1000, step = 0.01, initTemp=1) {
 
     # Initialize
     ## s stands for state
@@ -35,7 +35,7 @@ simulated_annealing = function(objectiveFunc, startCoordsDf, extent, rewardRatio
             print(k)
         }
 
-        Temp = (1 - step)^k
+        Temp = initTemp * (1 - step)^k
         
         tempVec <<- c(tempVec, Temp)
 
@@ -134,13 +134,15 @@ objectiveFunc = function(brickValsDf, rewardRatio, detectionProb){
 
 infBrickPath = "./data/brick.tif"
 sumRasterPointsDfPath = "./data/sumRasterMaskPointsDf.csv"
-outDir = "./results/2022_07_19_fix/"
+outDir = "./results/2022_07_19_lunch/"
 
 # Define SA params
 numSurveys = 500
 rewardRatio = 0.95
 detectionProb = 1
-niter = 2000
+niter = 20000
+step = 0.001
+initTemp = 1
 
 # ------------------------
 dir.create(outDir, showWarnings = FALSE, recursive = TRUE)
@@ -174,7 +176,9 @@ sol = simulated_annealing(
     extent=rasterExtent, 
     rewardRatio=rewardRatio,
     detectionProb=detectionProb,
-    niter=niter
+    niter=niter,
+    step=step,
+    initTemp=initTemp
 )
 
 toc()
@@ -186,8 +190,8 @@ toc()
 # Save coords log
 coordsDf = dplyr::bind_rows(coordsDfList)
 
-coordsDfPath = file.path(outDir, "coordsDf.csv")
-write.csv(coordsDf, coordsDfPath, row.names = FALSE)
+coordsDfPath = file.path(outDir, "coordsDf.rds")
+saveRDS(coordsDf, coordsDfPath)
 
 # Plot trace
 tracePlotPath = file.path(outDir, "trace.png")
