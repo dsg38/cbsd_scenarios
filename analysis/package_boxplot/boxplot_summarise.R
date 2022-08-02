@@ -8,7 +8,7 @@ outPath = args[[2]]
 
 rasterStatsDf = readRDS(rasterStatsDfPath)
 
-propThresholdVec = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75)
+propThresholdVec = c(0, 0.001, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75)
 
 # ------------------------------------------------
 
@@ -72,4 +72,5 @@ rowList = pbapply::pblapply(splitDfList, getPropThresholdRows, propThresholdVec)
 propYearDf = dplyr::bind_rows(rowList)
 
 # Save
-write.csv(propYearDf, outPath, row.names = FALSE)
+# write.csv(propYearDf, outPath, row.names = FALSE)
+saveRDS(propYearDf, outPath)

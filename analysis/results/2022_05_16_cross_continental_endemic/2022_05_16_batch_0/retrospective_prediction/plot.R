@@ -3,7 +3,7 @@ box::use(ggplot2[...])
 dispDf = read.csv("../config/inf_target_years.csv") |>
     dplyr::filter(POLY_ID!="kampala")
 
-propYearDfRaw = read.csv("../output/propYearDf.csv") |>
+propYearDfRaw = readRDS("../output/propYearDf.rds") |>
     dplyr::filter(POLY_ID %in% dispDf$POLY_ID) |>
     dplyr::mutate(sim_year = raster_year - 1)
 
@@ -54,7 +54,7 @@ for(thisCumulativePassKey in names(cumulativePassKeys)){
     
     for(propThreshold in propThresholdVec){
         
-        propThresholdStr = sprintf("%0.2f", propThreshold)
+        propThresholdStr = sprintf("%0.3f", propThreshold)
         
         outPath = file.path(outDir, paste0("boxplot_prop_", propThresholdStr, ".png"))
         print(outPath)
@@ -68,7 +68,7 @@ for(thisCumulativePassKey in names(cumulativePassKeys)){
         if(propThreshold==0){
             propAxisLabel = "Predicted year of \nCBSD introduction"
         }else{
-            propThresholdStr = sprintf("%0.2f", propThreshold)
+            propThresholdStr = sprintf("%0.3f", propThreshold)
             propAxisLabel = paste0("Predicted year proportion of CBSD \ninfected fields exceeds: ", propThresholdStr)
         }
         
@@ -79,14 +79,15 @@ for(thisCumulativePassKey in names(cumulativePassKeys)){
         # Decide order
         plottingPriority = reorder(thisPropDf[,"display_name"], thisPropDf[,"report_year"], FUN=quantile, probs=0.5)
         
-        
+        # Plots sim_year (i.e. raster_year - 1) with the report_year
         p = ggplot(thisPropDf, aes(x=plottingPriority, y=sim_year)) + 
             geom_boxplot() +
             geom_point(data=dispDf, aes(x =display_name, y=report_year), size=5, pch=4, stroke=2, col="green") +
             coord_flip(ylim=c(yearMin, yearMax)) +
             ggtitle(paste0("Proportion of fields infected: ", propThresholdStr)) +
             scale_y_continuous(breaks=seq(yearMin, yearMax, 5)) +
-            xlab(NULL) #+
+            xlab(NULL) +
+            ylab("Year")
         # ylab(propAxisLabel)
         
         
