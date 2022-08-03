@@ -1,0 +1,14 @@
+{
+    "cropByCountryCode": [
+        "COG",
+        "NGA",
+        "BFA",
+        "SEN"
+    ],
+    "processHost": "CassavaMap-cassava_data-2022_02_09",
+    "processInit": "direct_intro_NGA_lagos",
+    "processVector": "cassava_data-2022_02_09",
+    "copyGeneralFiles": {
+        "P_WeatherSwitchTimes_IS.txt": "P_WeatherSwitchTimes.txt"
+    }
+}
