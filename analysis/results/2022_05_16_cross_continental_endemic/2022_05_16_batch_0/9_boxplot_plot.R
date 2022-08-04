@@ -1,6 +1,6 @@
 box::use(ggplot2[...])
 
-propYearDfRaw = read.csv("./output/propYearDf.csv") |>
+propYearDfRaw = readRDS("./output/propYearDf.rds") |>
     dplyr::mutate(sim_year = raster_year - 1)
 
 dispDf = read.csv("../../../../inputs/process_polys/outputs/poly_display_names.csv")
@@ -19,24 +19,15 @@ dir.create(plotDir, recursive = TRUE, showWarnings = FALSE)
 # x = propYearDfRaw[is.na(propYearDfRaw$display_name),]
 
 # Append display name
-propYearDfRaw = dplyr::left_join(propYearDfRaw, dispDf, by="POLY_ID")
+propYearDf = dplyr::left_join(propYearDfRaw, dispDf, by="POLY_ID") |>
+    dplyr::filter(nchar(POLY_ID) == 3) # Drop non country polygons
+
 if(any(is.na(propYearDfRaw))){
     stop("Missing display names")
 }
 
-# Append arrival years
-arrivalDf = read.csv("./config/inf_target_years.csv") |>
-    dplyr::filter(POLY_ID != "kampala") |>
-    dplyr::select(POLY_ID, report_year, raster_year_target)
-
-propYearDf = dplyr::left_join(propYearDfRaw, arrivalDf, by="POLY_ID")
-
 # Loop over prop thresholds
 propThresholdVec = unique(propYearDf$prop)
-
-# propThreshold = 0.05
-# propThresholdStr = sprintf("%0.2f", propThreshold)
-# outPath = file.path(plotDir, paste0("boxplot_prop_", propThresholdStr, ".png"))
 
 yearMin = 2004
 yearMax = max(propYearDf$sim_year[!is.infinite(propYearDf$sim_year)])
@@ -55,12 +46,12 @@ for(thisCumulativePassKey in names(cumulativePassKeys)){
     
     for(propThreshold in propThresholdVec){
         
-        propThresholdStr = sprintf("%0.2f", propThreshold)
+        propThresholdStr = sprintf("%0.3f", propThreshold)
         
         outPath = file.path(outDir, paste0("boxplot_prop_", propThresholdStr, ".png"))
         print(outPath)
         
-        # HACK: Converts infs to plottable vals so boxplot isn't skewed
+        # Converts infs to plottable vals so boxplot isn't skewed
         infReplaceVal = 5000
         
         # Extract subset of df corresponding to correct threshold
@@ -69,7 +60,7 @@ for(thisCumulativePassKey in names(cumulativePassKeys)){
         if(propThreshold==0){
             propAxisLabel = "Predicted year of \nCBSD introduction"
         }else{
-            propThresholdStr = sprintf("%0.2f", propThreshold)
+            propThresholdStr = sprintf("%0.3f", propThreshold)
             propAxisLabel = paste0("Predicted year proportion of CBSD \ninfected fields exceeds: ", propThresholdStr)
         }
         
@@ -77,28 +68,23 @@ for(thisCumulativePassKey in names(cumulativePassKeys)){
         thisPropDf$raster_year[is.infinite(thisPropDf$raster_year)] = infReplaceVal
         thisPropDf$sim_year[is.infinite(thisPropDf$sim_year)] = infReplaceVal
         
-        # browser()
-        
         # Decide order
-        plottingPriority = reorder(thisPropDf[,"display_name"], thisPropDf[,"sim_year"], FUN=quantile, probs=0.5)
-        
+        plottingPriority = reorder(thisPropDf[,"display_name"], thisPropDf[,"sim_year"], FUN=quantile, probs=0.25)
         
         p = ggplot(thisPropDf, aes(x=plottingPriority, y=sim_year)) + 
             geom_boxplot() +
-            # geom_point(data=dispDf, aes(x =display_name, y=report_year), size=5, pch=4, stroke=2, col="green") +
             coord_flip(ylim=c(yearMin, yearMax)) +
             ggtitle(paste0("Proportion of fields infected: ", propThresholdStr)) +
             scale_y_continuous(breaks=seq(yearMin, yearMax, 5)) +
+            geom_hline(yintercept=2023, linetype="dashed", color = "green", lwd=1) +
             xlab(NULL) #+
-        # ylab(propAxisLabel)
         
-        
+        # browser()
         # p
+        
         ggsave(outPath, p)
         
         
     }
     
 }
-
-

@@ -4,9 +4,10 @@ rasterStatsDfPath = args[[1]]
 outPath = args[[2]]
 
 # rasterStatsDfPath = "../results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/output/raster_poly_stats_agg_minimal_DONE.rds"
-# outPath = "../results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/output/propYearDf.csv"
+# outPath = "../results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/output/propYearDf.rds"
 
-rasterStatsDf = readRDS(rasterStatsDfPath)
+rasterStatsDf = readRDS(rasterStatsDfPath) |>
+    dplyr::filter(raster_year > 2004) # Drop initial rasters as sim_year is then calc as 2003 (i.e. before sims start!)
 
 propThresholdVec = c(0, 0.001, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75)
 
@@ -72,5 +73,4 @@ rowList = pbapply::pblapply(splitDfList, getPropThresholdRows, propThresholdVec)
 propYearDf = dplyr::bind_rows(rowList)
 
 # Save
-# write.csv(propYearDf, outPath, row.names = FALSE)
 saveRDS(propYearDf, outPath)

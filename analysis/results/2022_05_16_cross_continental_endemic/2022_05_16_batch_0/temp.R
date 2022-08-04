@@ -1,4 +1,17 @@
-x = readRDS("./output/management_results.rds")
+x = readRDS("./output/raster_poly_stats_agg_minimal_DONE.rds")
+y = readRDS("./output/propYearDf.rds")
+
+
+a = x |>
+    dplyr::filter(raster_year==2005 & POLY_ID=="UGA")
+
+sum(a$raster_prop_fields > 0)
+
+
+b = y |>
+    dplyr::filter(POLY_ID=="UGA" & prop==0)
+
+sum(b$raster_year==2005)
 
 # progDf = read.csv("../../../../simulations/sim_output/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/progress.csv")
 
