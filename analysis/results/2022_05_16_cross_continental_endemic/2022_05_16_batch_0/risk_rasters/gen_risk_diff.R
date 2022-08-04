@@ -1,94 +1,77 @@
-args = commandArgs(trailingOnly=TRUE)
-box::use(tmap[...])
 
-# rasterYearPrev = 2023
-# rasterYearNow = 2030
+riskYearVec = c(2023, 2030, 2040, 2050)
 
-# rasterYearPrev = 2030
-# rasterYearNow = 2040
+outDir = "./output/diff/rasters/"
+outDirDiag = "./output/diff/rasters/diagnostics/"
 
-rasterYearPrev = 2040
-rasterYearNow = 2050
+dir.create(outDir, recursive = TRUE, showWarnings = FALSE)
+dir.create(outDirDiag, recursive = TRUE, showWarnings = FALSE)
 
-# ------------------------------
+genDiagnostics = function(diffRaster, outPath){
 
-riskRasterPathPrev = file.path("../../../analysis/results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/risk_rasters/output/risk/", paste0("risk_", rasterYearPrev,".tif"))
+    diffRasterVals = diffRaster[]
 
-riskRasterPathNow = file.path("../../../analysis/results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/risk_rasters/output/risk/", paste0("risk_", rasterYearNow,".tif"))
+    propNa = round((sum(is.na(diffRasterVals)) / length(diffRasterVals)),2)
+    propZero = round((sum(diffRasterVals==0, na.rm = TRUE) / length(diffRasterVals)), 2)
 
+    png(outPath)
+    hist(diffRasterVals, main=paste0(basename(outPath), "|na:", propNa, "|0:", propZero))
+    dev.off()
 
-plotDir = "./risk_diff/"
-plotPath = file.path(plotDir, gsub(".tif", ".png", basename(riskRasterPathNow)))
-
-dir.create(plotDir, recursive = TRUE, showWarnings = FALSE)
-
-# --------------------------------
-
-processRaster = function(riskRasterPath){
-
-    riskRaster = raster::raster(riskRasterPath)
-    riskRaster[is.na(riskRaster)] = 0
-
-    return(riskRaster)
 }
 
-riskRasterPrev = raster::raster(riskRasterPathPrev)
-riskRasterNow = raster::raster(riskRasterPathNow)
+for(i in seq_len(length(riskYearVec) - 1)){
 
-# Calculate diff
-riskRaster = riskRasterNow - riskRasterPrev
+    print(i)
 
-# Set any zeros to NA
-riskRaster[riskRaster == 0] = NA
+    rasterYearPrev = riskYearVec[i]
+    rasterYearNow = riskYearVec[i+1]
 
+    # ------------------------------
 
+    riskRasterPathPrev = file.path("./output/risk/", paste0("risk_", rasterYearPrev,".tif"))
+    riskRasterPathNow = file.path("./output/risk/", paste0("risk_", rasterYearNow,".tif"))
 
-countryPolysDf = sf::read_sf("../../../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg")
-countryPolysDfSimple = sf::st_simplify(countryPolysDf, dTolerance = 1000)
+    # --------------------------------
 
-lakesPoly = sf::st_read("../../data/GLWD-level1/lakes_glwd_1.gpkg")
+    processRaster = function(riskRasterPath){
 
-oceanDf = sf::read_sf("../../data/ne_50m_ocean/ne_50m_ocean.shp")
+        riskRaster = raster::raster(riskRasterPath)
 
-extent = c(
-    xmin=-17.54167,
-    ymin=-26.86667,
-    xmax=45,
-    ymax=15
-)
+        # Set NAs to zeros so no possible issues with calc
+        riskRaster[is.na(riskRaster)] = 0
 
+        return(riskRaster)
+    }
 
-# ---------------------------------
-# Host
-p = tm_shape(riskRaster, bbox=extent, raster.downsample=FALSE) +
-    tm_raster(
-        breaks=c(0, 0.2, 0.4, 0.6, 0.8, 1),
-        labels=c("0< to 0.2", "0.2 to 0.4", "0.4 to 0.6", "0.6 to 0.8", "0.8 to 1.0"),
-        # labels=c("0 < x <= 0.2", "0.2 < x <= 0.4", "0.4 < x <= 0.6", "0.6 < x <= 0.8", "0.8 < x <= 1.0"),
-        palette = "Reds",
-        title="",
-        legend.reverse = TRUE
-    ) +
-    tm_shape(lakesPoly) +
-    tm_fill(col="#A1C5FF") +
-    tm_shape(oceanDf, bbox=extent) +
-    tm_fill(col="#A1C5FF") +
-    tm_shape(countryPolysDfSimple) +
-    tm_borders(lwd=0.5) +
-    tm_compass(position = c("right", "top"), size=5) +
-    tm_scale_bar(position = c("right", "bottom"), text.size = 1.2) +
-    tm_graticules(lines = FALSE, labels.size=1.2) +
-    tm_layout(
-        legend.position=c("left", "bottom"),
-        legend.frame=TRUE,
-        legend.bg.color="grey",
-        legend.bg.alpha=0.8,
-        legend.text.size = 1.2,
-        main.title=rasterYearNow,
-        main.title.position = "center"
-    )
+    riskRasterPrev = processRaster(riskRasterPathPrev)
+    riskRasterNow = processRaster(riskRasterPathNow)
 
-# p
-tmap_save(p, plotPath)
+    # Calculate diff
+    diffRaster = riskRasterNow - riskRasterPrev
+
+    # Set any zeros to NA
+    diffRaster[diffRaster == 0] = NA
+
+    # Diff raster prop
+    # diffRasterProp = diffRaster / riskRasterNow
+    diffRasterProp = diffRaster / (riskRasterPrev + 0.001)
+
+    # --------------------------------
+
+    outPath = file.path(outDir, paste0("diff_", rasterYearPrev, "_", rasterYearNow, ".tif"))
+    outPathProp = file.path(outDir, paste0("diffprop_", rasterYearPrev, "_", rasterYearNow, ".tif"))
+
+    raster::writeRaster(diffRaster, outPath, overwrite=TRUE)
+    raster::writeRaster(diffRasterProp, outPathProp, overwrite=TRUE)
+
+    # --------------------------------
+    # Diagnostics
+    outPathDiag = file.path(outDirDiag, paste0("diff_", rasterYearPrev, "_", rasterYearNow, ".png"))
+    outPathDiagProp = file.path(outDirDiag, paste0("diffprop_", rasterYearPrev, "_", rasterYearNow, ".png"))
+
+    genDiagnostics(diffRaster, outPathDiag)
+    genDiagnostics(diffRasterProp, outPathDiagProp)
 
 
+}
