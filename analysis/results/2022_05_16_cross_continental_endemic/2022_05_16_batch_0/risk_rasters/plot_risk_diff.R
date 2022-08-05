@@ -19,18 +19,9 @@ for(diffRasterPath in diffRasterPaths){
     countryPolysDf = sf::read_sf("../../../../../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg")
     countryPolysDfSimple = sf::st_simplify(countryPolysDf, dTolerance = 1000)
 
-    # lakesPoly = sf::st_read("../../data/GLWD-level1/lakes_glwd_1.gpkg")
+    lakesPoly = sf::st_read("../../../../../figures/data/GLWD-level1/lakes_glwd_1.gpkg")
 
-    # oceanDf = sf::read_sf("../../data/ne_50m_ocean/ne_50m_ocean.shp")
-
-    # extent = c(
-    #     xmin=-17.54167,
-    #     ymin=-26.86667,
-    #     xmax=45,
-    #     ymax=15
-    # )
-
-
+    oceanDf = sf::read_sf("../../../../../figures/data/ne_50m_ocean/ne_50m_ocean.shp")
     # ---------------------------------
     # Host
     p = tm_shape(diffRaster, bbox=extent, raster.downsample=FALSE) +
@@ -41,10 +32,10 @@ for(diffRasterPath in diffRasterPaths){
             title="",
             legend.reverse = TRUE
         ) +
-        # tm_shape(lakesPoly) +
-        # tm_fill(col="#A1C5FF") +
-        # tm_shape(oceanDf, bbox=extent) +
-        # tm_fill(col="#A1C5FF") +
+        tm_shape(lakesPoly) +
+        tm_fill(col="#CFCED2") +
+        tm_shape(oceanDf, bbox=extent) +
+        tm_fill(col="#CFCED2") +
         tm_shape(countryPolysDfSimple) +
         tm_borders(lwd=0.5) +
         tm_compass(position = c("right", "top"), size=5) +
@@ -55,9 +46,7 @@ for(diffRasterPath in diffRasterPaths){
             legend.frame=TRUE,
             legend.bg.color="grey",
             legend.bg.alpha=0.8,
-            legend.text.size = 1.2,
-            # main.title=rasterYearNow,
-            main.title.position = "center"
+            legend.text.size = 1.2
         )
 
     # p
