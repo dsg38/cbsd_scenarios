@@ -4,7 +4,7 @@ rasterYear = args[[1]]
 # rasterYear = 2050
 
 sumRasterDir = file.path("./output/sum/", paste0("inf_rasters_", rasterYear))
-outPath = file.path("./output/risk/", paste0("risk_", rasterYear, ".tif"))
+outPath = file.path("./output/risk/rasters/", paste0("risk_", rasterYear, ".tif"))
 
 dir.create(dirname(outPath), recursive = TRUE, showWarnings = FALSE)
 
