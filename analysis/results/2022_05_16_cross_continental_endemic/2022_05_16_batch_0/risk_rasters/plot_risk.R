@@ -34,20 +34,24 @@ for(riskRasterPath in riskRasterPaths){
     #     ymax=15
     # )
 
+    # Blue = #A1C5FF
+    # Grey = #CFCED2
+    # Grey = #A1C5FF - alpha = 
+
     # ---------------------------------
     p = tm_shape(riskRaster, bbox=extent, raster.downsample=FALSE) +
         tm_raster(
             breaks=c(0, 0.2, 0.4, 0.6, 0.8, 1),
-            labels=c("0< to 0.2", "0.2 to 0.4", "0.4 to 0.6", "0.6 to 0.8", "0.8 to 1.0"),
+            labels=c("0.01< to 0.2", "0.2 to 0.4", "0.4 to 0.6", "0.6 to 0.8", "0.8 to 1.0"),
             # labels=c("0 < x <= 0.2", "0.2 < x <= 0.4", "0.4 < x <= 0.6", "0.6 < x <= 0.8", "0.8 < x <= 1.0"),
             palette = "Reds",
             title="",
             legend.reverse = TRUE
         ) +
         tm_shape(lakesPoly) +
-        tm_fill(col="#A1C5FF") +
+        tm_fill(col="#CFCED2") +
         tm_shape(oceanDf, bbox=extent) +
-        tm_fill(col="#A1C5FF") +
+        tm_fill(col="#CFCED2") +
         tm_shape(countryPolysDfSimple) +
         tm_borders(lwd=0.5) +
         tm_compass(position = c("right", "top"), size=5) +
@@ -58,9 +62,9 @@ for(riskRasterPath in riskRasterPaths){
             legend.frame=TRUE,
             legend.bg.color="grey",
             legend.bg.alpha=0.8,
-            legend.text.size = 1.2,
-            main.title="20XX",
-            main.title.position = "center"
+            legend.text.size = 1.2
+            # main.title="20XX",
+            # main.title.position = "center"
         )
 
     # p
