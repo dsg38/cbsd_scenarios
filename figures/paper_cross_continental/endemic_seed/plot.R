@@ -1,4 +1,5 @@
 box::use(tmap[...])
+box::use(utils_epidem/utils_epidem)
 
 # Define endemic country codes
 endemicCountryCodes = c(
@@ -9,12 +10,12 @@ endemicCountryCodes = c(
 )
 
 # Read in survey points and extract CBSD positives
-surveyDf = sf::read_sf("../../../cassava_data/data_merged/data/2022_02_09/cassava_data_minimal.gpkg") |>
+surveyDf = sf::read_sf("../../../../cassava_data/data_merged/data/2022_02_09/cassava_data_minimal.gpkg") |>
     dplyr::filter(country_code %in% endemicCountryCodes) |>
     dplyr::filter(cbsd_any_bool==TRUE)
 
 # Endemic poly
-endemicDf = sf::read_sf("../../inputs/inputs_raw/init_conditions/endemic_seed/endemic_poly.gpkg")
+endemicDf = sf::read_sf("../../../inputs/inputs_raw/init_conditions/endemic_seed/endemic_poly.gpkg")
 
 # Extract points that intersect with endemic polys
 iRowsInPoly = unlist(sf::st_intersects(endemicDf, surveyDf))
@@ -25,12 +26,7 @@ surveyDfSubset = surveyDf[iRowsInPoly,]
 countryDf = rnaturalearth::ne_download(scale = 10, type = 'countries', category = 'cultural', returnclass='sf') |>
     dplyr::filter(CONTINENT=="Africa")
 
-extent = c(
-    xmin=0,
-    xmax=45,
-    ymin=-30,
-    ymax=7
-)
+extent = utils_epidem$get_extent_country_code_vec(c("MOZ", "COD", "KEN"))
 
 tmap_options(check.and.fix = TRUE)
 p = tm_shape(countryDf, bbox=extent) +
@@ -39,11 +35,15 @@ p = tm_shape(countryDf, bbox=extent) +
     tm_polygons("NAME", title="") +
     tm_shape(surveyDfSubset) + 
     tm_dots() +
+    tm_compass(position = c("right", "top"), size=5) +
+    tm_scale_bar(position = c("right", "bottom"), text.size = 1.2) +
     tm_graticules(lines = FALSE, labels.size=1.2) +
-    tm_compass(position = c("right", "top"), size=5) + 
-    tm_scale_bar(position = c("right", "bottom"), text.size = 1) +
     tm_layout(
-        legend.text.size = 1.5
+        legend.position=c("left", "bottom"),
+        legend.frame=TRUE,
+        legend.bg.color="grey",
+        legend.bg.alpha=0.8,
+        legend.text.size = 1.2
     )
 
 # p
