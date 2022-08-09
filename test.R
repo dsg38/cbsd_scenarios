@@ -1,4 +1,4 @@
-x = sf::read_sf("/Users/dsg38/Documents/gilligan_lab/cbsd_scenarios/inputs/inputs_raw/polygons/polys_cross_continental_constraints_host_CassavaMap.gpkg")
+x = sf::read_sf("./inputs/inputs_raw/polygons/polys_direct_intro_host_CassavaMap.gpkg")
 
 # x = read.csv("./analysis/results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/output/medianArrivalDf.csv")
 
@@ -18,4 +18,5 @@ x = sf::read_sf("/Users/dsg38/Documents/gilligan_lab/cbsd_scenarios/inputs/input
 # a = c(1, 2, 3, 4, 5)
 
 # a[1:5]
+# 
 # length(a)

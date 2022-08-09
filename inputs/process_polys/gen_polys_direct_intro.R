@@ -12,7 +12,7 @@ polysDfSubset = countriesDf |>
     dplyr::select(POLY_ID, geom)
 
 polyDfStats = utils$appendHostStats(
-    polyDfIn=countriesDf,
+    polyDfIn=polysDfSubset,
     hostRasterPath=hostRasterPath
 ) |>
     dplyr::filter(cassava_host_num_fields >= 1000) # Drop polys with <1000 fields
