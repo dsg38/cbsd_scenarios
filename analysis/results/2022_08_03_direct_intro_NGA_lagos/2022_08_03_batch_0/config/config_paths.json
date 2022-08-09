@@ -1,0 +1,6 @@
+{
+    "batchPath": "simulations/sim_output/2022_08_03_direct_intro_NGA_lagos/2022_08_03_batch_0/",
+    "polyDfPath": "inputs/inputs_raw/polygons/polys_direct_intro_host_CassavaMap.gpkg",
+    "hostRasterPath": "inputs/inputs_scenarios/2022_08_03_direct_intro_NGA_lagos/inputs/L_0_HOSTDENSITY.txt",
+    "launchScriptPath": "simulations/launch/2022_08_03_direct_intro_NGA_lagos_launch.sh"
+}
