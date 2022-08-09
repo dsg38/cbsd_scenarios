@@ -57,5 +57,5 @@ unset __conda_setup
 conda activate /rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/conda_env_default/dsg38
 
 # Run stuff
-Rscript ../../../package_inf_rasters/gen_poly_stats.R ./config/config_inf_polys.json $SLURM_ARRAY_TASK_ID
+Rscript ../../../package_inf_rasters/gen_poly_stats.R ./config/config_paths.json $SLURM_ARRAY_TASK_ID
 
