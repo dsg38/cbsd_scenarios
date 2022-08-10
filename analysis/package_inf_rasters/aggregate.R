@@ -3,6 +3,12 @@ args = commandArgs(trailingOnly=TRUE)
 configPath = args[[1]]
 saveSubsetFinishedBool = as.logical(as.numeric(args[[2]]))
 
+saveSubsetPresentDayBool = TRUE
+if(length(args) == 3){
+    saveSubsetPresentDayBool = as.logical(as.numeric(args[[3]]))
+}
+
+
 # configPath = "../results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/config/config_paths.json"
 # aggOnlyFinishedBool = 0
 
@@ -109,22 +115,27 @@ if(saveSubsetFinishedBool){
     )
 
     # ---------------------------------------------
-    # Extract subset that made it to 2018 sim time (i.e. last major real-world observation)
-    mergedDfPresentDayOutPath = here::here(outputsDir, "raster_poly_stats_agg_PRESENTDAY.rds")
-    outPathPresentDayMinimal = here::here(outputsDir, "raster_poly_stats_agg_minimal_PRESENTDAY.rds")
 
-    presentDayDoneDf = progDf[progDf$maxRasterYearTif >= 2018,]
+    if(saveSubsetPresentDayBool){
+        # Extract subset that made it to 2018 sim time (i.e. last major real-world observation)
+        mergedDfPresentDayOutPath = here::here(outputsDir, "raster_poly_stats_agg_PRESENTDAY.rds")
+        outPathPresentDayMinimal = here::here(outputsDir, "raster_poly_stats_agg_minimal_PRESENTDAY.rds")
 
-    presentDaySimKeys = paste(presentDayDoneDf$scenarioName, presentDayDoneDf$batchName, presentDayDoneDf$jobName, "0", sep="-")
+        presentDayDoneDf = progDf[progDf$maxRasterYearTif >= 2018,]
 
-    mergedDfPresentDay = mergedDf[mergedDf$simKey %in% presentDaySimKeys,]
+        presentDaySimKeys = paste(presentDayDoneDf$scenarioName, presentDayDoneDf$batchName, presentDayDoneDf$jobName, "0", sep="-")
 
-    saveRDS(mergedDfPresentDay, mergedDfPresentDayOutPath)
+        mergedDfPresentDay = mergedDf[mergedDf$simKey %in% presentDaySimKeys,]
 
-    # Save minimal version of done
-    genMinimalDf(
-        mergedDf=mergedDfPresentDay,
-        outPathMinimal=outPathPresentDayMinimal
-    )
+        saveRDS(mergedDfPresentDay, mergedDfPresentDayOutPath)
+
+        # Save minimal version of done
+        genMinimalDf(
+            mergedDf=mergedDfPresentDay,
+            outPathMinimal=outPathPresentDayMinimal
+        )
+
+    }
+
 
 }
