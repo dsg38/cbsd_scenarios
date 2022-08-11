@@ -1,7 +1,7 @@
 library(ggplot2)
 library(ggfan)
 
-polyStatsDf = readRDS("./output/raster_poly_stats_agg_minimal.rds") 
+polyStatsDf = readRDS("./output/raster_poly_stats_agg_minimal_DONE.rds") 
 
 outDir = file.path("./plots/dpc_fan_intervals")
 
