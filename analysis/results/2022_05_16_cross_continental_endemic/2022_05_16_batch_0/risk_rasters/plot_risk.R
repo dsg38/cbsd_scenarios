@@ -18,7 +18,8 @@ for(riskRasterPath in riskRasterPaths){
     print(plotPath)
 
     riskRaster = raster::raster(riskRasterPath)
-    riskRaster[riskRaster < 0.01] = NA
+    riskRaster[riskRaster==0] = NA
+    # riskRaster[riskRaster < 0.01] = NA
 
     countryPolysDf = sf::read_sf("../../../../../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg")
     countryPolysDfSimple = sf::st_simplify(countryPolysDf, dTolerance = 1000)
@@ -42,16 +43,17 @@ for(riskRasterPath in riskRasterPaths){
     p = tm_shape(riskRaster, bbox=extent, raster.downsample=FALSE) +
         tm_raster(
             breaks=c(0, 0.2, 0.4, 0.6, 0.8, 1),
-            labels=c("0.01< to 0.2", "0.2 to 0.4", "0.4 to 0.6", "0.6 to 0.8", "0.8 to 1.0"),
-            # labels=c("0 < x <= 0.2", "0.2 < x <= 0.4", "0.4 < x <= 0.6", "0.6 < x <= 0.8", "0.8 < x <= 1.0"),
+            labels=c("0< to 0.2", "0.2 to 0.4", "0.4 to 0.6", "0.6 to 0.8", "0.8 to 1.0"),
+            # labels=c("0.01< to 0.2", "0.2 to 0.4", "0.4 to 0.6", "0.6 to 0.8", "0.8 to 1.0"),
             palette = "Reds",
             title="",
             legend.reverse = TRUE
         ) +
         tm_shape(lakesPoly) +
-        tm_fill(col="#CFCED2") +
+        tm_fill(col="#A1C5FF", alpha=0.6) +
+        tm_borders(lwd=0.05) +
         tm_shape(oceanDf, bbox=extent) +
-        tm_fill(col="#CFCED2") +
+        tm_fill(col="#A1C5FF", alpha=0.6) +
         tm_shape(countryPolysDfSimple) +
         tm_borders(lwd=0.5) +
         tm_compass(position = c("right", "top"), size=5) +

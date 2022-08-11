@@ -40,9 +40,10 @@ p = tm_shape(riskRaster, bbox=extent, raster.downsample=FALSE) +
         legend.reverse = TRUE
     ) +
     tm_shape(lakesPoly) +
-    tm_fill(col="#CFCED2") +
+    tm_fill(col="#A1C5FF", alpha=0.6) +
+    tm_borders(lwd=0.05) +
     tm_shape(oceanDf, bbox=extent) +
-    tm_fill(col="#CFCED2") +
+    tm_fill(col="#A1C5FF", alpha=0.6) +
     tm_shape(countryPolysDfSimple) +
     tm_borders(lwd=0.5) +
 

@@ -1,7 +1,5 @@
 box::use(tmap[...])
 box::use(utils_epidem/utils_epidem)
-box::use(ggplot2[...])
-box::use(ggspatial[...])
 
 countryPolysDf = sf::read_sf("../../../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg")
 
@@ -26,7 +24,7 @@ countryPolysDfSimple = sf::st_simplify(countryPolysDf, dTolerance = 1000)
 # ----------------------------------------------
 
 p = tm_shape(oceanDf, bbox=bboxExtent) +
-    tm_fill(col="#A1C5FF") +
+    tm_fill(col="#A1C5FF", alpha=0.6) +
     tm_shape(countryPolysDfSimple) +
     tm_polygons(alpha=0.5, lwd=0.5) +
     tm_shape(polyTargetDf) +

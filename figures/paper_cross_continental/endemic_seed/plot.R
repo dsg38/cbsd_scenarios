@@ -28,9 +28,13 @@ countryDf = rnaturalearth::ne_download(scale = 10, type = 'countries', category 
 
 extent = utils_epidem$get_extent_country_code_vec(c("MOZ", "COD", "KEN"))
 
+oceanDf = sf::read_sf("../../data/ne_50m_ocean/ne_50m_ocean.shp")
+
 tmap_options(check.and.fix = TRUE)
 p = tm_shape(countryDf, bbox=extent) +
     tm_polygons(alpha=0.2) +
+    tm_shape(oceanDf, bbox=extent) +
+    tm_fill(col="#A1C5FF", alpha=0.6) +
     tm_shape(endemicDf) + 
     tm_polygons("NAME", title="") +
     tm_shape(surveyDfSubset) + 
