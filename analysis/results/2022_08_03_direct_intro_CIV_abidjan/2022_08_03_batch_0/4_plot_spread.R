@@ -84,7 +84,7 @@ for(infRasterPath in infRasterVec){
         tm_shape(countryPolysDfSimple) +
         tm_borders(lwd=0.5) +
         tm_shape(nearPortPolyDf) +
-        tm_borders(col="black", lwd=2) +
+        tm_borders(col="black", lwd=4) +
         tm_compass(position = c("right", "top"), size=5) +
         tm_scale_bar(position = c("right", "bottom"), text.size = 1.2) +
         tm_graticules(lines = FALSE, labels.size=1.2) +
