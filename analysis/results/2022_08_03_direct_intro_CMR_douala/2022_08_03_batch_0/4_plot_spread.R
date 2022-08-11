@@ -1,10 +1,10 @@
 box::use(tmap[...])
 
 # Read data / set up crs
-hostRaster = raster::raster("../../../../inputs/inputs_scenarios/2022_08_03_direct_intro_NGA_lagos/inputs/L_0_HOSTDENSITY.txt")
+hostRaster = raster::raster("../../../../inputs/inputs_scenarios/2022_08_03_direct_intro_CMR_douala/inputs/L_0_HOSTDENSITY.txt")
 
 infRasterVec = list.files(
-    "../../../../simulations/sim_output//2022_08_03_direct_intro_NGA_lagos/2022_08_03_batch_0/job555/output/runfolder0/", 
+    "../../../../simulations/sim_output/2022_08_03_direct_intro_CMR_douala/2022_08_03_batch_0/job379/output/runfolder0", 
     pattern="O_0_L_0_INFECTIOUS_",
     full.names = TRUE
 )
