@@ -13,6 +13,15 @@ plotDir = "./plots/spread/"
 
 dir.create(plotDir, recursive = TRUE, showWarnings = FALSE)
 
+# Get init circle
+kmRadius = 50
+
+directIntroCoordsDf = read.csv("../../../../inputs/inputs_raw/init_conditions/UTIL_direct_intro/direct_intro_coords.csv") |>
+    sf::st_as_sf(coords=c('x', 'y'), crs="WGS84") |>
+    dplyr::filter(name=="NGA_lagos")
+
+nearPortPolyDf = sf::st_buffer(directIntroCoordsDf, dist=(kmRadius * 1000))
+
 # --------------------------------
 
 countryPolysDf = sf::read_sf("../../../../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg")
@@ -73,6 +82,8 @@ for(infRasterPath in infRasterVec){
         tm_fill(col="#A1C5FF") +
         tm_shape(countryPolysDfSimple) +
         tm_borders(lwd=0.5) +
+        tm_shape(nearPortPolyDf) +
+        tm_borders(col="black", lwd=2) +
         tm_compass(position = c("right", "top"), size=5) +
         tm_scale_bar(position = c("right", "bottom"), text.size = 1.2) +
         tm_graticules(lines = FALSE, labels.size=1.2) +
