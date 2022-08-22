@@ -59,5 +59,5 @@ gridDfWhiteflyStats = gridDfAllStats |>
     dplyr::filter(adult_whitefly_mean > 0)
 
 mapview::mapview(gridDfWhiteflyStats, z="adult_whitefly_mean", layer.name="-")
-mapview::mapview(gridDfAllStats, z="fields_per_km2")
+mapview::mapview(gridDfAllStats, z="fields_per_km2", layer.name="-")
 
