@@ -1,6 +1,6 @@
 library(tictoc)
 
-set.seed(10)
+# set.seed(10)
 
 simulated_annealing = function(objectiveFunc, startCoordsDf, extent, rewardRatio, detectionProb, niter = 1000, step = 0.01, initTemp=1) {
 
@@ -134,7 +134,7 @@ objectiveFunc = function(brickValsDf, rewardRatio, detectionProb){
 
 infBrickPath = "./data/brick.tif"
 sumRasterPointsDfPath = "./data/sumRasterMaskPointsDf.csv"
-outDir = "./results/2022_07_19_lunch/"
+outDir = "./results/2022_08_24_test/"
 
 # Define SA params
 numSurveys = 500

@@ -17,4 +17,4 @@ templateRasterCrop[] = 0
 maskRaster = raster::mask(x=templateRasterCrop, mask=maskPolyDf, updatevalue=1, inverse=TRUE)
 
 # Save
-raster::writeRaster(maskRaster, "./data/mask_roads.tif")
+raster::writeRaster(maskRaster, "./data/mask.tif")

@@ -31,6 +31,9 @@ raster::writeRaster(infRasterBrickMask, "./data/brick.tif", overwrite=TRUE)
 
 # --------------------------------
 
+print("Num rasters:")
+print(raster::nlayers(infRasterBrickMask))
+
 sumRaster = infRasterBrickMask[[1]]
 for(i in 2:raster::nlayers(infRasterBrickMask)){
     print(i)
