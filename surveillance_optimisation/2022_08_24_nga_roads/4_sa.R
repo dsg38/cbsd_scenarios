@@ -1,5 +1,5 @@
 library(tictoc)
-
+args = commandArgs(trailingOnly=TRUE)
 # set.seed(10)
 
 simulated_annealing = function(objectiveFunc, startCoordsDf, extent, rewardRatio, detectionProb, niter = 1000, step = 0.01, initTemp=1) {
@@ -134,18 +134,23 @@ objectiveFunc = function(brickValsDf, rewardRatio, detectionProb){
 
 infBrickPath = "./data/brick.tif"
 sumRasterPointsDfPath = "./data/sumRasterMaskPointsDf.csv"
-outDir = "./results/2022_08_24_test/"
+configPath = "./results/2022_08_26_test/config.json"
+# configPath = args[[1]]
 
-# Define SA params
-numSurveys = 500
-rewardRatio = 0.95
-detectionProb = 1
-niter = 20000
-step = 0.001
-initTemp = 1
+
+resDir = dirname(configPath)
+
+# Parse SA params config
+configList = rjson::fromJSON(file=configPath)
+
+numSurveys = configList[["numSurveys"]]
+rewardRatio = configList[["rewardRatio"]]
+detectionProb = configList[["detectionProb"]]
+niter = configList[["niter"]]
+step = configList[["step"]]
+initTemp = configList[["initTemp"]]
 
 # ------------------------
-dir.create(outDir, showWarnings = FALSE, recursive = TRUE)
 
 # Load global variales
 infBrick = raster::brick(infBrickPath)
@@ -190,11 +195,19 @@ toc()
 # Save coords log
 coordsDf = dplyr::bind_rows(coordsDfList)
 
-coordsDfPath = file.path(outDir, "coordsDf.rds")
+coordsDfPath = file.path(resDir, "coordsDf.rds")
 saveRDS(coordsDf, coordsDfPath)
 
+# Save trace data
+traceDf = data.frame(
+    temp=tempVec,
+    objective_func_val=objFuncVals,
+    
+)
+
+
 # Plot trace
-tracePlotPath = file.path(outDir, "trace.png")
+tracePlotPath = file.path(resDir, "trace.png")
 
 png(tracePlotPath, width=600, height=600)
 plot(objFuncVals, ylim=c(0, 1))
