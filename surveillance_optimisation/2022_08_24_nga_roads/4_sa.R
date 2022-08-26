@@ -1,6 +1,5 @@
 library(tictoc)
 args = commandArgs(trailingOnly=TRUE)
-# set.seed(10)
 
 simulated_annealing = function(objectiveFunc, startCoordsDf, extent, rewardRatio, detectionProb, niter = 1000, step = 0.01, initTemp=1) {
 
@@ -156,8 +155,8 @@ objectiveFunc = function(brickValsDf, rewardRatio, detectionProb){
 
 infBrickPath = "./data/brick.tif"
 sumRasterPointsDfPath = "./data/sumRasterMaskPointsDf.csv"
-configPath = "./results/2022_08_26_test/config.json"
-# configPath = args[[1]]
+# configPath = "./results/2022_08_26_test/config.json"
+configPath = args[[1]]
 
 
 resDir = dirname(configPath)
