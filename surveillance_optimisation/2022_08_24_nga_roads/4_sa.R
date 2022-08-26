@@ -21,24 +21,24 @@ simulated_annealing = function(objectiveFunc, startCoordsDf, extent, rewardRatio
         rewardRatio=rewardRatio,
         detectionProb=detectionProb
     )
-    
-    # message("It\tBest\tCurrent\tNeigh\tTemp")
-    # message(sprintf("%i\t%.4f\t%.4f\t%.4f\t%.4f", 0L, f_b, f_c, f_n, 1))
 
     numPoints = nrow(startCoordsDf)
     rowIndexVec = seq(1, numPoints)
 
-    for (k in 1:niter) {
+    # Initialise data storage
+    tempVec = c()
+    objFuncVals = c()
+    coordsDfList = list()
+
+    for(k in 1:niter){
         
         # print(k)
         if(k%%10==0){
             print(k)
         }
 
-        Temp = initTemp * (1 - step)^k
+        temp = initTemp * (1 - step)^k
         
-        tempVec <<- c(tempVec, Temp)
-
         # Pick random coordinate to change
         randRowIndex = sample(rowIndexVec, 1, replace = TRUE)
         
@@ -66,29 +66,51 @@ simulated_annealing = function(objectiveFunc, startCoordsDf, extent, rewardRatio
         )
         
         # update current state
-        if(f_n > f_c || runif(1, 0, 1) < exp(-abs(f_n - f_c) / Temp)){
+        if(f_n > f_c || runif(1, 0, 1) < exp(-abs(f_n - f_c) / temp)){
             s_c = s_n
             f_c = f_n
             v_c = v_n
         }
         
-        objFuncVals <<- c(objFuncVals, f_c)
-        
-        # Put survey coords into global list 
-        tmp = get('coordsDfList',.GlobalEnv)
-        tmp[[as.character(paste0("loop_", k))]] = cbind(s_c, iteration=k)
-        assign("coordsDfList",tmp, .GlobalEnv)
-        
-        # update best state
+        # Update best state
         if(f_n > f_b){
             s_b = s_n
             f_b = f_n
             v_b = v_n
         }
-        # message(sprintf("%i\t%.4f\t%.4f\t%.4f\t%.4f", k, f_b, f_c, f_n, Temp))
+
+        # Store data values
+        tempVec = c(tempVec, temp)
+        objFuncVals = c(objFuncVals, f_c)
+        coordsDfList[[as.character(paste0("loop_", k))]] = cbind(s_c, iteration=k)
         
     }
-    return(list(iterations = niter, best_value = f_b, best_state = s_b))
+
+    # Return data
+
+    # Probability of accepting the worst possible move in terms of the main componant of the obj func
+    prop_worst_move_A = exp(-(rewardRatio/tempVec))
+
+    # Probability of accepting the worst possible move in terms of the (1 - rewardRatio) componant of the obj func
+    prob_worst_move_B = exp(-((1-rewardRatio)/tempVec))
+
+
+    traceDf = data.frame(
+        iteration=seq(1, niter),
+        temp=tempVec,
+        objective_func_val=objFuncVals,
+        prop_worst_move_A=prop_worst_move_A,
+        prob_worst_move_B=prob_worst_move_B
+    )
+
+    coordsDf = dplyr::bind_rows(coordsDfList)
+
+    resultsList = list(
+        traceDf=traceDf,
+        coordsDf=coordsDf
+    )
+
+    return(resultsList)
 }
 
 
@@ -160,13 +182,7 @@ sumRasterPointsDf = read.csv(sumRasterPointsDfPath)
 # Setup
 # ----------------------------------
 
-# Initialise data storage objects
-objFuncVals = c()
-tempVec = c()
-coordsDfList = list()
-
 rasterExtent = raster::extent(infBrick)
-
 startCoordsDf = dplyr::sample_n(sumRasterPointsDf, numSurveys, replace = TRUE)
 
 # ----------------------------------
@@ -175,7 +191,7 @@ startCoordsDf = dplyr::sample_n(sumRasterPointsDf, numSurveys, replace = TRUE)
 
 tic()
 
-sol = simulated_annealing(
+resultsList = simulated_annealing(
     objectiveFunc=objectiveFunc, 
     startCoordsDf=startCoordsDf, 
     extent=rasterExtent, 
@@ -188,36 +204,31 @@ sol = simulated_annealing(
 
 toc()
 
+traceDf = resultsList[["traceDf"]]
+coordsDf = resultsList[["coordsDf"]]
+
 # ----------------------------------
 # Save results
-# ----------------------------------
 
-# Save coords log
-coordsDf = dplyr::bind_rows(coordsDfList)
-
+traceDfPath = file.path(resDir, "traceDf.rds")
 coordsDfPath = file.path(resDir, "coordsDf.rds")
+
+saveRDS(traceDf, traceDfPath)
 saveRDS(coordsDf, coordsDfPath)
 
-# Save trace data
-traceDf = data.frame(
-    temp=tempVec,
-    objective_func_val=objFuncVals,
-    
-)
-
-
+# --------------------
 # Plot trace
 tracePlotPath = file.path(resDir, "trace.png")
 
 png(tracePlotPath, width=600, height=600)
-plot(objFuncVals, ylim=c(0, 1))
-lines(objFuncVals, pch=16)
 
-points(tempVec, col="red")
+plot(traceDf$objective_func_val, ylim=c(0, 1))
+lines(traceDf$objective_func_val, pch=16)
 
-x = exp(-(rewardRatio/tempVec))
-points(x, col="blue")
+points(traceDf$temp, col="red")
 
-y = exp(-((1-rewardRatio)/tempVec))
-points(y, col="green")
+points(traceDf$prop_worst_move_A, col="blue")
+
+points(traceDf$prob_worst_move_B, col="green")
+
 dev.off()
