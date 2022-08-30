@@ -1,4 +1,4 @@
-gridRes = 30
+gridRes = 10
 
 coordsDf = readRDS("./results/2022_08_26_test/coordsDf.rds") |>
     dplyr::filter(iteration == max(iteration)) |>

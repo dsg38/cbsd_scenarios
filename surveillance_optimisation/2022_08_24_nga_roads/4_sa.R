@@ -153,11 +153,13 @@ objectiveFunc = function(brickValsDf, rewardRatio, detectionProb){
 # Define inputs
 # ----------------------------------
 
-infBrickPath = "./data/brick.tif"
-sumRasterPointsDfPath = "./data/sumRasterMaskPointsDf.csv"
 # configPath = "./results/2022_08_26_test/config.json"
-configPath = args[[1]]
+# infBrickPath = "./data/brick.tif"
+# sumRasterPointsDfPath = "./data/sumRasterMaskPointsDf.csv"
 
+configPath = args[[1]]
+infBrickPath = args[[2]]
+sumRasterPointsDfPath = args[[3]]
 
 resDir = dirname(configPath)
 
