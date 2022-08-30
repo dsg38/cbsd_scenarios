@@ -1,3 +1,5 @@
+surveillance_optimisation/2022_07_07_nga_1_percent/data/coordsDf.csv
+surveillance_optimisation/analysis_roads/data/buffer
 surveillance_optimisation/2022_08_24_nga_roads/sweep/results
 surveillance_optimisation/analysis_roads/data/raw
 analysis/results/2022_08_03_direct_intro_CIV_abidjan/2022_08_03_batch_0/plots
@@ -12,7 +14,7 @@ analysis/results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/dpc_plo
 analysis/results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/rank_plotting/movies
 analysis/results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/rank_plotting/plots
 analysis/results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/risk_rasters/output
-surveillance_optimisation/*/data/
+# surveillance_optimisation/*/data/
 surveillance_optimisation/*/plots/
 surveillance_optimisation/*/movies/
 surveillance_optimisation/*/inf_rasters
