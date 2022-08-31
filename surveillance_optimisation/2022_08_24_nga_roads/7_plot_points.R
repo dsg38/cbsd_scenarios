@@ -2,15 +2,23 @@ library(tictoc)
 library(tmap)
 tmap_options(show.messages=FALSE)
 
+resultsDir = "./results/2022_08_26_detectionProp_085/"
+sumRasterPath = "./data/sumRasterMask.tif"
+countryPolysDfPath = "../../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg"
+
+plotDir = "./plots/2022_08_26_detectionProp_085/points/"
+
 # Define what interval of plots to plot (i.e. 1 = plot all)
-plotFactor = 1
+plotFactor = 100
 downscaleBool = FALSE
 
 # --------------------------
 
-coordsDf = read.csv("./data/coordsDf.csv")
+dir.create(plotDir, showWarnings = FALSE, recursive = TRUE)
 
-sumRaster = raster::raster("./data/sumRasterMask.tif")
+coordsDf = readRDS(file.path(resultsDir, "coordsDf.rds"))
+
+sumRaster = raster::raster(sumRasterPath)
 
 # TEMP: Downscale raster for plotting speed
 if(downscaleBool){
@@ -20,7 +28,7 @@ if(downscaleBool){
 # Set all zeros to NA
 sumRaster[sumRaster==0] = NA
 
-countryPolysDf = sf::read_sf("../../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg")
+countryPolysDf = sf::read_sf(countryPolysDfPath)
 countryPolysDfSimple = sf::st_simplify(countryPolysDf, dTolerance = 1000)
 
 ngaExtent = sf::st_bbox(countryPolysDfSimple |> dplyr::filter(GID_0 == "NGA"))
@@ -82,7 +90,7 @@ for(i in plotSeq){
     
     iStr = sprintf("%06d", i)
     
-    plotPath = file.path("./plots/maps/", paste0("plot_", iStr, ".png"))
+    plotPath = file.path(plotDir, paste0("plot_", iStr, ".png"))
     
     plotMap(changeDf=changeDf, plotPath=plotPath)
     
