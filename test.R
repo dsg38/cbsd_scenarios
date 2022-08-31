@@ -1,4 +1,10 @@
-x = sf::read_sf("./inputs/inputs_raw/polygons/polys_direct_intro_host_CassavaMap.gpkg")
+# x = sf::read_sf("./inputs/inputs_raw/polygons/polys_direct_intro_host_CassavaMap.gpkg")
+
+x = read.csv("../cassava_data/data_merged/data/2022_02_09/cassava_data_minimal.csv") |>
+    dplyr::group_by(country_code, year) |>
+    dplyr::count() |>
+    dplyr::filter(country_code == "NGA")
+
 
 # x = read.csv("./analysis/results/2022_05_16_cross_continental_endemic/2022_05_16_batch_0/output/medianArrivalDf.csv")
 

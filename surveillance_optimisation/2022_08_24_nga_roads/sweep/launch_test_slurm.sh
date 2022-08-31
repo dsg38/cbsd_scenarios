@@ -15,11 +15,11 @@
 #! How many many cores will be allocated per task? 
 #SBATCH --cpus-per-task=1 
 #! Estimated runtime (job is force-stopped after if exceeded):
-#SBATCH --time=24:00:00
+#SBATCH --time=12:00:00
 #! Estimated memory needed (job is force-stopped if exceeded):
 #SBATCH --mem=6840mb
 #! Submit a job array with index values between 0 and n e.g. 0-100
-#SBATCH --array=0-15
+#SBATCH --array=0
 
 #! This is the partition name. This will request for a node with 6GB RAM for each task
 #SBATCH -p cclake
@@ -57,4 +57,4 @@ unset __conda_setup
 conda activate /rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/conda_env_default/dsg38
 
 # Run stuff
-Rscript "../4_sa.R" "./results/sweep_$SLURM_ARRAY_TASK_ID/config.json" "../data/brick.tif" "../data/sumRasterMaskPointsDf.csv"
+Rscript "../temp_sa_no_comp.R" "./results/sweep_0/config.json" "../data/brick.tif" "../data/sumRasterMaskPointsDf.csv"
