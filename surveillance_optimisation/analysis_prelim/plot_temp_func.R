@@ -20,7 +20,7 @@ kMax = 100000
 rewardRatio = 1
 # rewardRatio = 0.95
 
-resDfList = list()
+# resDfList = list()
 plotList = list()
 
 i = 0
@@ -50,7 +50,7 @@ for(step in stepVec){
             step=step,
             temp=temp,
             blueVals=blueVals,
-            greenVals=greenVals,
+            # greenVals=greenVals,
             iStep = seq(1, kMax)
         )
         
@@ -69,7 +69,7 @@ for(step in stepVec){
         
         plotList[[as.character(i)]] = p
         
-        resDfList[[as.character(i)]] = thisResDf
+        # resDfList[[as.character(i)]] = thisResDf
 
         i = i + 1
     }

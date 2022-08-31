@@ -80,7 +80,7 @@ simulated_annealing = function(objectiveFunc, startCoordsDf, extent, rewardRatio
 
         # Store data values
         tempVec = c(tempVec, temp)
-        objFuncVals = c(objFuncVals, 0)
+        objFuncVals = c(objFuncVals, runif(1, min=0.25, max=0.75))
         coordsDfList[[as.character(paste0("loop_", k))]] = cbind(s_c, iteration=k)
         
     }
