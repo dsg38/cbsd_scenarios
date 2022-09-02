@@ -1,6 +1,6 @@
 gridRes = 20
 
-resultsDir = "./results/2022_08_26_detectionProp_085"
+resultsDir = "./sweep/results/sweep_4/"
 
 coordsDfPath = file.path(resultsDir, "coordsDf.rds")
 traceDfPath = file.path(resultsDir, "traceDf.rds")

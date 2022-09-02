@@ -1,10 +1,15 @@
 library(tmap)
 
-plotPath = file.path("./plots/2022_08_26_detectionProp_085/simple/simple_gridRes_20.png")
+plotPath = "./plots/sweep_4/simple/simple_gridRes_20.png"
+simpleDfPath = "./sweep/results/sweep_4/simple_gridRes_20.gpkg"
+
+targetCountryCode = "NGA"
+# --------------------------------
+
 dir.create(dirname(plotPath), showWarnings = FALSE, recursive = TRUE)
 
 # Read in simple df
-simpleDf = sf::read_sf("./results/2022_08_26_detectionProp_085/simple_gridRes_20.gpkg") |>
+simpleDf = sf::read_sf(simpleDfPath) |>
     dplyr::filter(prop > 0)
 
 # Read in country polys
@@ -14,7 +19,7 @@ countryPolysDf = sf::read_sf("../../inputs/process_polys/gadm36_levels_gpkg/gadm
 
 # Extent poly
 extentDf = countryPolysDf |>
-    dplyr::filter(GID_0 == "NGA")
+    dplyr::filter(GID_0 == targetCountryCode)
 
 
 p = tm_shape(statePolysDf, bbox = extentDf) + 

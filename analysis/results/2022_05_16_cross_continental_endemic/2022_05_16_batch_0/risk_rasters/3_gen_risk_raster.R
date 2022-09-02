@@ -1,10 +1,13 @@
 args = commandArgs(trailingOnly=TRUE)
 
-rasterYear = args[[1]]
-# rasterYear = 2050
+# constraintKey = as.character(args[[1]])
+# rasterYear = args[[2]]
 
-sumRasterDir = file.path("./output/sum/", paste0("inf_rasters_", rasterYear))
-outPath = file.path("./output/risk/rasters/", paste0("risk_", rasterYear, ".tif"))
+constraintKey = "all"
+rasterYear = 2050
+
+sumRasterDir = file.path("./output/sum/", constraintKey,  paste0("inf_rasters_", rasterYear))
+outPath = file.path("./output/risk/",  constraintKey, "rasters", paste0("risk_", rasterYear, ".tif"))
 
 dir.create(dirname(outPath), recursive = TRUE, showWarnings = FALSE)
 
@@ -14,7 +17,6 @@ dir.create(dirname(outPath), recursive = TRUE, showWarnings = FALSE)
 passKeysAll  = rjson::fromJSON(file="../output/cumulative_passKeys.json")
 
 # Extract subset of keys for our target constraints
-constraintKey = "uga-RWA-BDI-drc_first_east-Pweto-zmb_regions_union-drc_north_central_field"
 passKeys = passKeysAll[[constraintKey]]
 
 numJobs = length(passKeys)

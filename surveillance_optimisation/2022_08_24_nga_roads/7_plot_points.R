@@ -2,11 +2,11 @@ library(tictoc)
 library(tmap)
 tmap_options(show.messages=FALSE)
 
-resultsDir = "./results/2022_08_26_detectionProp_085/"
+resultsDir = "./sweep/results/sweep_4/"
 sumRasterPath = "./data/sumRasterMask.tif"
 countryPolysDfPath = "../../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg"
 
-plotDir = "./plots/2022_08_26_detectionProp_085/points/"
+plotDir = "./plots/sweep_4/points/"
 
 # Define what interval of plots to plot (i.e. 1 = plot all)
 plotFactor = 100

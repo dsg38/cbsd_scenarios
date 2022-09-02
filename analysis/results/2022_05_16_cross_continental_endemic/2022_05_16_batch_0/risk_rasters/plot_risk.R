@@ -1,7 +1,8 @@
 box::use(tmap[...])
 box::use(utils_epidem/utils_epidem)
 
-plotDir = "./output/risk/plots/"
+riskDir = "./output/risk/all/rasters"
+plotDir = "./output/risk/all/plots"
 
 extent = utils_epidem$get_extent_country_code_vec(c("COD", "SEN", "AGO", "UGA"))
 
@@ -9,7 +10,7 @@ extent = utils_epidem$get_extent_country_code_vec(c("COD", "SEN", "AGO", "UGA"))
 
 dir.create(plotDir, recursive = TRUE, showWarnings = FALSE)
 
-riskRasterPaths = list.files("./output/risk/rasters", "risk_", full.names = TRUE)
+riskRasterPaths = list.files(riskDir, "risk_", full.names = TRUE)
 
 for(riskRasterPath in riskRasterPaths){
 

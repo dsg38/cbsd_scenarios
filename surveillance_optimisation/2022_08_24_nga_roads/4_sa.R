@@ -218,18 +218,18 @@ saveRDS(traceDf, traceDfPath)
 saveRDS(coordsDf, coordsDfPath)
 
 # --------------------
-# Plot trace
-tracePlotPath = file.path(resDir, "trace.png")
+# # Plot trace
+# tracePlotPath = file.path(resDir, "trace.png")
 
-png(tracePlotPath, width=600, height=600)
+# png(tracePlotPath, width=600, height=600)
 
-plot(traceDf$objective_func_val, ylim=c(0, 1))
-lines(traceDf$objective_func_val, pch=16)
+# plot(traceDf$objective_func_val, ylim=c(0, 1))
+# lines(traceDf$objective_func_val, pch=16)
 
-points(traceDf$temp, col="red")
+# points(traceDf$temp, col="red")
 
-points(traceDf$prop_worst_move_A, col="blue")
+# points(traceDf$prop_worst_move_A, col="blue")
 
-points(traceDf$prob_worst_move_B, col="green")
+# points(traceDf$prob_worst_move_B, col="green")
 
-dev.off()
+# dev.off()
