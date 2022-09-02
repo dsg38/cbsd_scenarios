@@ -57,4 +57,4 @@ unset __conda_setup
 conda activate /rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/conda_env_default/dsg38
 
 # Run stuff
-Rscript "./UTIL_sum_rasters.R" "all" 2030 100 $SLURM_ARRAY_TASK_ID
+Rscript "./UTIL_sum_rasters.R" "all" 2040 100 $SLURM_ARRAY_TASK_ID
