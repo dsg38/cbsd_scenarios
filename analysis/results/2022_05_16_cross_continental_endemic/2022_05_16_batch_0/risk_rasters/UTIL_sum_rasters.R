@@ -2,17 +2,19 @@ library(tictoc)
 
 args = commandArgs(trailingOnly=TRUE)
 
-rasterYear = as.character(args[[1]])
-nBatches = as.numeric(args[[2]])
-batchIndex = as.character(args[[3]])
+constraintKey = as.character(args[[1]])
+rasterYear = as.character(args[[2]])
+nBatches = as.numeric(args[[3]])
+batchIndex = as.character(args[[4]])
+
+# constraintKey = "uga-RWA-BDI-drc_first_east-Pweto-zmb_regions_union-drc_north_central_field"
+# constraintKey = "all"
 
 # rasterYear = "2050"
 # nBatches = 10
 # batchIndex = "1"
 
 # ---------------------
-
-constraintKey = "uga-RWA-BDI-drc_first_east-Pweto-zmb_regions_union-drc_north_central_field"
 
 # Read in all pass keys with different constraints
 passKeysAll  = rjson::fromJSON(file="../output/cumulative_passKeys.json")
@@ -67,7 +69,7 @@ for(thisJob in jobVecBatch){
 toc()
 
 # Write out raster
-sumRasterBatchOutDir = file.path("./output/sum", paste0("inf_rasters_", rasterYear))
+sumRasterBatchOutDir = file.path("./output/sum", constraintKey, paste0("inf_rasters_", rasterYear))
 dir.create(sumRasterBatchOutDir, recursive = TRUE, showWarnings = FALSE)
 
 sumRasterBatchOutPath = file.path(sumRasterBatchOutDir, paste0("rasterYear_", rasterYear, "-", "batchIndex_", batchIndex, ".tif"))

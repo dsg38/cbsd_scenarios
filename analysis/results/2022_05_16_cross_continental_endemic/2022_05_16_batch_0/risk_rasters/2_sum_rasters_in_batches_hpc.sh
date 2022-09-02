@@ -19,7 +19,7 @@
 #! Estimated memory needed (job is force-stopped if exceeded):
 #SBATCH --mem=3420mb
 #! Submit a job array with index values between 0 and n e.g. 0-100
-#SBATCH --array=1-10
+#SBATCH --array=1-100
 
 #! This is the partition name. This will request for a node with 6GB RAM for each task
 #SBATCH -p cclake
@@ -57,4 +57,4 @@ unset __conda_setup
 conda activate /rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/conda_env_default/dsg38
 
 # Run stuff
-Rscript "./UTIL_sum_rasters.R" 2050 10 $SLURM_ARRAY_TASK_ID
+Rscript "./UTIL_sum_rasters.R" "all" 2030 100 $SLURM_ARRAY_TASK_ID
