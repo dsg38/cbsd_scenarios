@@ -3,12 +3,16 @@ library(ggpubr)
 
 iMax = 15
 
+plotDir = './plots/'
+
 plotList = list()
 for(i in seq(0, iMax)){
     
     print(i)
 
-    resultsDir = file.path("./results/", paste0("sweep_", i))
+    sweepStr = paste0("sweep_", i)
+
+    resultsDir = file.path("./results/", sweepStr)
     traceDfPath = file.path(resultsDir, "traceDf.rds")
     configPath = file.path(resultsDir, "config.json")
     
@@ -35,13 +39,25 @@ for(i in seq(0, iMax)){
             plot.title = element_text(size=6),
             axis.title = element_text(size=6),
             axis.text =  element_text(size=6)
-        )
-    
+        ) 
     
     plotList[[as.character(i)]] = p
+
+    q = ggplot(traceDfSubset, aes(x=iteration, y=objective_func_val)) + 
+        geom_line(color='black', lwd=2) +
+        geom_line(data=traceDf, aes(x=iteration,y=prop_worst_move_A),color='blue', lwd=2) +
+        geom_line(data=traceDf, aes(x=iteration,y=temp),color='red', lwd=2) +
+        ylim(0, 1) +
+        theme(
+            legend.position = "none",
+            axis.text=element_text(size=20),
+            axis.title=element_text(size=20),
+            plot.margin = margin(10, 20, 10, 10)
+        )
     
-    
-        
+    # Save individual plots
+    ggsave(filename = file.path(plotDir, paste0(sweepStr, ".png")), plot = q)
+
     # }else{
     #     print("MISSING:")
     #     print(traceDfPath)
@@ -50,6 +66,7 @@ for(i in seq(0, iMax)){
 }
 
 
-q = ggarrange(plotlist = plotList, ncol=4, nrow = 5)
+# Save grid
+r = ggarrange(plotlist = plotList, ncol=4, nrow = 5)
 
-ggsave("./plots/sweep.png")
+ggsave(filename = file.path(plotDir, "sweep_grid.png"), plot = r)

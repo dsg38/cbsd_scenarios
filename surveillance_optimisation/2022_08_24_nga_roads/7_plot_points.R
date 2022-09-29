@@ -70,6 +70,11 @@ plotMap = function(changeDf, plotPath){
 iMax = max(coordsDf$iteration)
 plotSeq = seq(1, iMax, by=plotFactor)
 
+# Add in final frame if not already there
+if(dplyr::last(plotSeq) != iMax){
+    plotSeq = c(plotSeq, iMax)
+}
+
 print("NUM TO PLOT:")
 print(length(plotSeq))
 
