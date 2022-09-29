@@ -5,7 +5,7 @@ templateRaster = raster::raster("../../inputs/inputs_raw/host_landscape/CassavaM
 # maskPolyDf = sf::read_sf("../../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg") |>
 #     dplyr::filter(GID_0=="NGA")
 
-maskPolyDf = sf::read_sf("../analysis_roads/data/buffer/groads_buffer_NGA_1000m.gpkg")
+maskPolyDf = sf::read_sf("../analysis_roads/data/buffer/groads_buffer_CMR_1000m.gpkg")
 
 # Crop the template to the extent of the poly
 templateRasterCrop = raster::crop(templateRaster, maskPolyDf)
