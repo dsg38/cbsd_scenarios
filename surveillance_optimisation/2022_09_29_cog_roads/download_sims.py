@@ -7,7 +7,7 @@ ssh = SSHClient()
 ssh.load_system_host_keys()
 ssh.connect(hostname='login-e-14.hpc.cam.ac.uk',
             username='dsg38',
-            password='d1XL7KsNGRKX') # WARNING: DON'T LEAVE PASSWORD HARDCODED HERE
+            password='') # WARNING: DON'T LEAVE PASSWORD HARDCODED HERE
 
 scp = SCPClient(ssh.get_transport())
 

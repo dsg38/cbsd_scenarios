@@ -1,9 +1,9 @@
 library(tmap)
 
-plotPath = "./plots/sweep_4/simple/simple_gridRes_20.png"
-simpleDfPath = "./sweep/results/sweep_4/simple_gridRes_20.gpkg"
+plotPath = "./plots/sweep_6/simple/simple_gridRes_20.png"
+simpleDfPath = "./sweep/results/sweep_6/simple_gridRes_20.gpkg"
 
-targetCountryCode = "NGA"
+targetCountryCode = "CMR"
 # --------------------------------
 
 dir.create(dirname(plotPath), showWarnings = FALSE, recursive = TRUE)
@@ -34,7 +34,7 @@ p = tm_shape(statePolysDf, bbox = extentDf) +
         legend.bg.color="grey",
         legend.bg.alpha=0.8,
         legend.text.size = 1.2,
-        asp = 1
+        asp=1
     )
 
 # p

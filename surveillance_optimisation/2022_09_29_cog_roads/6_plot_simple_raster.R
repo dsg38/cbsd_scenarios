@@ -1,9 +1,9 @@
 library(tmap)
 
-plotPath = "./plots/sweep_4/simple/simple_gridRes_20.png"
-simpleDfPath = "./sweep/results/sweep_4/simple_gridRes_20.gpkg"
+plotPath = "./plots/sweep_1/simple/simple_gridRes_20.png"
+simpleDfPath = "./sweep/results/sweep_1/simple_gridRes_20.gpkg"
 
-targetCountryCode = "NGA"
+targetCountryCode = "COG"
 # --------------------------------
 
 dir.create(dirname(plotPath), showWarnings = FALSE, recursive = TRUE)
