@@ -47,14 +47,14 @@ for(thisCountryCode in countryCodeVec){
 
         outDf = polyDfYearsNorm[polyDfYearsNorm$year_standardised==thisTargetYear,]
         
-        outPath = file.path("./", paste0("cc_", thisCountryCode, "_year_", thisTargetYear), "polyDf.rds")
+        outPath = file.path("./", paste0("cc_", thisCountryCode, "_year_", thisTargetYear), "polyDf.csv")
         
         # Save
         dir.create(dirname(outPath), showWarnings = FALSE, recursive = TRUE)
         
         print(outPath)
         print(nrow(outDf))
-        saveRDS(outDf, outPath)
+        write.csv(outDf, outPath, row.names = FALSE)
         
     }
 
