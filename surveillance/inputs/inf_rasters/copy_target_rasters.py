@@ -19,7 +19,7 @@ for i, row in polyDf.iterrows():
     rasterYear = row['raster_year']
     yearStandardised = row['year_standardised']
 
-    rasterPath = Path('../../simulations/sim_output') / scenario / batch / job / 'output/runfolder0' / ('O_0_L_0_INFECTIOUS_' + str(rasterYear) + '.000000.tif')
+    rasterPath = Path('../../../simulations/sim_output') / scenario / batch / job / 'output/runfolder0' / ('O_0_L_0_INFECTIOUS_' + str(rasterYear) + '.000000.tif')
 
     if not rasterPath.exists():
         print(rasterPath)
