@@ -1,3 +1,7 @@
+library(tictoc)
+
+tic()
+
 # Read in mask
 maskRaster = raster::raster("./data/mask.tif")
 
@@ -51,3 +55,5 @@ write.csv(sumRasterMaskPointsDf, "./data/sumRasterMaskPointsDf.csv", row.names=F
 raster::writeRaster(sumRasterMask, "./data/sumRasterMask.tif", overwrite=TRUE)
 
 # mapview::mapview(sumRasterMask)
+
+toc()
