@@ -1,0 +1,6 @@
+{
+    "cropByCountryCode": [
+        "CMR"
+    ],
+    "roads_country_vec": "groads_buffer_CMR_1000m"
+}
