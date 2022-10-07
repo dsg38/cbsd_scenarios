@@ -19,7 +19,7 @@
 #! Estimated memory needed (job is force-stopped if exceeded):
 #SBATCH --mem=13680mb
 #! Submit a job array with index values between 0 and n e.g. 0-100
-#SBATCH --array=0-255
+#SBATCH --array=0-319
 
 #! This is the partition name. This will request for a node with 6GB RAM for each task
 #SBATCH -p cclake
