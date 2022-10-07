@@ -169,7 +169,7 @@ sa_wrapper = function(
     configPath
 ){
 
-    resDir = file.path(dirname(configPath), "outputs_sa")
+    resDir = file.path(dirname(configPath), "outputs")
     dir.create(resDir, showWarnings = FALSE, recursive = TRUE)
 
     # Parse SA params config

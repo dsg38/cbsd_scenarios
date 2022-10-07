@@ -1,9 +1,9 @@
 {
     "inputsKey": "cc_NGA_year_0",
-    "numSurveys": 1000,
     "rewardRatio": 1,
-    "detectionProb": 0.85,
     "niter": 100,
+    "numSurveysVec": [250, 500, 750, 1000],
+    "detectionProbVec": [0.1, 0.25, 0.5, 0.85],
     "initTempVec": [1, 10, 100, 1000],
     "stepPowersVec": [-2.5, -3, -3.5, -4]
 }
