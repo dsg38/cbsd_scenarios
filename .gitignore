@@ -1,3 +1,5 @@
+surveillance/junk
+surveillance/results/*/sweep
 surveillance/inputs/inf_rasters/*/raw
 surveillance/inputs/masks/data_roads/data
 surveillance_optimisation/2022_08_24_nga_roads/sweep/plots/
