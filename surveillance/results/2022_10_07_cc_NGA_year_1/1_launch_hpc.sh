@@ -15,11 +15,11 @@
 #! How many many cores will be allocated per task? 
 #SBATCH --cpus-per-task=1 
 #! Estimated runtime (job is force-stopped after if exceeded):
-#SBATCH --time=24:00:00
+#SBATCH --time=36:00:00
 #! Estimated memory needed (job is force-stopped if exceeded):
 #SBATCH --mem=13680mb
 #! Submit a job array with index values between 0 and n e.g. 0-100
-#SBATCH --array=0-319
+#SBATCH --array=173,174,189,190,191,193,194,196,197,198,199,200,201,202,203,204,205,206,207,209
 
 #! This is the partition name. This will request for a node with 6GB RAM for each task
 #SBATCH -p cclake
