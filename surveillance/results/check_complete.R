@@ -1,5 +1,7 @@
+args = commandArgs(trailingOnly=TRUE)
 
-configSweepPath = "./2022_10_07_cc_NGA_year_0/config_sweep.json"
+# configSweepPath = "./2022_10_07_cc_NGA_year_1/config_sweep.json"
+configSweepPath = args[[1]]
 
 configSweepList = rjson::fromJSON(file=configSweepPath)
 
@@ -21,6 +23,7 @@ stepVec = signif(10**(c(configSweepList[["stepPowersVec"]])), 2)
 # Build configs
 i = 0
 
+brokenVec = c()
 for(numSurveys in numSurveysVec){
 
     for(detectionProb in detectionProbVec){
@@ -39,20 +42,8 @@ for(numSurveys in numSurveysVec){
 
                 if((!file.exists(traceDfPath)) | (!file.exists(coordsDfPath))){
                     print("rats")
+                    brokenVec = c(brokenVec, i)
                 }
-
-                # configList = list(
-                #     "inputsKey" = inputsKey,
-                #     "rewardRatio" = rewardRatio,
-                #     "niter" =  niter,
-
-                #     "numSurveys" = numSurveys,
-                #     "detectionProb" =  detectionProb,
-                #     "step" = step,
-                #     "initTemp" = initTemp
-                # )
-                
-
 
                 i = i + 1   
                 
@@ -64,3 +55,4 @@ for(numSurveys in numSurveysVec){
 
 }
 
+print(paste(brokenVec, collapse=","))
