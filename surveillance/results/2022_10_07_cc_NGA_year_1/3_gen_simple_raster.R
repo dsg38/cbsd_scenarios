@@ -29,10 +29,3 @@ for(iRow in seq_len(nrow(optimalDf))){
     )
     
 }
-
-
-
-
-
-
-

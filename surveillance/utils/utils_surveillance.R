@@ -242,7 +242,7 @@ genSimpleGridSf = function(
 plotSimpleGrid = function(
     simpleDfPath,
     targetCountryCode,
-    plotTitle,
+    optimalDfRow,
     plotPath
 ){  
 
@@ -262,6 +262,9 @@ plotSimpleGrid = function(
     # Extent poly
     extentDf = countryPolysDf |>
         dplyr::filter(GID_0 == targetCountryCode)
+
+    # Def title
+    plotTitle = paste0("numSurveys: ", optimalDfRow$numSurveys, " | detectionProb: ", optimalDfRow$detectionProb, " | objFuncVal: ", round(optimalDfRow$objective_func_val, 2))
 
     p = tm_shape(statePolysDf, bbox = extentDf) + 
         tm_borders(lwd=0.2) +

@@ -19,15 +19,13 @@ for(simpleDfPath in simpleDfPaths){
     plotPath = file.path("./plots/simple_grid/", paste0(gridName, ".png"))
 
     optimalDfRow = optimalDf[optimalDf$sweep_i == sweepIndex,]
-
-    plotTitle = paste0("numSurveys: ", optimalDfRow$numSurveys, " | detectionProb: ", optimalDfRow$detectionProb, " | objFuncVal: ", round(optimalDfRow$objective_func_val, 2))
     
     print(plotPath)
     
     utils_surveillance$plotSimpleGrid(
         simpleDfPath = simpleDfPath,
         targetCountryCode = targetCountryCode,
-        plotTitle = plotTitle,
+        optimalDfRow = optimalDfRow,
         plotPath = plotPath
     )
 
