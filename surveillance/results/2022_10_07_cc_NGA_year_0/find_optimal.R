@@ -22,6 +22,10 @@ detectionProbVec = configSweepList[["detectionProbVec"]]
 initTempVec = configSweepList[["initTempVec"]]
 stepVec = signif(10**(c(configSweepList[["stepPowersVec"]])), 2)
 
+# Gen plot dir
+plotDir = file.path(dirname(configSweepPath), "plots")
+dir.create(plotDir, showWarnings = FALSE, recursive = TRUE)
+
 # Build configs
 i = 0
 traceDfMaxList = list()
@@ -87,6 +91,9 @@ for(numSurveys in numSurveysVec){
 
 paramDf = dplyr::bind_rows(paramDfList)
 
-plot_ly() |> 
+p = plot_ly() |> 
     add_trace(data = paramDf,  x=~numSurveys, y=~detectionProb, z=~objective_func_val, type="mesh3d") |>
     add_trace(data = paramDf, x=~numSurveys, y=~detectionProb, z=~objective_func_val, mode = "markers", type = "scatter3d", marker = list(size = 5, color = "red", symbol = 104))
+
+outPath = file.path(plotDir, "sweep_surface.html")
+htmlwidgets::saveWidget(p, outPath, selfcontained = T)
