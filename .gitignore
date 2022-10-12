@@ -1,3 +1,5 @@
+surveillance/inputs/inf_rasters/*/movies
+surveillance/inputs/inf_rasters/*/plots
 surveillance/results/*/plots
 surveillance/junk
 surveillance/results/*/sweep
