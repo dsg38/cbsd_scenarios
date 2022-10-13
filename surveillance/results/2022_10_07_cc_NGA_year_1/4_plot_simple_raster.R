@@ -4,6 +4,8 @@ simpleDfDir = "./data/simple_grid"
 targetCountryCode = "NGA"
 optimalDfPath = "./data/optimalDf.csv"
 
+breaks = seq(0, 0.3, 0.05)
+
 # --------------------------------
 
 simpleDfPaths = list.files(simpleDfDir, full.names = TRUE)
@@ -26,6 +28,7 @@ for(simpleDfPath in simpleDfPaths){
         simpleDfPath = simpleDfPath,
         targetCountryCode = targetCountryCode,
         optimalDfRow = optimalDfRow,
+        breaks = breaks,
         plotPath = plotPath
     )
 

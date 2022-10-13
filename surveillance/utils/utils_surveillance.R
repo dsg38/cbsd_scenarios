@@ -243,6 +243,7 @@ plotSimpleGrid = function(
     simpleDfPath,
     targetCountryCode,
     optimalDfRow,
+    breaks,
     plotPath
 ){  
 
@@ -266,12 +267,21 @@ plotSimpleGrid = function(
     # Def title
     plotTitle = paste0("numSurveys: ", optimalDfRow$numSurveys, " | detectionProb: ", optimalDfRow$detectionProb, " | objFuncVal: ", round(optimalDfRow$objective_func_val, 2))
 
+    # Check that plotting range covers all vals
+    stopifnot(all(simpleDf$prop<=max(breaks)))
+
     p = tm_shape(statePolysDf, bbox = extentDf) + 
         tm_borders(lwd=0.2) +
         tm_shape(countryPolysDf, bbox = extentDf) + 
         tm_borders(lwd=0.8) +
         tm_shape(simpleDf) +
-        tm_polygons(col="prop", alpha=0.8, title="") +
+        tm_polygons(
+            col="prop", 
+            alpha=0.8, 
+            title="",
+            breaks=breaks,
+            style="cont"
+        ) +
         tm_layout(
             legend.position=c("left", "bottom"),
             legend.frame=TRUE,
