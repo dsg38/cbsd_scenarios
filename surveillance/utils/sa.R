@@ -1,6 +1,3 @@
-library(tictoc)
-args = commandArgs(trailingOnly=TRUE)
-
 simulated_annealing = function(
     objectiveFunc, 
     startCoordsDf, 
@@ -13,6 +10,8 @@ simulated_annealing = function(
     step, 
     initTemp
     ){
+
+    box::use(stats[...])
 
     # Initialize
     ## s stands for state
@@ -123,7 +122,7 @@ simulated_annealing = function(
     return(resultsList)
 }
 
-
+#' @export
 objectiveFunc = function(
     brickValsDf, 
     rewardRatio, 
@@ -164,10 +163,13 @@ objectiveFunc = function(
      
 }
 
-
+#' @export
 sa_wrapper = function(
     configPath
 ){
+
+    box::use(tictoc[...])
+    box::use(utils[...])
 
     resDir = file.path(dirname(configPath), "outputs")
     dir.create(resDir, showWarnings = FALSE, recursive = TRUE)
@@ -240,5 +242,3 @@ sa_wrapper = function(
     saveRDS(coordsDf, coordsDfPath)
 
 }
-
-sa_wrapper(args[[1]])

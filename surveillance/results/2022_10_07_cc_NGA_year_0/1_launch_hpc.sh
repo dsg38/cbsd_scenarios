@@ -57,4 +57,4 @@ unset __conda_setup
 conda activate /rds/project/cag1/rds-cag1-general/epidem-userspaces/dsg38/conda_env_default/dsg38
 
 # Run stuff
-Rscript "../../utils/sa.R" "./sweep/sweep_$SLURM_ARRAY_TASK_ID/config.json"
+Rscript "./1_launch_test.R" "./sweep/sweep_$SLURM_ARRAY_TASK_ID/config.json"
