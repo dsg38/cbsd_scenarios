@@ -1,66 +1,94 @@
 box::use(../utils/sa)
-# box::reload(sa)
+box::use(./utils_assessment)
+box::use(foreach[...])
+# box::reload(utils_assessment)
 
-simpleGridDfPath = "../results/2022_10_07_cc_NGA_year_0/data/simple_grid/simple_grid_sweep_80.gpkg"
-sumRasterPointsDfGridNamesPath = "./data/sumRasterPointsDfGridNames.csv"
+# Inputs - config = which optimal strategy to assess?
+sweepConfigPath = here::here("surveillance/results/2022_10_07_cc_NGA_year_0/sweep/sweep_307/config.json")
 
-inputsKey = "cc_NGA_year_0"
-rewardRatio = 1
-niter = 100
-numSurveys = 500
-detectionProb = 0.01
+detectionProb = 0.85
+
+niter = 20
+
+# TODO: Specify vector of detection vals to sweep over
+# detectionProbVec = c(0.01, 0.1, 0.25, 0.5, 0.85)
+
+# TODO: Get list of optimal sweep dirs from `optimalDf.csv` to specify vec of sweepConfigPath to loop over
+
+# TODO: Use `optimalDf.csv` to plot actual optimal vs. boxplots of these results for each detectionParam
+
+# -----------------------------------------
+
+# Read in config
+sweepConfigList = rjson::fromJSON(file=sweepConfigPath)
+
+# TODO: Do we want to fix numSurveys to same as the optimised val or sweep this too?
+rewardRatio = sweepConfigList[["rewardRatio"]]
+numSurveys = sweepConfigList[["numSurveys"]]
+
+# -----------------------------
+
+# Define paths
+sweepIndexStr = basename(dirname(sweepConfigPath))
+sweepIndexInt = as.integer(stringr::str_split(sweepIndexStr, "_")[[1]][[2]])
+
+scenarioDir = dirname(dirname(dirname(sweepConfigPath)))
+simpleGridDfPath = file.path(scenarioDir, "data", "simple_grid", paste0("simple_grid_", sweepIndexStr, ".gpkg"))
+
+optimalDfPath = file.path(scenarioDir, "data/optimalDf.csv")
+
+inputsDir = here::here("surveillance/inputs/inf_rasters_processed", sweepConfigList[["inputsKey"]], "outputs")
+infBrickPath = file.path(inputsDir, "brick.tif")
+sumRasterPointsDfPath = file.path(inputsDir, "sumRasterMaskPointsDf.csv")
 
 # Read in simple grid strategy
 simpleGridDf = sf::read_sf(simpleGridDfPath)
 
-inputsDir = here::here("surveillance/inputs/inf_rasters_processed", inputsKey, "outputs")
+# Read in optimal df
+optimalDf = read.csv(optimalDfPath)
+optimalDfRow = optimalDf[optimalDf$sweep_i==sweepIndexInt,]
 
 # Read in raster brick
-infBrickPath = file.path(inputsDir, "brick.tif")
 infBrick = raster::brick(infBrickPath)
 
-# Read in
-sumRasterPointsDfGridNames = read.csv(sumRasterPointsDfGridNamesPath)
+# Process sum inf raster centroid points to classify according to the POLY_ID of each simple grid cell
+sumRasterPointsDfGridNames = utils_assessment$classifyRasterPointsDf(
+    simpleGridDf = simpleGridDf,
+    sumRasterPointsDfPath = sumRasterPointsDfPath
+)
 
-# Sample from  sumRasterPointsDfGridNames proportional to the simpleGridDf prop column
-# So for each grid in simpleGridDf (where prop>0), 
-simpleGridDfAnyProp = simpleGridDf |>
-    dplyr::filter(prop>0)
+# ----------------------------------
+# NB: Loop starts here
+# ----------------------------------
 
-coordsDfList = list()
-for(iRow in seq_len(nrow(simpleGridDfAnyProp))){
+objValVec = c()
+for(i in 1:niter){
+
+    print(i)
+
+    coordsDf = utils_assessment$genWeightedRandomCoordsDf(
+        simpleGridDf=simpleGridDf,
+        sumRasterPointsDfGridNames=sumRasterPointsDfGridNames,
+        numSurveys=numSurveys
+    )
+
+    # x = sf::st_as_sf(coordsDf, coords=c("x", "y"), crs="WGS84")
+    # mapview::mapview(simpleGridDf, z="prop") + mapview::mapview(x)
+
+    cellIndexVec = raster::cellFromXY(object=infBrick[[1]], xy=coordsDf)
     
-    thisRow = simpleGridDfAnyProp[iRow,]
+    brickValsDf = as.data.frame(infBrick[cellIndexVec])
+
+    # Calc obj func
+    objVal = sa$objectiveFunc(
+        brickValsDf=brickValsDf, 
+        rewardRatio=rewardRatio,
+        detectionProb=detectionProb
+    )
     
-    thisPolyId = thisRow$POLY_ID
-    thisProp = thisRow$prop
-    
-    # Pull out subset of sumRasterPoints that fall in this mask
-    sumRasterPointsDfSubset = sumRasterPointsDfGridNames[sumRasterPointsDfGridNames$POLY_ID==thisPolyId,]
-    
-    # Sample the proportion of points
-    numSurveysSubset = round(numSurveys * thisProp)
-    
-    coordsDfSubset = dplyr::sample_n(sumRasterPointsDfSubset, numSurveysSubset, replace = TRUE) # TODO: SHOULD THIS BE replace=FALSE?
-    
-    coordsDfList[[thisPolyId]] = coordsDfSubset
-    
+    objValVec = c(objValVec, objVal)
+
 }
 
-coordsDf = dplyr::bind_rows(coordsDfList)
-
-x = sf::st_as_sf(coordsDf, coords=c("x", "y"), crs="WGS84")
-
-mapview::mapview(simpleGridDf, z="prop") + mapview::mapview(x)
-
-# 
-# cellIndexVec = raster::cellFromXY(object=infBrick[[1]], xy=coordsDf)
-# 
-# brickValsDf = as.data.frame(infBrick[cellIndexVec])
-# 
-# # Calc obj func
-# x = sa$objectiveFunc(
-#     brickValsDf=brickValsDf, 
-#     rewardRatio=rewardRatio,
-#     detectionProb=detectionProb
-# )
+hist(objValVec, xlim=c(0,1))
+abline(v=optimalDfRow$objective_func_val)
