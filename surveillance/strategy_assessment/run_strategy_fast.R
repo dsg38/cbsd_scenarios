@@ -2,52 +2,39 @@ box::use(../utils/sa)
 box::use(./utils_assessment)
 box::use(foreach[...])
 box::use(tictoc[...])
-# box::reload(utils_assessment)
 
-# Inputs - config = which optimal strategy to assess?
-sweepConfigPath = here::here("surveillance/results/2022_10_07_cc_NGA_year_0/sweep/sweep_307/config.json")
+# Read in optimal df
+scenarioName = "2022_10_07_cc_NGA_year_0"
+sweepIndexStr = "sweep_307"
+niter = 10
 
-detectionProb = 0.85
+# ----------------------------------------
+rewardRatio = 1
+# ----------------------------------------
 
-niter = 20
-
-# TODO: Specify vector of detection vals to sweep over
-# detectionProbVec = c(0.01, 0.1, 0.25, 0.5, 0.85)
-
-# TODO: Get list of optimal sweep dirs from `optimalDf.csv` to specify vec of sweepConfigPath to loop over
-
-# TODO: Use `optimalDf.csv` to plot actual optimal vs. boxplots of these results for each detectionParam
-
-# -----------------------------------------
-
-# Read in config
-sweepConfigList = rjson::fromJSON(file=sweepConfigPath)
-
-# TODO: Do we want to fix numSurveys to same as the optimised val or sweep this too?
-rewardRatio = sweepConfigList[["rewardRatio"]]
-numSurveys = sweepConfigList[["numSurveys"]]
-
-# -----------------------------
-
-# Define paths
-sweepIndexStr = basename(dirname(sweepConfigPath))
-sweepIndexInt = as.integer(stringr::str_split(sweepIndexStr, "_")[[1]][[2]])
-
-scenarioDir = dirname(dirname(dirname(sweepConfigPath)))
-simpleGridDfPath = file.path(scenarioDir, "data", "simple_grid", paste0("simple_grid_", sweepIndexStr, ".gpkg"))
+scenarioDir = here::here("surveillance/results", scenarioName)
 
 optimalDfPath = file.path(scenarioDir, "data/optimalDf.csv")
 
-inputsDir = here::here("surveillance/inputs/inf_rasters_processed", sweepConfigList[["inputsKey"]], "outputs")
+optimalDf = read.csv(optimalDfPath)
+
+# Pick which sweep is the scenario to be tested
+sweepIndexInt = as.integer(stringr::str_split(sweepIndexStr, "_")[[1]][[2]])
+optimalDfTargetRow = optimalDf[optimalDf$sweep_i == sweepIndexInt,]
+
+# Pull out other rows with matching numSurveys and sweep across the detection params
+numSurveys = optimalDfTargetRow$numSurveys
+optimalDfSubset = optimalDf[optimalDf$numSurveys == numSurveys,]
+
+# Define paths
+simpleGridDfPath = file.path(scenarioDir, "data/simple_grid", paste0("simple_grid_", sweepIndexStr, ".gpkg"))
+
+inputsDir = here::here("surveillance/inputs/inf_rasters_processed", optimalDfTargetRow$inputsKey, "outputs")
 infBrickPath = file.path(inputsDir, "brick.tif")
 sumRasterPointsDfPath = file.path(inputsDir, "sumRasterMaskPointsDf.csv")
 
 # Read in simple grid strategy
 simpleGridDf = sf::read_sf(simpleGridDfPath)
-
-# Read in optimal df
-optimalDf = read.csv(optimalDfPath)
-optimalDfRow = optimalDf[optimalDf$sweep_i==sweepIndexInt,]
 
 # Read in raster brick
 infBrick = raster::brick(infBrickPath)
@@ -61,7 +48,7 @@ sumRasterPointsDfGridNames = utils_assessment$classifyRasterPointsDf(
 # ----------------------------------
 # NB: Loop starts here
 # ----------------------------------
-doTrial = function(i){
+doTrial = function(i, detectionProb){
 
     coordsDf = utils_assessment$genWeightedRandomCoordsDf(
         simpleGridDf=simpleGridDf,
@@ -84,39 +71,28 @@ doTrial = function(i){
 
 }
 
-tic()
-x = unlist(pbmcapply::pbmclapply(seq(1, niter), doTrial))
-toc()
+resultsDfList = list()
+for(iRow in seq_len(nrow(optimalDfSubset))){
 
+    thisOptimalDfRow = optimalDfSubset[iRow,]
 
-# objValVec = c()
-# for(i in 1:niter){
+    x = unlist(pbmcapply::pbmclapply(seq(1, niter), doTrial, detectionProb=thisOptimalDfRow$detectionProb))
 
-#     print(i)
+    resultsDfSubset = data.frame(
+        sweep_i = thisOptimalDfRow$sweep_i,
+        vals = x
+    )
 
-#     coordsDf = utils_assessment$genWeightedRandomCoordsDf(
-#         simpleGridDf=simpleGridDf,
-#         sumRasterPointsDfGridNames=sumRasterPointsDfGridNames,
-#         numSurveys=numSurveys
-#     )
-
-#     # x = sf::st_as_sf(coordsDf, coords=c("x", "y"), crs="WGS84")
-#     # mapview::mapview(simpleGridDf, z="prop") + mapview::mapview(x)
-
-#     cellIndexVec = raster::cellFromXY(object=infBrick[[1]], xy=coordsDf)
+    resultsDfList[[as.character(iRow)]] = resultsDfSubset
     
-#     brickValsDf = as.data.frame(infBrick[cellIndexVec])
+    hist(x, xlim=c(0,1), main=thisOptimalDfRow$sweep_i)
+    abline(v=thisOptimalDfRow$objective_func_val)
 
-#     # Calc obj func
-#     objVal = sa$objectiveFunc(
-#         brickValsDf=brickValsDf, 
-#         rewardRatio=rewardRatio,
-#         detectionProb=detectionProb
-#     )
-    
-#     objValVec = c(objValVec, objVal)
 
-# }
+}
 
-# hist(objValVec, xlim=c(0,1))
-# abline(v=optimalDfRow$objective_func_val)
+resultsDf = dplyr::bind_rows(resultsDfList)
+
+
+# TODO: Plot as boxplots??
+

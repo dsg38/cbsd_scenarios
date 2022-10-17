@@ -1,6 +1,7 @@
 box::use(../utils/sa)
 box::use(./utils_assessment)
 box::use(foreach[...])
+box::use(tictoc[...])
 # box::reload(utils_assessment)
 
 # Inputs - config = which optimal strategy to assess?
@@ -56,29 +57,51 @@ sumRasterPointsDfGridNames = utils_assessment$classifyRasterPointsDf(
     simpleGridDf = simpleGridDf,
     sumRasterPointsDfPath = sumRasterPointsDfPath
 )
+# ----------------------------------
+# Get exact optimal points structure
+# ----------------------------------
+
+coordsDfPath = file.path(scenarioDir, "sweep", sweepIndexStr, "/outputs/coordsDf.rds")
+traceDfPath = file.path(scenarioDir, "sweep", sweepIndexStr, "/outputs/traceDf.rds")
+
+coordsDfFinal = readRDS(coordsDfPath) |>
+    dplyr::filter(iteration == max(iteration))
+
+traceDfFinal = readRDS(traceDfPath) |>
+    dplyr::filter(iteration == max(iteration))
 
 # ----------------------------------
 # NB: Loop starts here
 # ----------------------------------
+# doTrial = function(i){
+# 
+#     coordsDf = utils_assessment$genWeightedRandomCoordsDf(
+#         simpleGridDf=simpleGridDf,
+#         sumRasterPointsDfGridNames=sumRasterPointsDfGridNames,
+#         numSurveys=numSurveys
+#     )
+# 
+#     cellIndexVec = raster::cellFromXY(object=infBrick[[1]], xy=coordsDf)
+#     
+#     brickValsDf = as.data.frame(infBrick[cellIndexVec])
+# 
+#     # Calc obj func
+#     objVal = sa$objectiveFunc(
+#         brickValsDf=brickValsDf, 
+#         rewardRatio=rewardRatio,
+#         detectionProb=detectionProb
+#     )
+# 
+#     return(objVal)
+# 
+# }
 
-objValVec = c()
-for(i in 1:niter){
-
-    print(i)
-
-    coordsDf = utils_assessment$genWeightedRandomCoordsDf(
-        simpleGridDf=simpleGridDf,
-        sumRasterPointsDfGridNames=sumRasterPointsDfGridNames,
-        numSurveys=numSurveys
-    )
-
-    # x = sf::st_as_sf(coordsDf, coords=c("x", "y"), crs="WGS84")
-    # mapview::mapview(simpleGridDf, z="prop") + mapview::mapview(x)
-
-    cellIndexVec = raster::cellFromXY(object=infBrick[[1]], xy=coordsDf)
+testTrial = function(i){
+    
+    cellIndexVec = raster::cellFromXY(object=infBrick[[1]], xy=coordsDfFinal)
     
     brickValsDf = as.data.frame(infBrick[cellIndexVec])
-
+    
     # Calc obj func
     objVal = sa$objectiveFunc(
         brickValsDf=brickValsDf, 
@@ -86,9 +109,45 @@ for(i in 1:niter){
         detectionProb=detectionProb
     )
     
-    objValVec = c(objValVec, objVal)
-
+    return(objVal)
+    
 }
 
-hist(objValVec, xlim=c(0,1))
+tic()
+x = unlist(pbmcapply::pbmclapply(seq(1, niter), testTrial))
+toc()
+
+hist(x, breaks=seq(0,1,0.05))
 abline(v=optimalDfRow$objective_func_val)
+
+
+# objValVec = c()
+# for(i in 1:niter){
+
+#     print(i)
+
+#     coordsDf = utils_assessment$genWeightedRandomCoordsDf(
+#         simpleGridDf=simpleGridDf,
+#         sumRasterPointsDfGridNames=sumRasterPointsDfGridNames,
+#         numSurveys=numSurveys
+#     )
+
+#     # x = sf::st_as_sf(coordsDf, coords=c("x", "y"), crs="WGS84")
+#     # mapview::mapview(simpleGridDf, z="prop") + mapview::mapview(x)
+
+#     cellIndexVec = raster::cellFromXY(object=infBrick[[1]], xy=coordsDf)
+    
+#     brickValsDf = as.data.frame(infBrick[cellIndexVec])
+
+#     # Calc obj func
+#     objVal = sa$objectiveFunc(
+#         brickValsDf=brickValsDf, 
+#         rewardRatio=rewardRatio,
+#         detectionProb=detectionProb
+#     )
+    
+#     objValVec = c(objValVec, objVal)
+
+# }
+
+
