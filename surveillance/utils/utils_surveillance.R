@@ -238,6 +238,65 @@ genSimpleGridSf = function(
 
 }
 
+
+#' @export
+genSimpleClustersSf = function(
+    sweepDir,
+    outPath
+){
+
+    coordsDfPath = file.path(sweepDir, "coordsDf.rds")
+    traceDfPath = file.path(sweepDir, "traceDf.rds")
+
+    # ---------------------------------
+    # Pull out highest scoring iteration
+    traceDf = readRDS(traceDfPath)
+
+    traceDfMax = traceDf[traceDf$objective_func_val==max(traceDf$objective_func_val),]
+
+    if(nrow(traceDfMax) > 1){
+        traceDfMax = traceDfMax[traceDfMax$iteration == max(traceDfMax$iteration),]
+    }
+
+    coordsDf = readRDS(coordsDfPath) |>
+        dplyr::filter(iteration == traceDfMax$iteration) |>
+        sf::st_as_sf(coords=c("x", "y"), crs="WGS84")
+
+    coordsDf$coord_id = paste0("point_", seq(1, nrow(coordsDf)))
+
+    # --------------------------------------------------------------
+
+    # Buffer points by 5km
+    bufferDf = sf::st_buffer(coordsDf, dist=5000) |>
+        sf::st_union() |>
+        sf::st_sf() |>
+        dplyr::rename(geometry=1) |>
+        dplyr::filter(grepl("POLYGON", sf::st_geometry_type(geometry))) |>
+        sf::st_cast("POLYGON") |>
+        dplyr::mutate(POLY_ID = paste0("cluster_", dplyr::row_number()-1))
+
+    # Calculate the number of survey points (coordsDf) per raster cell
+    sf::sf_use_s2(FALSE)
+
+    coordGridDf = sf::st_intersection(x = bufferDf, y = coordsDf) |>
+        sf::st_drop_geometry() |>
+        dplyr::group_by(POLY_ID) |>
+        dplyr::count()
+
+    sf::sf_use_s2(TRUE)
+
+    gridStatsDf = dplyr::left_join(bufferDf, coordGridDf, by=c("POLY_ID"))
+
+    gridStatsDf$n[is.na(gridStatsDf$n)] = 0
+
+    # Calculate prop
+    gridStatsDf$prop = gridStatsDf$n / sum(gridStatsDf$n)
+
+    # Save
+    sf::write_sf(gridStatsDf, outPath)
+
+}
+
 #' @export
 plotSimpleGrid = function(
     simpleDfPath,
