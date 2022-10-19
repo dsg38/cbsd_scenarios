@@ -15,7 +15,9 @@ classifyRasterPointsDf = function(
 
     sumRasterPointsDfSpatial = sf::st_as_sf(sumRasterPointsDf, coords=c("x", "y"), crs="WGS84")
 
+    sf::sf_use_s2(FALSE)
     intersectionList = sf::st_intersects(sumRasterPointsDfSpatial, simpleGridDf)
+    sf::sf_use_s2(TRUE)
 
     intersectionVec = c()
     for(x in intersectionList){

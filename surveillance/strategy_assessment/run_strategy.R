@@ -35,6 +35,8 @@ doTrial = function(
 
 # Read in optimal df
 scenarioName = "2022_10_07_cc_NGA_year_0"
+# simpleType = "simple_grid"
+simpleType = "simple_clusters"
 niter = 10
 
 # ----------------------------------------
@@ -50,6 +52,8 @@ optimalDf$sweep_i = as.character(optimalDf$sweep_i)
 
 numSurveysVec = sort(unique(optimalDf$numSurveys))
 
+i = 0
+bigResultsDfList = list()
 for(numSurveys in numSurveysVec){
 
     # Pull out subset to be assessed
@@ -64,7 +68,7 @@ for(numSurveys in numSurveysVec){
         optimalDfTargetRow = optimalDf[optimalDf$sweep_i == sweepIndex,]
 
         # Define paths
-        simpleGridDfPath = file.path(scenarioDir, "data/simple_grid", paste0("simple_grid_", sweepIndexStr, ".gpkg"))
+        simpleGridDfPath = file.path(scenarioDir, "data", simpleType, paste0(sweepIndexStr, ".gpkg"))
 
         inputsDir = here::here("surveillance/inputs/inf_rasters_processed", optimalDfTargetRow$inputsKey, "outputs")
         infBrickPath = file.path(inputsDir, "brick.tif")
@@ -105,7 +109,10 @@ for(numSurveys in numSurveysVec){
 
             resultsDfSubset = data.frame(
                 sweep_i = thisOptimalDfRow$sweep_i,
-                vals = x
+                vals = x,
+                numSurveys = numSurveys,
+                sweepIndex = sweepIndex,
+                simpleType = simpleType
             )
 
             resultsDfList[[as.character(iRow)]] = resultsDfSubset
@@ -114,15 +121,16 @@ for(numSurveys in numSurveysVec){
             diffDfRow = data.frame(
                 sweep_i = thisOptimalDfRow$sweep_i,
                 optimalObjVal = thisOptimalDfRow$objective_func_val,
-                sampleMean = median(resultsDfSubset$vals)
+                sampleMedian = median(resultsDfSubset$vals)
             ) |>
-                dplyr::mutate(diff = optimalObjVal - sampleMean)
+                dplyr::mutate(diff = optimalObjVal - sampleMedian)
             
             diffDfList[[as.character(iRow)]] = diffDfRow
 
         }
 
         resultsDf = dplyr::bind_rows(resultsDfList)
+
         diffDf = dplyr::bind_rows(diffDfList)
 
         optimalDfNonSelf = optimalDfSubset[optimalDfSubset$sweep_i != sweepIndex,]
@@ -134,13 +142,12 @@ for(numSurveys in numSurveysVec){
             geom_boxplot() +
             geom_point(data=optimalDfNonSelf, aes(x=sweep_i, y=objective_func_val), size=5, pch=4, stroke=2, col="green") +
             geom_point(data=optimalDfTargetRow, aes(x=sweep_i, y=objective_func_val), size=5, pch=4, stroke=2, col="red") +
-            xlab("sweep_i")
-
-        # p
+            xlab("sweep_i") +
+            ylim(0, max(optimalDf$objective_func_val))
 
         # Save 
-        plotPath = here::here("surveillance/strategy_assessment/results", scenarioName, paste0("numSurveys_", numSurveys), "plots", paste0("plot_", sweepIndexStr, ".png"))
-        diffDfPath = here::here("surveillance/strategy_assessment/results", scenarioName, paste0("numSurveys_", numSurveys), "data", paste0("diff_", sweepIndexStr, ".csv"))
+        plotPath = here::here("surveillance/strategy_assessment/results", scenarioName, simpleType, paste0("numSurveys_", numSurveys), "plots", paste0("plot_", sweepIndexStr, ".png"))
+        diffDfPath = here::here("surveillance/strategy_assessment/results", scenarioName, simpleType, paste0("numSurveys_", numSurveys), "data", paste0("diff_", sweepIndexStr, ".csv"))
 
         dir.create(dirname(plotPath), recursive = TRUE, showWarnings = FALSE)
         dir.create(dirname(diffDfPath), recursive = TRUE, showWarnings = FALSE)
@@ -148,6 +155,18 @@ for(numSurveys in numSurveysVec){
         ggsave(filename=plotPath, plot=p)
         write.csv(diffDf, diffDfPath, row.names=FALSE)
 
+
+        # Store all output data 
+        bigResultsDfList[[as.character(i)]] = resultsDf
+
+        i = i + 1
+
     }
 
 }
+
+
+bigResultsDf = dplyr::bind_rows(bigResultsDfList)
+bigResultsDfPath = here::here("surveillance/strategy_assessment/results", scenarioName, simpleType, "bigResultsDf.rds")
+
+saveRDS(bigResultsDf, bigResultsDfPath)
