@@ -300,9 +300,10 @@ genSimpleClustersSf = function(
 #' @export
 plotSimpleGrid = function(
     simpleDfPath,
-    targetCountryCode,
+    extentBbox,
     optimalDfRow,
     breaks,
+    legendPos,
     plotPath
 ){  
 
@@ -319,19 +320,15 @@ plotSimpleGrid = function(
 
     countryPolysDf = sf::read_sf("../../../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg")
 
-    # Extent poly
-    extentDf = countryPolysDf |>
-        dplyr::filter(GID_0 == targetCountryCode)
-
     # Def title
     plotTitle = paste0("numSurveys: ", optimalDfRow$numSurveys, " | detectionProb: ", optimalDfRow$detectionProb, " | objFuncVal: ", round(optimalDfRow$objective_func_val, 2))
 
     # Check that plotting range covers all vals
     stopifnot(all(simpleDf$prop<=max(breaks)))
 
-    p = tm_shape(statePolysDf, bbox = extentDf) + 
+    p = tm_shape(statePolysDf, bbox = extentBbox) + 
         tm_borders(lwd=0.2) +
-        tm_shape(countryPolysDf, bbox = extentDf) + 
+        tm_shape(countryPolysDf, bbox = extentBbox) + 
         tm_borders(lwd=0.8) +
         tm_shape(simpleDf) +
         tm_polygons(
@@ -342,7 +339,7 @@ plotSimpleGrid = function(
             style="cont"
         ) +
         tm_layout(
-            legend.position=c("left", "bottom"),
+            legend.position=legendPos,
             legend.frame=TRUE,
             legend.bg.color="grey",
             legend.bg.alpha=0.8,
@@ -360,7 +357,8 @@ plotSimpleGrid = function(
 genMontage = function(
     configSweepPath,
     optimalDfPath,
-    plotDir
+    individualPlotsDir,
+    outPlotPath
 ){
 
     box::use(utils[...])
@@ -380,7 +378,7 @@ genMontage = function(
             x = optimalDf[optimalDf$numSurveys==numSurveys & optimalDf$detectionProb==detectionProb,]
             stopifnot(nrow(x)==1)
             
-            plotPath = file.path(plotDir, "simple_grid/", paste0("simple_grid_sweep_", x$sweep_i, ".png"))
+            plotPath = file.path(individualPlotsDir, paste0("sweep_", x$sweep_i, ".png"))
             
             stopifnot(file.exists(plotPath))
             
@@ -390,6 +388,8 @@ genMontage = function(
 
     }
 
-    system(paste0("magick montage ", paste(plotPathVec, collapse=" "), " -geometry +", length(numSurveysVec), "+", length(detectionProbVec), " ", file.path(plotDir, "simple_grid_montage.png")))
+    dir.create(dirname(outPlotPath), showWarnings = FALSE, recursive = TRUE)
+
+    system(paste0("magick montage ", paste(plotPathVec, collapse=" "), " -geometry +", length(numSurveysVec), "+", length(detectionProbVec), " ", outPlotPath))
 
 }

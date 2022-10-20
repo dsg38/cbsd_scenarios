@@ -2,12 +2,16 @@ box::use(../../utils/utils_surveillance)
 
 configSweepPath = "./config_sweep.json"
 optimalDfPath = "./data/optimalDf.csv"
-plotDir = "./plots/"
+# individualPlotsDir = "./plots/simple_grid"
+individualPlotsDir = "./plots/simple_clusters"
+
+outPlotPath = file.path("./plots/simple_montage", paste0("montage_", basename(individualPlotsDir), ".png"))
 
 # ----------------------------
 
 utils_surveillance$genMontage(
     configSweepPath = configSweepPath,
     optimalDfPath = optimalDfPath,
-    plotDir = plotDir
+    individualPlotsDir = individualPlotsDir,
+    outPlotPath = outPlotPath
 )
