@@ -1,11 +1,18 @@
 box::use(tmap[...])
 box::use(utils_epidem/utils_epidem)
 
-diffRasterPaths = list.files("./output/diff/rasters", "diff_", full.names = TRUE)
+constraintKey = "uga-RWA-BDI-drc_first_east-Pweto-zmb_regions_union-drc_north_central_field"
+
+inDir = file.path("./output/diff/", constraintKey, "rasters")
+
+# -----------------------------------------
+
+diffRasterPaths = list.files(inDir, "diff_", full.names = TRUE)
 
 extent = utils_epidem$get_extent_country_code_vec(c("COD", "SEN", "AGO", "UGA"))
 
-plotDir = "./output/diff/plots/"
+plotDir = file.path(dirname(inDir), "plots")
+
 dir.create(plotDir, recursive = TRUE, showWarnings = FALSE)
 
 for(diffRasterPath in diffRasterPaths){
@@ -13,6 +20,9 @@ for(diffRasterPath in diffRasterPaths){
     print(diffRasterPath)
     
     diffRaster = raster::raster(diffRasterPath)
+
+    print("MAX")
+    print(raster::cellStats(diffRaster, stat='max', asSample=FALSE))
 
     plotPath = file.path(plotDir, gsub(".tif", ".png", basename(diffRasterPath)))
 

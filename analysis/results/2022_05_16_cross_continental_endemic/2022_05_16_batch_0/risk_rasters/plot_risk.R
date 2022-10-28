@@ -1,8 +1,11 @@
 box::use(tmap[...])
 box::use(utils_epidem/utils_epidem)
 
-riskDir = "./output/risk/all/rasters"
-plotDir = "./output/risk/all/plots"
+# riskDir = "./output/risk/all/rasters"
+# plotDir = "./output/risk/all/plots"
+
+riskDir = "./output/risk/uga-RWA-BDI-drc_first_east-Pweto-zmb_regions_union-drc_north_central_field/rasters"
+plotDir = "./output/risk/uga-RWA-BDI-drc_first_east-Pweto-zmb_regions_union-drc_north_central_field/plots/"
 
 extent = utils_epidem$get_extent_country_code_vec(c("COD", "SEN", "AGO", "UGA"))
 
@@ -20,7 +23,9 @@ for(riskRasterPath in riskRasterPaths){
 
     riskRaster = raster::raster(riskRasterPath)
     riskRaster[riskRaster==0] = NA
-    # riskRaster[riskRaster < 0.01] = NA
+
+    print("MAX")
+    print(raster::cellStats(riskRaster, stat='max', asSample=FALSE))
 
     countryPolysDf = sf::read_sf("../../../../../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg")
     countryPolysDfSimple = sf::st_simplify(countryPolysDf, dTolerance = 1000)

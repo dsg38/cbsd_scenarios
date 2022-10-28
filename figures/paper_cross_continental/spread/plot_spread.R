@@ -1,15 +1,17 @@
 box::use(tmap[...])
 
+job = "job362"
+
 # Read data / set up crs
 hostRaster = raster::raster("../../../inputs/inputs_scenarios/2022_03_15_cross_continental_endemic/inputs/L_0_HOSTDENSITY.txt")
 
 infRasterVec = list.files(
-    "../../../simulations/sim_output//2022_05_16_cross_continental_endemic/2022_05_16_batch_0/job0/output/runfolder0/", 
+    file.path("../../../simulations/sim_output//2022_05_16_cross_continental_endemic/2022_05_16_batch_0/", job, "/output/runfolder0/"), 
     pattern="O_0_L_0_INFECTIOUS_",
     full.names = TRUE
 )
 
-plotDir = "./plots/"
+plotDir = file.path("./plots/", job)
 
 dir.create(plotDir, recursive = TRUE, showWarnings = FALSE)
 

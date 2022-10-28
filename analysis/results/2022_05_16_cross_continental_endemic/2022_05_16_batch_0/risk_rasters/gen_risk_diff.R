@@ -1,8 +1,12 @@
 
 riskYearVec = c(2023, 2030, 2040, 2050)
 
-outDir = "./output/diff/rasters/"
-outDirDiag = "./output/diff/rasters/diagnostics/"
+constraintKey = "uga-RWA-BDI-drc_first_east-Pweto-zmb_regions_union-drc_north_central_field"
+
+inDir = file.path("./output/risk/", constraintKey, "rasters")
+
+outDir = file.path("./output/diff/", constraintKey ,"rasters")
+outDirDiag = file.path("./output/diff/", constraintKey ,"rasters", "diagnostics")
 
 dir.create(outDir, recursive = TRUE, showWarnings = FALSE)
 dir.create(outDirDiag, recursive = TRUE, showWarnings = FALSE)
@@ -29,8 +33,8 @@ for(i in seq_len(length(riskYearVec) - 1)){
 
     # ------------------------------
 
-    riskRasterPathPrev = file.path("./output/risk/", paste0("risk_", rasterYearPrev,".tif"))
-    riskRasterPathNow = file.path("./output/risk/", paste0("risk_", rasterYearNow,".tif"))
+    riskRasterPathPrev = file.path(inDir, paste0("risk_", rasterYearPrev,".tif"))
+    riskRasterPathNow = file.path(inDir, paste0("risk_", rasterYearNow,".tif"))
 
     # --------------------------------
 
