@@ -4,9 +4,11 @@ topDir = "./results/2022_10_07_cc_NGA_year_0"
 
 optimalDfPath = "../results/2022_10_07_cc_NGA_year_0/data/optimalDf.csv"
 
-optimalDfRaw = read.csv(optimalDfPath)
+realDfPath = "./real_world/outputs/cc_NGA_year_0/realWorldSurveyPerformance.csv"
 
-optimalDfRaw$sweep_i = as.character(optimalDfRaw$sweep_i)
+# ------------------------------------------
+
+optimalDfRaw = read.csv(optimalDfPath)
 
 optimalDfA = optimalDfRaw |>
     dplyr::mutate(simpleType="simple_grid")
@@ -28,7 +30,15 @@ for(thisPath in bigResultsDfPathList){
 stackedDf = dplyr::bind_rows(stackedDfList)
 
 # -------------------------------------------
+# Pull out 1000 NGA real survey
+realDf = read.csv(realDfPath) |>
+    dplyr::filter(targetYear == 2020) |>
+    dplyr::mutate(simpleType="simple_grid")
 
+stackedDf$detectionProb = factor(stackedDf$detectionProb)
+optimalDf$detectionProb = factor(optimalDf$detectionProb)
+realDf$detectionProb = factor(realDf$detectionProb)
+# ---------------------------------
 
 for(numSurveys in sort(unique(stackedDf$numSurveys))){
     
@@ -47,15 +57,25 @@ for(numSurveys in sort(unique(stackedDf$numSurveys))){
         optimalDfTargetRow = optimalDf[optimalDf$sweep_i == sweepIndex,]
         optimalDfNonSelf = optimalDfSubset[optimalDfSubset$sweep_i != sweepIndex,]
         
-        plottingPriority = reorder(stackedDfSubset[,"sweep_i"], stackedDfSubset[,"vals"], FUN=quantile, probs=0.5)
-
-        p = ggplot(stackedDfSubset, mapping = aes(x=plottingPriority, y=vals, fill=simpleType)) +
+        p = ggplot(stackedDfSubset, mapping = aes(x=detectionProb, y=vals, fill=simpleType)) +
             geom_boxplot(lwd=0.1) +
-            geom_point(data=optimalDfNonSelf, aes(x=sweep_i, y=objective_func_val), size=5, pch=4, stroke=2, col="green", show.legend = FALSE) +
-            geom_point(data=optimalDfTargetRow, aes(x=sweep_i, y=objective_func_val), size=5, pch=4, stroke=2, col="red", show.legend = FALSE) +
-            xlab("sweep_i") +
+            geom_point(data=optimalDfNonSelf, aes(x=detectionProb, y=objective_func_val), size=5, pch=18, col="green", show.legend = FALSE) +
+            geom_point(data=optimalDfTargetRow, aes(x=detectionProb, y=objective_func_val), size=5, pch=18, col="red", show.legend = FALSE) +
+            xlab("Field level detection sensitivity") +
+            ylab("Objective function value") +
+            guides(fill=guide_legend("Strategy")) +
             ylim(0, max(optimalDf$objective_func_val))
         
+        # Add real data baseline to 1000 numSurvey plot
+        if(numSurveys==1000){
+            
+            print("Adding baseline")
+            p = p + 
+                geom_point(data=realDf, aes(x=detectionProb, y=objVal), size=3, pch=18, col="blue", show.legend = FALSE)
+
+        }
+
+
         outPath = file.path(topDir, "plots_joint", paste0("plot_numSurveys_", numSurveys, "_sweep_", sweepIndex, ".png"))
         dir.create(dirname(outPath), showWarnings = FALSE, recursive = TRUE)
         

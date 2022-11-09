@@ -35,9 +35,9 @@ doTrial = function(
 
 # Read in optimal df
 scenarioName = "2022_10_07_cc_NGA_year_0"
-simpleType = "simple_grid"
-# simpleType = "simple_clusters"
-niter = 100
+# simpleType = "simple_grid"
+simpleType = "simple_clusters"
+niter = 10
 
 # ----------------------------------------
 rewardRatio = 1
@@ -109,10 +109,13 @@ for(numSurveys in numSurveysVec){
                 detectionProb=thisOptimalDfRow$detectionProb
             ))
 
+            # browser()
+
             resultsDfSubset = data.frame(
                 sweep_i = thisOptimalDfRow$sweep_i,
                 vals = x,
                 numSurveys = numSurveys,
+                detectionProb = thisOptimalDfRow$detectionProb,
                 sweepIndex = sweepIndex,
                 simpleType = simpleType
             )
