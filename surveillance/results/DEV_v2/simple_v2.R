@@ -36,7 +36,8 @@ stopifnot(file.exists(sumRasterPointsDfPath))
 # Load global variales
 infBrick = raster::brick(infBrickPath)
 sumRasterPointsDf = read.csv(sumRasterPointsDfPath) |>
-    sf::st_as_sf(coords=c("x", "y"), crs="WGS84", remove=FALSE)
+    sf::st_as_sf(coords=c("x", "y"), crs="WGS84", remove=FALSE) |>
+    dplyr::mutate(point_i = (dplyr::row_number() - 1))
 
 # ----------------------------------
 # Setup
@@ -48,31 +49,28 @@ rasterExtent = raster::extent(infBrick)
 # Randomly sample from the full list of possible centroids
 startCoordsDf = dplyr::sample_n(sumRasterPointsDf, numSurveys, replace = TRUE)
 
+
+# Read in the mega pre-buffered points df
+preBufferedDf = sf::read_sf("./data/preBufferedDf.gpkg")
+
 # ----------------------------------
 # Generate the ‘simple polygon’ weighted thing off this
 genSimpleClustersSf = function(
     coordsDf
 ){
 
-    # # print("AAAAA")
-    # # tic()
-    # bufferDf = sf::st_buffer(coordsDf, dist=5000)
-    # # toc()
+    # Read in from pre-buffered points df (fast)
+    x = preBufferedDf[match(coordsDf$point_i, preBufferedDf$point_i),]
 
-    # TODO: Speed up buffer step
-
-
-    # Buffer points by 5km and merge    
-    x = sf::st_buffer(coordsDf, dist=5000)
+    # Merge (faster than sf::st_union)
     y = sf::st_as_sf(rgeos::gBuffer(as(x, "Spatial"), byid=F, width=0))
     
-    newDf = y |>
+    bufferDf = y |>
         sf::st_sf() |>
         dplyr::rename(geometry=1) |>
         dplyr::filter(grepl("POLYGON", sf::st_geometry_type(geometry))) |>
         sf::st_cast("POLYGON") |>
         dplyr::mutate(POLY_ID = paste0("cluster_", dplyr::row_number()-1))
-
 
     # Calculate the number of survey points (coordsDf) per raster cell
     sf::sf_use_s2(FALSE)
