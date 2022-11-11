@@ -54,14 +54,25 @@ genSimpleClustersSf = function(
     coordsDf
 ){
 
-    # Buffer points by 5km
-    bufferDf = sf::st_buffer(coordsDf, dist=5000) |>
-        sf::st_union() |>
+    # # print("AAAAA")
+    # # tic()
+    # bufferDf = sf::st_buffer(coordsDf, dist=5000)
+    # # toc()
+
+    # TODO: Speed up buffer step
+
+
+    # Buffer points by 5km and merge    
+    x = sf::st_buffer(coordsDf, dist=5000)
+    y = sf::st_as_sf(rgeos::gBuffer(as(x, "Spatial"), byid=F, width=0))
+    
+    newDf = y |>
         sf::st_sf() |>
         dplyr::rename(geometry=1) |>
         dplyr::filter(grepl("POLYGON", sf::st_geometry_type(geometry))) |>
         sf::st_cast("POLYGON") |>
         dplyr::mutate(POLY_ID = paste0("cluster_", dplyr::row_number()-1))
+
 
     # Calculate the number of survey points (coordsDf) per raster cell
     sf::sf_use_s2(FALSE)
