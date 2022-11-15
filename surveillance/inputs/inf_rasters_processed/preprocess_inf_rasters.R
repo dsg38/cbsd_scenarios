@@ -75,7 +75,8 @@ for(i in 2:raster::nlayers(infRasterBrickMask)){
 sumRasterMask = sumRaster * maskRaster
 sumRasterMask[sumRasterMask==0] = NA
 
-sumRasterMaskPointsDf = as.data.frame(raster::rasterToPoints(sumRasterMask))
+sumRasterMaskPointsDf = as.data.frame(raster::rasterToPoints(sumRasterMask)) |>
+    dplyr::mutate(point_i = (dplyr::row_number() - 1))
 
 write.csv(sumRasterMaskPointsDf, file.path(outDir, "sumRasterMaskPointsDf.csv"), row.names=FALSE)
 
@@ -83,3 +84,26 @@ write.csv(sumRasterMaskPointsDf, file.path(outDir, "sumRasterMaskPointsDf.csv"),
 raster::writeRaster(sumRasterMask, file.path(outDir, "sumRasterMask.tif"), overwrite=TRUE)
 
 toc()
+
+
+# --------------------------------
+# Generate the pre buffered points file
+
+print("Generating pre buffered df")
+
+sumRasterPointsDfSpatial = sumRasterMaskPointsDf |>
+    sf::st_as_sf(coords=c("x", "y"), crs="WGS84", remove=FALSE) 
+
+# Buffer points by 5km
+bufferRowList = list()
+for(i in seq_len(nrow(sumRasterPointsDfSpatial))){
+        
+    print(i)
+    
+    # Buffer point
+    bufferRowList[[as.character(i)]] = sf::st_buffer(sumRasterPointsDfSpatial[i,], dist=5000)
+}
+
+preBufferedDf = dplyr::bind_rows(bufferRowList)
+
+sf::write_sf(preBufferedDf, file.path(outDir, "sumRasterMaskPointsDf_buffered.gpkg"))

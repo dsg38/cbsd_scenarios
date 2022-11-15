@@ -17,7 +17,7 @@ sumRasterPointsDfPath = file.path(inputsDir, "sumRasterMaskPointsDf.csv")
 # Process sum inf raster centroid points to classify according to the POLY_ID of each simple grid cell
 sumRasterPointsDfGridNames = utils_assessment$classifyRasterPointsDf(
     simpleGridDf = polysDf,
-    sumRasterPointsDfPath = sumRasterPointsDfPath
+    sumRasterPointsDf = read.csv(sumRasterPointsDfPath)
 )
 
 

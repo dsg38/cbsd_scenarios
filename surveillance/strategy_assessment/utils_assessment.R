@@ -2,12 +2,10 @@
 #' @export
 classifyRasterPointsDf = function(
     simpleGridDf,
-    sumRasterPointsDfPath
+    sumRasterPointsDf
 ){
 
     box::use(utils[...])
-
-    sumRasterPointsDf = read.csv(sumRasterPointsDfPath)
 
     # ---------------------------
     # Classify the sumRasterPointsDf according to the index of the simple grid df?

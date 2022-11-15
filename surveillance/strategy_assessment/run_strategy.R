@@ -85,7 +85,7 @@ for(numSurveys in numSurveysVec){
         # Process sum inf raster centroid points to classify according to the POLY_ID of each simple grid cell
         sumRasterPointsDfGridNames = utils_assessment$classifyRasterPointsDf(
             simpleGridDf = simpleGridDf,
-            sumRasterPointsDfPath = sumRasterPointsDfPath
+            sumRasterPointsDf = read.csv(sumRasterPointsDfPath)
         )
 
         # ----------------------------------
