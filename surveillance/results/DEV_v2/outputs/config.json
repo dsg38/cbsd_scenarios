@@ -2,7 +2,7 @@
   "inputsKey": "cc_NGA_year_0",
   "rewardRatio": 1,
   "niter": 10,
-  "niterReps": 2,
+  "niterReps": 5,
   "numSurveys": 1000,
   "detectionProb": 0.85,
   "step": 0.0001,

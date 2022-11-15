@@ -44,15 +44,16 @@ genSimpleClustersSf = function(
 
 
 doTrial = function(
-        i, 
-        simpleGridDf,
-        sumRasterPointsDfGridNames,
-        numSurveys,
-        infBrick,
-        rewardRatio,
-        detectionProb
+    i, 
+    simpleGridDf,
+    sumRasterPointsDfGridNames,
+    numSurveys,
+    infBrick,
+    rewardRatio,
+    detectionProb
 ){
     box::use(../strategy_assessment/utils_assessment)
+    box::use(../utils/sa)
     
     coordsDf = utils_assessment$genWeightedRandomCoordsDf(
         simpleGridDf=simpleGridDf,
@@ -60,7 +61,11 @@ doTrial = function(
         numSurveys=numSurveys
     )
     
-    cellIndexVec = raster::cellFromXY(object=infBrick[[1]], xy=coordsDf)
+    coordsDfSparse = coordsDf |>
+        sf::st_drop_geometry() |>
+        dplyr::select(x, y)
+    
+    cellIndexVec = raster::cellFromXY(object=infBrick[[1]], xy=coordsDfSparse)
     
     brickValsDf = as.data.frame(infBrick[cellIndexVec])
     
@@ -79,7 +84,11 @@ newObjectiveFunc = function(
     startCoordsDf,
     preBufferedDf,
     niterReps,
-    sumRasterPointsDf
+    sumRasterPointsDf,
+    numSurveys,
+    infBrick,
+    rewardRatio,
+    detectionProb
 ){
 
     box::use(../strategy_assessment/utils_assessment)
@@ -107,7 +116,6 @@ newObjectiveFunc = function(
         detectionProb=detectionProb
     ))
 
-
     objectiveVal = mean(objectiveValVec)
 
     return(objectiveVal)
@@ -126,7 +134,8 @@ simulated_annealing = function(
     step, 
     initTemp,
     preBufferedDf,
-    niterReps
+    niterReps,
+    numSurveys
     ){
 
     box::use(stats[...])
@@ -144,7 +153,11 @@ simulated_annealing = function(
         startCoordsDf,
         preBufferedDf,
         niterReps,
-        sumRasterPointsDf
+        sumRasterPointsDf,
+        numSurveys,
+        infBrick,
+        rewardRatio,
+        detectionProb
     )
 
     numPoints = nrow(startCoordsDf)
@@ -180,7 +193,11 @@ simulated_annealing = function(
             s_n,
             preBufferedDf,
             niterReps,
-            sumRasterPointsDf
+            sumRasterPointsDf,
+            numSurveys,
+            infBrick,
+            rewardRatio,
+            detectionProb
         )
         
         # update current state
@@ -305,7 +322,8 @@ sa_wrapper = function(
         step=step,
         initTemp=initTemp,
         preBufferedDf=preBufferedDf,
-        niterReps=niterReps
+        niterReps=niterReps,
+        numSurveys=numSurveys
     )
 
     toc()
