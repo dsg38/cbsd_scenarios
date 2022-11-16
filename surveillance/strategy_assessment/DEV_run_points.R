@@ -78,5 +78,5 @@ resDf = dplyr::bind_rows(resDfList)
 # x = resDf |>
 #     dplyr::filter(numSurveysTrained==1000)
 
-dir.create("./points", showWarnings = FALSE, recursive=TRUE)
-write.csv(resDf, "./points/resDf.csv", row.names=FALSE)
+dir.create("./data", showWarnings = FALSE, recursive=TRUE)
+write.csv(resDf, "./data/pointsDf.csv", row.names=FALSE)
