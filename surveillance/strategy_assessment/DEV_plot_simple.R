@@ -6,10 +6,10 @@ simpleType = "simple_grid"
 optimalDf = read.csv("../results/2022_10_07_cc_NGA_year_0/data/optimalDf.csv") |>
     dplyr::mutate(sweep_i = as.character(sweep_i)) |>
     dplyr::select(sweep_i, detectionProb, numSurveys) |>
-    dplyr::rename(detectionProbTrained = detectionProb, numSurveysTest=numSurveys, sweepIndex = sweep_i)
+    dplyr::rename(detectionProbTrained = detectionProb, numSurveysTrained=numSurveys, sweepIndex = sweep_i)
 
 clusterDf = readRDS(file.path("./results/2022_10_07_cc_NGA_year_0/", simpleType,"/bigResultsDf.rds")) |>
-    dplyr::rename(detectionProbTest = detectionProb, numSurveysTrained = numSurveys)
+    dplyr::rename(detectionProbTest = detectionProb, numSurveysTest = numSurveys)
 
 mergedDf = dplyr::left_join(clusterDf, optimalDf, by=c("sweepIndex"))
 

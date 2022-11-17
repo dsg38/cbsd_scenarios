@@ -84,7 +84,7 @@ genSweepOptimalDf = function(configSweepPath){
         print(traceDfPath)
 
         traceDf = readRDS(traceDfPath) |>
-            dplyr::mutate(sweep_i = basename(dirname(dirname(traceDfPath))))
+            dplyr::mutate(sweep_i = as.numeric(stringr::str_split(basename(dirname(dirname(traceDfPath))), "_")[[1]][[2]]))
         
         # Extract max
         traceDfMax = traceDf[traceDf$objective_func_val == max(traceDf$objective_func_val),]
