@@ -180,8 +180,6 @@ genSimpleGridSf = function(
     outPath
 ){
 
-    gridRes = 20
-
     coordsDfPath = file.path(sweepDir, "coordsDf.rds")
     traceDfPath = file.path(sweepDir, "traceDf.rds")
 
@@ -208,7 +206,7 @@ genSimpleGridSf = function(
     coordsDf$coord_id = paste0("point_", seq(1, nrow(coordsDf)))
 
     # Rasterise poly extent at given resolution
-    gridDf = sf::st_make_grid(x=polyExtent, n=gridRes) |> 
+    gridDf = sf::st_make_grid(x=polyExtent, cellsize=0.5) |> 
         sf::st_sf()
 
     colnames(gridDf) = "geom"

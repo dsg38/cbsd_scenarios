@@ -35,8 +35,8 @@ doTrial = function(
 
 # Read in optimal df
 scenarioName = "2022_10_07_cc_NGA_year_0"
-# simpleType = "simple_grid"
-simpleType = "simple_clusters"
+simpleType = "simple_grid"
+# simpleType = "simple_clusters"
 niter = 10
 
 # ----------------------------------------
