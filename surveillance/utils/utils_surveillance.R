@@ -20,9 +20,12 @@ genConfigs = function(
     initTempVec = configSweepList[["initTempVec"]]
     stepVec = signif(10**(c(configSweepList[["stepPowersVec"]])), 2)
 
-    # Build configs
-    i = 0
+    startIndex = 0
+    if("startIndex" %in% names(configSweepList)){
+        startIndex = configSweepList[["startIndex"]]
+    }
 
+    # Build configs
     for(numSurveys in numSurveysVec){
 
         for(detectionProb in detectionProbVec){
@@ -31,9 +34,9 @@ genConfigs = function(
                 
                 for(initTemp in initTempVec){
                     
-                    print(i)
+                    print(startIndex)
                     
-                    thisDir = file.path(topDir, paste0("sweep_", i))
+                    thisDir = file.path(topDir, paste0("sweep_", startIndex))
                     configPath = file.path(thisDir, "config.json")
                     
                     dir.create(thisDir, recursive = TRUE, showWarnings = FALSE)
@@ -54,7 +57,7 @@ genConfigs = function(
                     
                     readr::write_lines(configStr, file=configPath)
                     
-                    i = i + 1   
+                    startIndex = startIndex + 1   
                     
                 }
             
