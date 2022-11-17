@@ -72,84 +72,66 @@ genConfigs = function(
 #' @export
 genSweepOptimalDf = function(configSweepPath){
 
-    configSweepList = rjson::fromJSON(file=configSweepPath)
-
     # Define output dir
     topDir = file.path(dirname(configSweepPath), "sweep")
 
-    # Define fixed params
-    inputsKey = configSweepList[["inputsKey"]]
-    rewardRatio = configSweepList[["rewardRatio"]]
-    niter = configSweepList[["niter"]]
+    # Loop over all traceDfs and extract the one row representing the highest value for that sim
+    traceDfPathList = list.files(path=topDir, pattern="traceDf.rds", recursive = TRUE, full.names = TRUE)
 
-    # Define sweep params
-    numSurveysVec = configSweepList[["numSurveysVec"]]
-    detectionProbVec = configSweepList[["detectionProbVec"]]
+    traceDfAllList = list()
+    for(traceDfPath in traceDfPathList){
+        
+        print(traceDfPath)
 
-    initTempVec = configSweepList[["initTempVec"]]
-    stepVec = signif(10**(c(configSweepList[["stepPowersVec"]])), 2)
-
-    # Build configs
-    i = 0
-    traceDfMaxList = list()
-    optimalDfList = list()
-    for(numSurveys in numSurveysVec){
-
-        for(detectionProb in detectionProbVec){
-
-            # For the hyperparm sweep for each numSurveys / detectionProb combo, pull out the best hyperparams
-            traceDfMaxSubsetList = list()
-
-            for(step in stepVec){
-                
-                for(initTemp in initTempVec){
-                    
-                    print(i)
-
-                    thisDir = file.path(topDir, paste0("sweep_", i))
-                    configPath = file.path(thisDir, "config.json")
-                    configList = rjson::fromJSON(file=configPath)
-
-                    configDf = data.frame(configList)
-
-                    traceDfPath = file.path(thisDir, "outputs", "traceDf.rds")
-
-                    traceDf = readRDS(traceDfPath) |>
-                        dplyr::mutate(
-                            sweep_i = i
-                        )
-
-                    # Extract max per scenario
-                    traceDfMax = traceDf[traceDf$objective_func_val == max(traceDf$objective_func_val),]
-                    
-                    if(nrow(traceDfMax) > 1){
-                        traceDfMax = traceDfMax[traceDfMax$iteration==max(traceDfMax$iteration),]
-                    }
-                    
-                    traceDfMaxConfig = cbind(traceDfMax, configDf)
-                    
-                    traceDfMaxList[[traceDfPath]] = traceDfMaxConfig
-                    traceDfMaxSubsetList[[traceDfPath]] = traceDfMaxConfig
-
-                    i = i + 1   
-                    
-                }
-            
-            }
-
-            # Find max of this param set
-            traceDfMaxSubset = dplyr::bind_rows(traceDfMaxSubsetList)
-
-            # Extract max per scenario
-            paramDfMax = traceDfMaxSubset[traceDfMaxSubset$objective_func_val == max(traceDfMaxSubset$objective_func_val),]
-            if(nrow(paramDfMax) > 1){
-                stop("SAME PARAM VALS FOR BOTH!!")
-            }
-            
-            optimalDfList[[as.character(i)]] = paramDfMax
-
+        traceDf = readRDS(traceDfPath) |>
+            dplyr::mutate(sweep_i = basename(dirname(dirname(traceDfPath))))
+        
+        # Extract max
+        traceDfMax = traceDf[traceDf$objective_func_val == max(traceDf$objective_func_val),]
+        
+        if(nrow(traceDfMax) > 1){
+            traceDfMax = traceDfMax[traceDfMax$iteration==max(traceDfMax$iteration),]
         }
+        
+        # Read in config
+        configPath = file.path(dirname(dirname(traceDfPath)), "config.json")
+        configList = rjson::fromJSON(file=configPath)
+        
+        configDf = data.frame(configList)
+        
+        traceDfMaxConfig = cbind(traceDfMax, configDf)
+        
+        traceDfAllList[[traceDfPath]] = traceDfMaxConfig
 
+
+    }
+
+    traceDfAll = dplyr::bind_rows(traceDfAllList)
+
+    # Loop over numSurveys and detectionProb and pull out single row that has max objVal
+    numSurveysVec = sort(unique(traceDfAll$numSurveys))
+    detectionProbVec = sort(unique(traceDfAll$detectionProb))
+
+    optimalDfList = list()
+    i = 0
+    for(numSurveys in numSurveysVec){
+        
+        for(detectionProb in detectionProbVec){
+            
+            traceDfAllSubset = traceDfAll[traceDfAll$numSurveys==numSurveys & traceDfAll$detectionProb == detectionProb,]
+            
+            # Extract max per scenario
+            optimalDfRow = traceDfAllSubset[traceDfAllSubset$objective_func_val == max(traceDfAllSubset$objective_func_val),]
+            
+            if(nrow(optimalDfRow) > 1){
+                optimalDfRow = optimalDfRow[optimalDfRow$iteration==max(optimalDfRow$iteration),]
+            }
+            
+            optimalDfList[[as.character(i)]] = optimalDfRow
+            
+            i = i + 1
+            
+    }
     }
 
     optimalDf = dplyr::bind_rows(optimalDfList)
