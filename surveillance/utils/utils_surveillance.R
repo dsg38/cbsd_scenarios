@@ -373,6 +373,6 @@ genMontage = function(
 
     dir.create(dirname(outPlotPath), showWarnings = FALSE, recursive = TRUE)
 
-    system(paste0("magick montage ", paste(plotPathVec, collapse=" "), " -geometry +", length(numSurveysVec), "+", length(detectionProbVec), " ", outPlotPath))
+    system(paste0("magick montage ", paste(plotPathVec, collapse=" "), " -geometry +", length(numSurveysVec), "+", length(detectionProbVec), " -tile ", length(detectionProbVec), "x", length(numSurveysVec), " ", outPlotPath))
 
 }

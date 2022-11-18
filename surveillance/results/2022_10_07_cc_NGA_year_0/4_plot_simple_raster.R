@@ -8,35 +8,35 @@ breaks = seq(0, 0.3, 0.05)
 # --------------------------------
 # GRID CHUNK
 
-simpleDfDir = "./data/simple_grid"
+# simpleDfDir = "./data/simple_grid"
 
-legendPos = c("left", "bottom")
+# legendPos = c("left", "bottom")
 
-targetCountryCode = "NGA"
+# targetCountryCode = "NGA"
 
-countryPolysDf = sf::read_sf("../../../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg")
+# countryPolysDf = sf::read_sf("../../../inputs/process_polys/gadm36_levels_gpkg/gadm36_level0_africa.gpkg")
 
-# Extent poly
-extentDf = countryPolysDf |>
-    dplyr::filter(GID_0 == targetCountryCode)
+# # Extent poly
+# extentDf = countryPolysDf |>
+#     dplyr::filter(GID_0 == targetCountryCode)
 
-extentBbox = sf::st_bbox(extentDf)
+# extentBbox = sf::st_bbox(extentDf)
 
 # ---------------------------------
 # CLUSTERS CHUNK
 
-# simpleDfDir = "./data/simple_clusters"
+simpleDfDir = "./data/simple_clusters"
 
-# x = list.files("./data/simple_clusters/", "*.gpkg", full.names = TRUE)
+x = list.files("./data/simple_clusters/", "*.gpkg", full.names = TRUE)
 
-# stackdDfList = list()
-# for(thisPath in x){
-#     stackdDfList[[thisPath]] = sf::read_sf(thisPath)    
-# }
+stackdDfList = list()
+for(thisPath in x){
+    stackdDfList[[thisPath]] = sf::read_sf(thisPath)    
+}
 
-# y = dplyr::bind_rows(stackdDfList)
+y = dplyr::bind_rows(stackdDfList)
 
-# extentBbox = sf::st_bbox(y)
+extentBbox = sf::st_bbox(y)
 
 # --------------------------------
 
