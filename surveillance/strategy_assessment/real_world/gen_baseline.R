@@ -13,7 +13,7 @@ dropAnyYearsBool = FALSE
 
 # -------------------------------------------------
 rewardRatio = 1
-detectionProbVec = c(0.01, 0.1, 0.25, 0.5, 0.85)
+detectionProbVec = c(0.01, 0.1, 0.25, 0.5, 0.75, 0.85, 1)
 
 outDir = file.path("outputs", inputsKey)
 dir.create(outDir, showWarnings = FALSE, recursive = TRUE)

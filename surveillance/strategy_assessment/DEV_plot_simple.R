@@ -1,7 +1,7 @@
 box::use(ggplot2[...])
 
-# simpleType = "simple_clusters"
-simpleType = "simple_grid"
+simpleType = "simple_clusters"
+# simpleType = "simple_grid"
 
 optimalDf = read.csv("../results/2022_10_07_cc_NGA_year_0/data/optimalDf.csv") |>
     dplyr::mutate(sweep_i = as.character(sweep_i)) |>
