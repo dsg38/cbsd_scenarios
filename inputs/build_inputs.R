@@ -13,6 +13,7 @@ processSurvey = "processSurvey"
 processVector = "processVector"
 processControl = "processControl"
 copyGeneralFiles = "copyGeneralFiles"
+processInitWeighting = "processInitWeighting"
 
 # Read config
 config = utils_epidem$readJsonFile(configPath)
@@ -190,6 +191,29 @@ if(processVector %in% configNames){
     )
     
 }
+
+# Vector
+if(processInitWeighting %in% configNames){
+    
+    print("INIT WEIGHTING")
+    
+    initWeightingDir = config[[processInitWeighting]]
+    
+    initWeightingRasterPath = file.path("inputs_raw/init_conditions_weighting", initWeightingDir, "init_weighting.tif")
+    
+    initWeightingRasterPathOut = file.path(outDir, "L_STARTWEIGHTING.txt")
+    
+    # Process
+    utils$processRaster(
+        rasterPath = initWeightingRasterPath,
+        extentVec = extentVec,
+        cropBool = cropBool,
+        pathOut = initWeightingRasterPathOut,
+        renameBool = TRUE
+    )
+    
+}
+
 
 # Control raster
 if(processControl %in% configNames){

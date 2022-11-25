@@ -1,0 +1,14 @@
+{
+    "cropByCountryCode": [
+        "BEN",
+        "NGA",
+        "CMR"
+    ],
+    "processHost": "CassavaMap-cassava_data-2022_02_09",
+    "processInit": "blank",
+    "processVector": "cassava_data-2022_02_09",
+    "processInitWeighting": "host_NGA",
+    "copyGeneralFiles": {
+        "P_WeatherSwitchTimes_IS.txt": "P_WeatherSwitchTimes.txt"
+    }
+}
