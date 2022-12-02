@@ -1,9 +1,9 @@
 {
     "inputsKey": "di_NGA_year_1",
     "rewardRatio": 1,
-    "niter": 100,
-    "numSurveysVec": [1000],
-    "detectionProbVec": [1],
-    "initTempVec": [1000],
-    "stepPowersVec": [-4]
+    "niter": 100000,
+    "numSurveysVec": [250, 500, 750, 1000],
+    "detectionProbVec": [0.01, 0.1, 0.25, 0.5, 0.75, 0.85, 1],
+    "initTempVec": [1, 10, 100, 1000],
+    "stepPowersVec": [-2.5]
 }
