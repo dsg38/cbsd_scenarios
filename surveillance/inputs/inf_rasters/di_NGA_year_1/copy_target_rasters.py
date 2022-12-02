@@ -9,24 +9,21 @@ outDir = Path('./raw')
 
 # ----------------------------------------
 
-rasterPathList = list(batchDir.rglob('O_0_L_0_INFECTIOUS_' + str(year) + '.000000.tif'))
 outDir.mkdir(exist_ok=True, parents=True)
 
-for i, rasterPath in enumerate(rasterPathList):
+for i in range(250):
 
     print(i)
 
-    # print(rasterPath)
+    job = 'job' + str(i)
 
-    job = rasterPath.parts[-4]
+    rasterPath = batchDir / job / 'output/runfolder0/O_0_L_0_INFECTIOUS_1.000000.tif'
 
     if not rasterPath.exists():
         print(rasterPath)
         raise Exception("Path missing")
 
-    outPath = outDir / (job + '-' + str(year) + '.tif')
-
-    # print(outPath)
+    outPath = outDir / (job + '.tif')
 
     shutil.copy(rasterPath, outPath)
 

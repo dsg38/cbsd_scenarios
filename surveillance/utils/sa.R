@@ -201,6 +201,7 @@ sa_wrapper = function(
 
     # Load global variales
     infBrick = raster::brick(infBrickPath)
+
     sumRasterPointsDf = read.csv(sumRasterPointsDfPath)
 
     # ----------------------------------

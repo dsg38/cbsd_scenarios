@@ -78,7 +78,7 @@ for(infRasterPath in infRasterVec){
         tm_scale_bar(position = c("right", "bottom"), text.size = 1.2) +
         tm_graticules(lines = FALSE, labels.size=1.2) +
         tm_layout(
-            legend.position=c("left", "bottom"),
+            legend.position=c("left", "top"),
             legend.frame=TRUE,
             legend.bg.color="grey",
             legend.bg.alpha=0.8,

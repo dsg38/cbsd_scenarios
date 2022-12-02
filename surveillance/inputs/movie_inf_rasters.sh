@@ -16,4 +16,4 @@ inPath=$topDir'/plots/*.png'
 echo $inPath
 echo $outPath
 
-ffmpeg -framerate 5 -pattern_type glob -i "$inPath" "$outPath"
+ffmpeg -framerate 15 -pattern_type glob -i "$inPath" "$outPath"
