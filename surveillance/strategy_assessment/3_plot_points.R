@@ -10,11 +10,17 @@ numSurveysReal = 1090
 
 inputsKey = utils_assessment$getConfigFromScenarioName(scenarioName)[["inputsKey"]]
 
-pointsDfPath = file.path("./results/", scenarioName, "/points/pointsDf.csv")
+resultsDir = file.path("./results/", scenarioName)
+
+pointsDfPath = file.path(resultsDir, "/points/pointsDf.csv")
 realPointsDfPath = file.path("./real_world/outputs/", inputsKey, "realWorldSurveyPerformance.csv")
 
-outDir = dirname(pointsDfPath)
+outDir = file.path(resultsDir, "plots")
 
+dir.create(outDir, recursive = TRUE, showWarnings = FALSE)
+
+# ------------------------------
+# Plot points
 # ------------------------------
 
 resDf = read.csv(pointsDfPath) |>
@@ -31,11 +37,68 @@ realPointsDf = read.csv(realPointsDfPath) |>
 
 realPointsDf$detectionProbTest = as.factor(realPointsDf$detectionProbTest)
 
-p = ggplot(data=resDf, aes(x=detectionProbTest, y=objVal, colour=detectionProbTrained, group=detectionProbTrained)) +
-    geom_point() +
-    geom_line() +
-    geom_point(data=realPointsDf) +
-    geom_line(data=realPointsDf)
+genPlot = function(
+    resDf,
+    realPointsDf,
+    title,
+    outPath
+){
 
-outPath = file.path(outDir, "points_sweep_test.png")
-ggsave(filename=outPath, plot=p)
+    p = ggplot(data=resDf, aes(x=detectionProbTest, y=objVal, colour=detectionProbTrained, group=detectionProbTrained)) +
+        geom_point() +
+        geom_line() +
+        geom_point(data=realPointsDf) +
+        geom_line(data=realPointsDf) +
+        ggtitle(title)
+
+    ggsave(filename=outPath, plot=p)
+
+}
+
+genPlot(
+    resDf=resDf,
+    realPointsDf=realPointsDf,
+    title="Points",
+    outPath=file.path(outDir, "points_sweep_test.png")
+)
+
+# ------------------------------
+# Plot simple
+# ------------------------------
+
+simpleTypeVec = c("simple_grid", "simple_clusters")
+
+for(simpleType in simpleTypeVec){
+
+    simpleDfPath = file.path(resultsDir, simpleType, "bigResultsDf_median.rds")
+
+    simpleDf = readRDS(simpleDfPath)
+
+    # Plot
+    simpleDf$detectionProbTest = as.factor(simpleDf$detectionProbTest)
+    simpleDf$detectionProbTrained = as.factor(simpleDf$detectionProbTrained)
+
+    simpleDfSubset = simpleDf[simpleDf$numSurveysTrained==numSurveysTrained,]
+
+    genPlot(
+        resDf=simpleDfSubset,
+        realPointsDf=realPointsDf,
+        title=simpleType,
+        outPath=file.path(outDir, paste0(simpleType, "_sweep_test.png"))
+    )
+
+}
+
+
+# p = ggplot(data=simpleDfSubset, aes(x=detectionProbTest, y=objVal, colour=detectionProbTrained, group=detectionProbTrained)) +
+#     geom_point() +
+#     geom_line() +
+#     geom_point(data=realPointsDf) +
+#     geom_line(data=realPointsDf) +
+#     ggtitle("Points")
+
+# p
+
+# outPath = 
+# ggsave(filename=outPath, plot=p)
+
