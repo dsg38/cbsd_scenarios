@@ -78,3 +78,15 @@ genWeightedRandomCoordsDf = function(
     return(coordsDf)
 
 }
+
+#' @export
+getConfigFromScenarioName = function(scenarioName){
+
+    resultsDir = here::here("surveillance/results/", scenarioName)
+
+    # Read config
+    configPath = file.path(resultsDir, "config_sweep.json")
+    configList = rjson::fromJSON(file=configPath)
+
+    return(configList)
+}
