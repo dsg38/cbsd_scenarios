@@ -2,6 +2,14 @@ box::use(../utils/sa)
 box::use(./utils_assessment)
 box::use(ggplot2[...])
 
+# Read in optimal df
+scenarioName = "2022_10_07_cc_NGA_year_0"
+# simpleType = "simple_grid"
+simpleType = "simple_clusters"
+niter = 10
+
+# ----------------------------------------
+
 doTrial = function(
     i, 
     simpleGridDf,
@@ -32,12 +40,6 @@ doTrial = function(
     return(objVal)
 
 }
-
-# Read in optimal df
-scenarioName = "2022_10_07_cc_NGA_year_0"
-# simpleType = "simple_grid"
-simpleType = "simple_clusters"
-niter = 10
 
 # ----------------------------------------
 rewardRatio = 1
