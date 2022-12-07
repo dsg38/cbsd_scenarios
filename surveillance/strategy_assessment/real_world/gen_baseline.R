@@ -1,8 +1,8 @@
 box::use(../../utils/sa)
 
-countryCode = "CMR"
-inputsKey = "cc_CMR_year_0"
-dropAnyYearsBool = FALSE
+# countryCode = "CMR"
+# inputsKey = "cc_CMR_year_0"
+# dropAnyYearsBool = FALSE
 
 
 # countryCode = "NGA"
@@ -10,6 +10,11 @@ dropAnyYearsBool = FALSE
 # dropAnyYearsBool = TRUE
 # dropYearsVec = c(2017)
 
+
+countryCode = "NGA"
+inputsKey = "di_NGA_year_1"
+dropAnyYearsBool = TRUE
+dropYearsVec = c(2017)
 
 # -------------------------------------------------
 rewardRatio = 1

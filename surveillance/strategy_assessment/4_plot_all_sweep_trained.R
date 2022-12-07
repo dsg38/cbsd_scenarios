@@ -1,7 +1,9 @@
 box::use(ggplot2[...])
 box::use(./utils_assessment)
 
-scenarioName = "2022_10_07_cc_NGA_year_0"
+# scenarioName = "2022_10_07_cc_NGA_year_0"
+scenarioName = "2022_12_01_di_NGA_year_1"
+
 numSurveysTrained = 1000
 numSurveysReal = 1090
 

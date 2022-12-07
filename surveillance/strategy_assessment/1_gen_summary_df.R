@@ -1,9 +1,10 @@
 box::use(ggplot2[...])
 
-scenarioName = "2022_10_07_cc_NGA_year_0"
+# scenarioName = "2022_10_07_cc_NGA_year_0"
+scenarioName = "2022_12_01_di_NGA_year_1"
 
-simpleType = "simple_clusters"
-# simpleType = "simple_grid"
+# simpleType = "simple_clusters"
+simpleType = "simple_grid"
 
 # -------------------------
 resultsDir = file.path("../results/", scenarioName)

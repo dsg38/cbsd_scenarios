@@ -6,7 +6,8 @@ box::use(./utils_assessment)
 # specified detectionProb) at different detectionProb.
 # ----------------------------------------------
 
-scenarioName = "2022_10_07_cc_NGA_year_0"
+# scenarioName = "2022_10_07_cc_NGA_year_0"
+scenarioName = "2022_12_01_di_NGA_year_1"
 
 # ----------------------------------------------
 

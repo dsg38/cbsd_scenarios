@@ -3,10 +3,18 @@ box::use(./utils_assessment)
 box::use(ggplot2[...])
 
 # Read in optimal df
-scenarioName = "2022_10_07_cc_NGA_year_0"
+
+# scenarioName = "2022_10_07_cc_NGA_year_0"
 # simpleType = "simple_grid"
-simpleType = "simple_clusters"
-niter = 10
+# # simpleType = "simple_clusters"
+# niter = 100
+
+# -----------------------------------
+
+scenarioName = "2022_12_01_di_NGA_year_1"
+simpleType = "simple_grid"
+# simpleType = "simple_clusters"
+niter = 100
 
 # ----------------------------------------
 
@@ -162,7 +170,6 @@ for(numSurveys in numSurveysVec){
         ggsave(filename=plotPath, plot=p)
         write.csv(diffDf, diffDfPath, row.names=FALSE)
 
-
         # Store all output data 
         bigResultsDfList[[as.character(i)]] = resultsDf
 
@@ -171,7 +178,6 @@ for(numSurveys in numSurveysVec){
     }
 
 }
-
 
 bigResultsDf = dplyr::bind_rows(bigResultsDfList)
 bigResultsDfPath = here::here("surveillance/strategy_assessment/results", scenarioName, simpleType, "bigResultsDf.rds")
