@@ -21,7 +21,7 @@ for mapPath in mapPaths:
 
     smallPath = Path('./posterior_small') / mapPath.name
 
-    mergedPath = Path('./merged') / mapPath.name
+    mergedPath = Path('./merged_0') / mapPath.name
 
     print(mergedPath)
 

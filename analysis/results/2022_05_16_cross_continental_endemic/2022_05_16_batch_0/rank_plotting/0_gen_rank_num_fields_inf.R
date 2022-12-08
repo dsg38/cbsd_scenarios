@@ -27,14 +27,22 @@ genStats = function(thisSimDf){
     
     numFieldsInf = sum(thisSimDf$raster_num_fields)
     
-    ngaBool = thisSimDf[thisSimDf$POLY_ID=="NGA", "raster_prop_fields"] > 0.01
+    ngaBool = thisSimDf[thisSimDf$POLY_ID=="NGA", "raster_prop_fields"] > 0
+    cmrBool = thisSimDf[thisSimDf$POLY_ID=="CMR", "raster_prop_fields"] > 0
+    cafBool = thisSimDf[thisSimDf$POLY_ID=="CAF", "raster_prop_fields"] > 0
+    cogBool = thisSimDf[thisSimDf$POLY_ID=="COG", "raster_prop_fields"] > 0
+    gabBool = thisSimDf[thisSimDf$POLY_ID=="GAB", "raster_prop_fields"] > 0
+    civBool = thisSimDf[thisSimDf$POLY_ID=="CIV", "raster_prop_fields"] > 0
 
-    # browser()
-    
     outDf = data.frame(
         simKey = thisSimDf$simKey[[1]],
         numFieldsInf = numFieldsInf,
-        ngaBool=ngaBool
+        ngaBool=ngaBool,
+        cmrBool=cmrBool,
+        cafBool=cafBool,
+        cogBool=cogBool,
+        gabBool=gabBool,
+        civBool=civBool
     )
     
     return(outDf)
@@ -47,12 +55,4 @@ rankDf = dplyr::bind_rows(rankDfList) |>
     dplyr::arrange(numFieldsInf) |>
     dplyr::mutate(rank=seq(1, length(rankDfList)))
 
-# p = ggplot(rankDf, aes(numFieldsInf, fill=ngaBool)) + 
-#     geom_histogram() +
-#     xlim(0, max(rankDf$numFieldsInf))
-# p
 write.csv(rankDf, "./output/rankDf.csv", row.names = FALSE)
-
-
-
-
