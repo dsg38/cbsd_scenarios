@@ -158,21 +158,10 @@ genSweepSurfacePlot = function(
 }
 
 #' @export
-genSimpleGridSf = function(
-    sweepDir,
-    polyDfPath,
-    countryCode,
-    outPath
-){
+getOptimalCoordsSf = function(sweepDir){
 
     coordsDfPath = file.path(sweepDir, "coordsDf.rds")
     traceDfPath = file.path(sweepDir, "traceDf.rds")
-
-    # Read in poly defining extent
-    polyDf = sf::read_sf(polyDfPath) |>
-        dplyr::filter(GID_0==countryCode)
-        
-    polyExtent = sf::st_bbox(polyDf)
 
     # ---------------------------------
     # Pull out highest scoring iteration
@@ -188,7 +177,28 @@ genSimpleGridSf = function(
         dplyr::filter(iteration == traceDfMax$iteration) |>
         sf::st_as_sf(coords=c("x", "y"), crs="WGS84")
 
+    return(coordsDf)
+
+}
+
+#' @export
+genSimpleGridSf = function(
+    sweepDir,
+    polyDfPath,
+    countryCode,
+    outPath
+){
+
+    coordsDf = getOptimalCoordsSf(sweepDir)
+
     coordsDf$coord_id = paste0("point_", seq(1, nrow(coordsDf)))
+
+    # Read in poly defining extent
+    polyDf = sf::read_sf(polyDfPath) |>
+        dplyr::filter(GID_0==countryCode)
+        
+    polyExtent = sf::st_bbox(polyDf)
+
 
     # Rasterise poly extent at given resolution
     gridDf = sf::st_make_grid(x=polyExtent, cellsize=0.5) |> 
@@ -374,5 +384,46 @@ genMontage = function(
     dir.create(dirname(outPlotPath), showWarnings = FALSE, recursive = TRUE)
 
     system(paste0("magick montage ", paste(plotPathVec, collapse=" "), " -geometry +", length(numSurveysVec), "+", length(detectionProbVec), " -tile ", length(detectionProbVec), "x", length(numSurveysVec), " ", outPlotPath))
+
+}
+
+#' @export
+plotPoints = function(
+    optimalDfRow,
+    extentBbox,
+    statePolysDf,
+    countryPolysDf,
+    plotPath
+){
+    
+    box::use(tmap[...])
+    tmap::tmap_options(check.and.fix = TRUE)
+
+    # Read in points for this row
+    sweepDir = file.path("./sweep/", paste0("sweep_", optimalDfRow$sweep_i), "outputs")
+
+    coordsDf = getOptimalCoordsSf(sweepDir)
+
+    # Def title
+    plotTitle = paste0("numSurveys: ", optimalDfRow$numSurveys, " | detectionProb: ", optimalDfRow$detectionProb, " | objFuncVal: ", round(optimalDfRow$objective_func_val, 2))
+
+    p = tm_shape(statePolysDf, bbox = extentBbox) +
+        tm_borders(lwd=0.2) +
+        tm_shape(countryPolysDf, bbox = extentBbox) + 
+        tm_borders(lwd=0.8) +
+        tm_shape(coordsDf) +
+        tm_symbols(shape=4, col="#F3645F") + # "orange" works well
+        tm_layout(
+            asp = 1,
+            title = plotTitle
+        )
+
+    # p
+
+    print(plotPath)
+
+    dir.create(dirname(plotPath), showWarnings = FALSE, recursive = TRUE)
+
+    tmap_save(tm=p, filename = plotPath)
 
 }
