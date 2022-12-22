@@ -3,20 +3,41 @@ box::use(./utils_assessment)
 box::use(ggplot2[...])
 
 # Read in optimal df
-
-# scenarioName = "2022_10_07_cc_NGA_year_0"
-# simpleType = "simple_grid"
-# # simpleType = "simple_clusters"
-# niter = 100
+niter = 10
 
 # -----------------------------------
 
-scenarioName = "2022_12_01_di_NGA_year_1"
+# scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
+# scenarioNameTest = "2022_10_07_cc_NGA_year_0"
+# # simpleType = "simple_grid"
+# simpleType = "simple_clusters"
+
+# # ----------------------------------------
+
+# scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
+# scenarioNameTest = "2022_10_07_cc_NGA_year_0"
+# simpleType = "simple_grid"
+# # simpleType = "simple_clusters"
+
+# # ----------------------------------------
+
+# scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
+# scenarioNameTest = "2022_10_07_cc_NGA_year_0"
+# simpleType = "simple_grid"
+# # simpleType = "simple_clusters"
+
+# # ----------------------------------------
+
+scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
+scenarioNameTest = "2022_10_07_cc_NGA_year_0"
 simpleType = "simple_grid"
 # simpleType = "simple_clusters"
-niter = 100
 
-# ----------------------------------------
+# # ----------------------------------------
+
+assessmentResultsDir = paste0("target_", scenarioNameTarget, "_test_", scenarioNameTest)
+
+
 
 doTrial = function(
     i, 
@@ -53,14 +74,28 @@ doTrial = function(
 rewardRatio = 1
 # ----------------------------------------
 
-scenarioDir = here::here("surveillance/results", scenarioName)
+scenarioDirTarget = here::here("surveillance/results", scenarioNameTarget)
+scenarioDirTest = here::here("surveillance/results", scenarioNameTest)
 
-optimalDfPath = file.path(scenarioDir, "data/optimalDf.csv")
+# ----------------------------------------
+
+optimalDfPath = file.path(scenarioDirTarget, "data/optimalDf.csv")
 
 optimalDf = read.csv(optimalDfPath)
 optimalDf$sweep_i = as.character(optimalDf$sweep_i)
 
 numSurveysVec = sort(unique(optimalDf$numSurveys))
+
+# Get inputs (i.e. infBrick) using scenarioNameTest
+configList = utils_assessment$getConfigFromScenarioName(scenarioNameTest)
+inputsDir = here::here("surveillance/inputs/inf_rasters_processed", configList[["inputsKey"]], "outputs")
+infBrickPath = file.path(inputsDir, "brick.tif")
+sumRasterPointsDfPath = file.path(inputsDir, "sumRasterMaskPointsDf.csv")
+
+infBrick = raster::brick(infBrickPath)
+sumRasterPointsDf = read.csv(sumRasterPointsDfPath)
+
+# ----------------------------
 
 i = 0
 bigResultsDfList = list()
@@ -80,22 +115,15 @@ for(numSurveys in numSurveysVec){
         optimalDfTargetRow = optimalDf[optimalDf$sweep_i == sweepIndex,]
 
         # Define paths
-        simpleGridDfPath = file.path(scenarioDir, "data", simpleType, paste0(sweepIndexStr, ".gpkg"))
-
-        inputsDir = here::here("surveillance/inputs/inf_rasters_processed", optimalDfTargetRow$inputsKey, "outputs")
-        infBrickPath = file.path(inputsDir, "brick.tif")
-        sumRasterPointsDfPath = file.path(inputsDir, "sumRasterMaskPointsDf.csv")
-
+        simpleGridDfPath = file.path(scenarioDirTarget, "data", simpleType, paste0(sweepIndexStr, ".gpkg"))
+        
         # Read in simple grid strategy
         simpleGridDf = sf::read_sf(simpleGridDfPath)
-
-        # Read in raster brick
-        infBrick = raster::brick(infBrickPath)
 
         # Process sum inf raster centroid points to classify according to the POLY_ID of each simple grid cell
         sumRasterPointsDfGridNames = utils_assessment$classifyRasterPointsDf(
             simpleGridDf = simpleGridDf,
-            sumRasterPointsDf = read.csv(sumRasterPointsDfPath)
+            sumRasterPointsDf = sumRasterPointsDf
         )
 
         # ----------------------------------
@@ -118,8 +146,6 @@ for(numSurveys in numSurveysVec){
                 rewardRatio=rewardRatio,
                 detectionProb=thisOptimalDfRow$detectionProb
             ))
-
-            # browser()
 
             resultsDfSubset = data.frame(
                 sweep_i = thisOptimalDfRow$sweep_i,
@@ -161,8 +187,8 @@ for(numSurveys in numSurveysVec){
             ylim(0, max(optimalDf$objective_func_val))
 
         # Save 
-        plotPath = here::here("surveillance/strategy_assessment/results", scenarioName, simpleType, paste0("numSurveys_", numSurveys), "plots", paste0("plot_", sweepIndexStr, ".png"))
-        diffDfPath = here::here("surveillance/strategy_assessment/results", scenarioName, simpleType, paste0("numSurveys_", numSurveys), "data", paste0("diff_", sweepIndexStr, ".csv"))
+        plotPath = here::here("surveillance/strategy_assessment/results", assessmentResultsDir, simpleType, paste0("numSurveys_", numSurveys), "plots", paste0("plot_", sweepIndexStr, ".png"))
+        diffDfPath = here::here("surveillance/strategy_assessment/results", assessmentResultsDir, simpleType, paste0("numSurveys_", numSurveys), "data", paste0("diff_", sweepIndexStr, ".csv"))
 
         dir.create(dirname(plotPath), recursive = TRUE, showWarnings = FALSE)
         dir.create(dirname(diffDfPath), recursive = TRUE, showWarnings = FALSE)
@@ -180,6 +206,6 @@ for(numSurveys in numSurveysVec){
 }
 
 bigResultsDf = dplyr::bind_rows(bigResultsDfList)
-bigResultsDfPath = here::here("surveillance/strategy_assessment/results", scenarioName, simpleType, "bigResultsDf.rds")
+bigResultsDfPath = here::here("surveillance/strategy_assessment/results", assessmentResultsDir, simpleType, "bigResultsDf.rds")
 
 saveRDS(bigResultsDf, bigResultsDfPath)
