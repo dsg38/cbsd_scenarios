@@ -1,20 +1,29 @@
 box::use(ggplot2[...])
 box::use(./utils_assessment)
 
-# scenarioName = "2022_10_07_cc_NGA_year_0"
-scenarioName = "2022_12_01_di_NGA_year_1"
+# scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
+# scenarioNameTest = "2022_10_07_cc_NGA_year_0"
+
+# scenarioNameTarget = "2022_12_01_di_NGA_year_1"
+# scenarioNameTest = "2022_12_01_di_NGA_year_1"
+
+# scenarioNameTarget = "2022_12_01_di_NGA_year_1"
+# scenarioNameTest = "2022_10_07_cc_NGA_year_0"
+
+scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
+scenarioNameTest = "2022_12_01_di_NGA_year_1"
+
+# --------------------------
 
 numSurveysTrained = 1000
 numSurveysReal = 1090
 
 # ---------------------------
+assessmentResultsDir = paste0("target_", scenarioNameTarget, "_test_", scenarioNameTest)
 
-inputsKey = utils_assessment$getConfigFromScenarioName(scenarioName)[["inputsKey"]]
-
-resultsDir = file.path("./results/", scenarioName)
+resultsDir = file.path("./results/", assessmentResultsDir)
 
 pointsDfPath = file.path(resultsDir, "/points/pointsDf.csv")
-realPointsDfPath = file.path("./real_world/outputs/", inputsKey, "realWorldSurveyPerformance.csv")
 
 outDir = file.path(resultsDir, "plots")
 
@@ -30,17 +39,31 @@ resDf = read.csv(pointsDfPath) |>
 resDf$detectionProbTest = as.factor(resDf$detectionProbTest)
 resDf$detectionProbTrained = as.factor(resDf$detectionProbTrained)
 
-# Add real points performance
-realPointsDf = read.csv(realPointsDfPath) |>
-    dplyr::filter(numSurveys==numSurveysReal) |>
-    dplyr::rename(detectionProbTest=detectionProb) |>
-    dplyr::mutate(detectionProbTrained = "Real survey")
 
-realPointsDf$detectionProbTest = as.factor(realPointsDf$detectionProbTest)
+parseRealDf = function(scenarioName){
+
+    inputsKey = utils_assessment$getConfigFromScenarioName(scenarioName)[["inputsKey"]]
+
+    realPointsDfPath = file.path("./real_world/outputs/", inputsKey, "realWorldSurveyPerformance.csv")
+
+    # Add real points performance
+    realPointsDf = read.csv(realPointsDfPath) |>
+        dplyr::filter(numSurveys==numSurveysReal) |>
+        dplyr::rename(detectionProbTest=detectionProb) |>
+        dplyr::mutate(detectionProbTrained = paste0("Real survey"))
+
+    realPointsDf$detectionProbTest = as.factor(realPointsDf$detectionProbTest)
+    realPointsDf$detectionProbTrained = as.factor(realPointsDf$detectionProbTrained)
+    
+    return(realPointsDf)
+
+}
+
+realPointsDfTest = parseRealDf(scenarioNameTest)
 
 genPlot = function(
     resDf,
-    realPointsDf,
+    realPointsDfTest,
     title,
     outPath
 ){
@@ -48,17 +71,17 @@ genPlot = function(
     p = ggplot(data=resDf, aes(x=detectionProbTest, y=objVal, colour=detectionProbTrained, group=detectionProbTrained)) +
         geom_point() +
         geom_line() +
-        geom_point(data=realPointsDf) +
-        geom_line(data=realPointsDf) +
+        geom_point(data=realPointsDfTest) +
+        geom_line(data=realPointsDfTest) +
         ggtitle(title)
-
+    
     ggsave(filename=outPath, plot=p)
 
 }
 
 genPlot(
     resDf=resDf,
-    realPointsDf=realPointsDf,
+    realPointsDfTest,
     title="Points",
     outPath=file.path(outDir, "points_sweep_test.png")
 )
@@ -67,28 +90,28 @@ genPlot(
 # Plot simple
 # ------------------------------
 
-simpleTypeVec = c("simple_grid", "simple_clusters")
+# simpleTypeVec = c("simple_grid", "simple_clusters")
 
-for(simpleType in simpleTypeVec){
+# for(simpleType in simpleTypeVec){
 
-    simpleDfPath = file.path(resultsDir, simpleType, "bigResultsDf_median.rds")
+#     simpleDfPath = file.path(resultsDir, simpleType, "bigResultsDf_median.rds")
 
-    simpleDf = readRDS(simpleDfPath)
+#     simpleDf = readRDS(simpleDfPath)
 
-    # Plot
-    simpleDf$detectionProbTest = as.factor(simpleDf$detectionProbTest)
-    simpleDf$detectionProbTrained = as.factor(simpleDf$detectionProbTrained)
+#     # Plot
+#     simpleDf$detectionProbTest = as.factor(simpleDf$detectionProbTest)
+#     simpleDf$detectionProbTrained = as.factor(simpleDf$detectionProbTrained)
 
-    simpleDfSubset = simpleDf[simpleDf$numSurveysTrained==numSurveysTrained,]
+#     simpleDfSubset = simpleDf[simpleDf$numSurveysTrained==numSurveysTrained,]
 
-    genPlot(
-        resDf=simpleDfSubset,
-        realPointsDf=realPointsDf,
-        title=simpleType,
-        outPath=file.path(outDir, paste0(simpleType, "_sweep_test.png"))
-    )
+#     genPlot(
+#         resDf=simpleDfSubset,
+#         realPointsDf=realPointsDf,
+#         title=simpleType,
+#         outPath=file.path(outDir, paste0(simpleType, "_sweep_test.png"))
+#     )
 
-}
+# }
 
 
 # p = ggplot(data=simpleDfSubset, aes(x=detectionProbTest, y=objVal, colour=detectionProbTrained, group=detectionProbTrained)) +
