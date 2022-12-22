@@ -6,24 +6,36 @@ box::use(./utils_assessment)
 # specified detectionProb) at different detectionProb.
 # ----------------------------------------------
 
-# scenarioName = "2022_10_07_cc_NGA_year_0"
-scenarioName = "2022_12_01_di_NGA_year_1"
+# scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
+# scenarioNameTest = "2022_10_07_cc_NGA_year_0"
+
+# scenarioNameTarget = "2022_12_01_di_NGA_year_1"
+# scenarioNameTest = "2022_12_01_di_NGA_year_1"
+
+# scenarioNameTarget = "2022_12_01_di_NGA_year_1"
+# scenarioNameTest = "2022_10_07_cc_NGA_year_0"
+
+scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
+scenarioNameTest = "2022_12_01_di_NGA_year_1"
 
 # ----------------------------------------------
-
-resultsDir = file.path("../results/", scenarioName)
+# Get optimal sweep from 
+resultsDir = file.path("../results/", scenarioNameTarget)
 
 optimalDfPath = file.path(resultsDir, "/data/optimalDf.csv")
 sweepDirTop = file.path(resultsDir, "/sweep/")
 
-# Read config
-configList = utils_assessment$getConfigFromScenarioName(scenarioName)
+# Read in infBrick for target
+configList = utils_assessment$getConfigFromScenarioName(scenarioNameTest)
 
 inputsKey = configList[["inputsKey"]]
 
 infBrickPath = file.path("../inputs/inf_rasters_processed/", inputsKey,"/outputs/brick.tif")
 
-outPath = file.path("./results/", scenarioName, "/points/pointsDf.csv")
+
+# ----------------------
+
+outPath = file.path("./results/", paste0("target_", scenarioNameTarget, "_test_", scenarioNameTest), "/points/pointsDf.csv")
 
 dir.create(dirname(outPath), showWarnings = FALSE, recursive=TRUE)
 
@@ -42,7 +54,8 @@ resDfList = list()
 for(iRow in seq_len(nrow(optimalDf))){
     
     print(iRow)
-    
+    print(nrow(optimalDf))
+
     optimalRow = optimalDf[iRow,]
 
     sweepDir = file.path(sweepDirTop, paste0("sweep_", optimalRow$sweep_i), "outputs")
@@ -83,7 +96,9 @@ for(iRow in seq_len(nrow(optimalDf))){
             numSurveysTrained = optimalRow$numSurveys,
             detectionProbTest = detectionProb,
             numSurveysTest = nrow(coordsDf),
-            objVal = objVal
+            objVal = objVal,
+            scenarioNameTarget = scenarioNameTarget,
+            scenarioNameTest = scenarioNameTest
         )
         
         resDfList[[as.character(iRes)]] = resRow
