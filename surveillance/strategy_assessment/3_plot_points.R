@@ -1,8 +1,8 @@
 box::use(ggplot2[...])
 box::use(./utils_assessment)
 
-# scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
-# scenarioNameTest = "2022_10_07_cc_NGA_year_0"
+scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
+scenarioNameTest = "2022_10_07_cc_NGA_year_0"
 
 # scenarioNameTarget = "2022_12_01_di_NGA_year_1"
 # scenarioNameTest = "2022_12_01_di_NGA_year_1"
@@ -10,8 +10,8 @@ box::use(./utils_assessment)
 # scenarioNameTarget = "2022_12_01_di_NGA_year_1"
 # scenarioNameTest = "2022_10_07_cc_NGA_year_0"
 
-scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
-scenarioNameTest = "2022_12_01_di_NGA_year_1"
+# scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
+# scenarioNameTest = "2022_12_01_di_NGA_year_1"
 
 # --------------------------
 
@@ -90,39 +90,25 @@ genPlot(
 # Plot simple
 # ------------------------------
 
-# simpleTypeVec = c("simple_grid", "simple_clusters")
+simpleTypeVec = c("simple_grid", "simple_clusters")
 
-# for(simpleType in simpleTypeVec){
+for(simpleType in simpleTypeVec){
 
-#     simpleDfPath = file.path(resultsDir, simpleType, "bigResultsDf_median.rds")
+    simpleDfPath = file.path(resultsDir, simpleType, "bigResultsDf_median.rds")
 
-#     simpleDf = readRDS(simpleDfPath)
+    simpleDf = readRDS(simpleDfPath)
 
-#     # Plot
-#     simpleDf$detectionProbTest = as.factor(simpleDf$detectionProbTest)
-#     simpleDf$detectionProbTrained = as.factor(simpleDf$detectionProbTrained)
+    # Plot
+    simpleDf$detectionProbTest = as.factor(simpleDf$detectionProbTest)
+    simpleDf$detectionProbTrained = as.factor(simpleDf$detectionProbTrained)
 
-#     simpleDfSubset = simpleDf[simpleDf$numSurveysTrained==numSurveysTrained,]
+    simpleDfSubset = simpleDf[simpleDf$numSurveysTrained==numSurveysTrained,]
 
-#     genPlot(
-#         resDf=simpleDfSubset,
-#         realPointsDf=realPointsDf,
-#         title=simpleType,
-#         outPath=file.path(outDir, paste0(simpleType, "_sweep_test.png"))
-#     )
+    genPlot(
+        resDf=simpleDfSubset,
+        realPointsDf=realPointsDfTest,
+        title=simpleType,
+        outPath=file.path(outDir, paste0(simpleType, "_sweep_test.png"))
+    )
 
-# }
-
-
-# p = ggplot(data=simpleDfSubset, aes(x=detectionProbTest, y=objVal, colour=detectionProbTrained, group=detectionProbTrained)) +
-#     geom_point() +
-#     geom_line() +
-#     geom_point(data=realPointsDf) +
-#     geom_line(data=realPointsDf) +
-#     ggtitle("Points")
-
-# p
-
-# outPath = 
-# ggsave(filename=outPath, plot=p)
-
+}

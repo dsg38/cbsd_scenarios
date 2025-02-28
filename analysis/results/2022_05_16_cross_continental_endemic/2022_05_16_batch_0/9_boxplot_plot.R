@@ -74,10 +74,11 @@ for(thisCumulativePassKey in names(cumulativePassKeys)){
         p = ggplot(thisPropDf, aes(x=plottingPriority, y=sim_year)) + 
             geom_boxplot() +
             coord_flip(ylim=c(yearMin, yearMax)) +
-            ggtitle(paste0("Proportion of fields infected: ", propThresholdStr)) +
+            # ggtitle(paste0("Proportion of fields infected: ", propThresholdStr)) +
             scale_y_continuous(breaks=seq(yearMin, yearMax, 5)) +
-            geom_hline(yintercept=2023, linetype="dashed", color = "green", lwd=1) +
-            xlab(NULL) #+
+            geom_hline(yintercept=2025, linetype="dashed", color = "green", lwd=1) +
+            xlab(NULL) +
+            ylab(NULL)
         
         # browser()
         # p

@@ -1,16 +1,22 @@
 box::use(ggplot2[...])
 
 # scenarioName = "2022_10_07_cc_NGA_year_0"
-scenarioName = "2022_12_01_di_NGA_year_1"
+# scenarioName = "2022_12_01_di_NGA_year_1"
 
-# simpleType = "simple_clusters"
-simpleType = "simple_grid"
+scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
+scenarioNameTest = "2022_10_07_cc_NGA_year_0"
+
+simpleType = "simple_clusters"
+# simpleType = "simple_grid"
+
+
+assessmentResultsDir = paste0("target_", scenarioNameTarget, "_test_", scenarioNameTest)
 
 # -------------------------
-resultsDir = file.path("../results/", scenarioName)
+resultsDir = file.path("../results/", scenarioNameTarget)
 
 optimalDfPath = file.path(resultsDir, "/data/optimalDf.csv")
-clusterDfPath = file.path("./results/", scenarioName, simpleType, "bigResultsDf.rds")
+clusterDfPath = file.path("./results/", assessmentResultsDir, simpleType, "bigResultsDf.rds")
 
 simpleDfOutPath = file.path(dirname(clusterDfPath), "bigResultsDf_median.rds")
 

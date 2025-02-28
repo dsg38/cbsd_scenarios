@@ -3,7 +3,7 @@ box::use(./utils_assessment)
 box::use(ggplot2[...])
 
 # Read in optimal df
-niter = 10
+niter = 2
 
 # -----------------------------------
 
@@ -14,23 +14,23 @@ niter = 10
 
 # # ----------------------------------------
 
-# scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
-# scenarioNameTest = "2022_10_07_cc_NGA_year_0"
-# simpleType = "simple_grid"
-# # simpleType = "simple_clusters"
-
-# # ----------------------------------------
-
-# scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
-# scenarioNameTest = "2022_10_07_cc_NGA_year_0"
-# simpleType = "simple_grid"
-# # simpleType = "simple_clusters"
+# scenarioNameTarget = "2022_12_01_di_NGA_year_1"
+# scenarioNameTest = "2022_12_01_di_NGA_year_1"
+# # simpleType = "simple_grid"
+# simpleType = "simple_clusters"
 
 # # ----------------------------------------
 
 scenarioNameTarget = "2022_10_07_cc_NGA_year_0"
-scenarioNameTest = "2022_10_07_cc_NGA_year_0"
+scenarioNameTest = "2022_12_01_di_NGA_year_1"
 simpleType = "simple_grid"
+# simpleType = "simple_clusters"
+
+# # ----------------------------------------
+
+# scenarioNameTarget = "2022_12_01_di_NGA_year_1"
+# scenarioNameTest = "2022_10_07_cc_NGA_year_0"
+# # simpleType = "simple_grid"
 # simpleType = "simple_clusters"
 
 # # ----------------------------------------
