@@ -39,7 +39,7 @@ p = tm_shape(oceanDf, bbox=bboxExtent) +
         legend.frame=TRUE,
         legend.bg.color="grey",
         legend.bg.alpha=0.8,
-        legend.text.size = 1
+        legend.text.size = 1.5
     ) +
     tm_compass(position = c("right", "top"), size=5) +
     tm_scale_bar(position = c("left", "bottom"), text.size = 1.2) +
