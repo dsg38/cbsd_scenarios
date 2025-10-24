@@ -1,3 +1,13 @@
+# Publication data note
+
+In reference to the publication "Predicting the cross-continental spread of the cassava brown streak disease epidemic in sub-Saharan Africa" (https://www.biorxiv.org/content/10.1101/2025.10.10.681618v1):
+
+"The field record datasets collected in East Africa as part of the Cassava Diagnostics Project (CDP) are made available as part of the code repository. The remaining field datasets provided by the Central and West Africa by the Central and West African Virus Epidemiology Center (WAVE) are available upon reasonable request from WAVE."
+
+File paths to the full dataset (not made available) is referenced in this repo as `../../../../cassava_data/data_merged/data/2022_02_09/cassava_data_minimal.csv`
+
+The subset that is released as part of the above publication can be found in this repo: `inputs/cc_paper_data_subset/cassava_data_minimal.csv`
+
 # Setup instructions
 
 In global R options (i.e. `~/.Rprofile`), be sure to include `invisible(rgdal::setCPLConfigOption("GDAL_PAM_ENABLED", "FALSE"))` to prevent the writing out of the `.xml` raster metadata files
